@@ -54,13 +54,10 @@ jobs:
         run: mv .env.production .env && yarn generate
 
       - name: Deploy 🚀
-        uses: tomjschuster/cloudflare-pages-deploy-action@v0
+        uses: cloudflare/pages-action@1
         with:
-          account-id: '${{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
-          project-name: '${{ env.CLOUDFLARE_PROJECT_NAME }}'
-          api-key: '${{ secrets.CLOUDFLARE_GLOBAL_APIKEY }}'
-          email: '${{ secrets.CLOUDFLARE_EMAIL }}'
-          production: true
-        env:
-          CLOUDFLARE_PROJECT_NAME: superbutton
-
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: superbutton # e.g. 'my-project'
+          directory: dist # e.g. 'dist'
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
