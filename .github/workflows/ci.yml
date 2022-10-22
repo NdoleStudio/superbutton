@@ -53,14 +53,11 @@ jobs:
       - name: Build 🏗️
         run: mv .env.production .env && yarn generate
 
-      - name: Debug
-        run: ls -lah dist
-
       - name: Deploy 🚀
         uses: cloudflare/pages-action@1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: superbutton # e.g. 'my-project'
-          directory: web/dist # e.g. 'dist'
+          projectName: superbutton
+          directory: web/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
