@@ -7,9 +7,10 @@ export interface User  {
 }
 
 export type AuthUser = {
-  id: string
+  uid: string
   email: string
-  name: string | null
+  photoURL ?: string
+  displayName: string | null
 }
 
 

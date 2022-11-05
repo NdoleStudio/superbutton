@@ -40,7 +40,7 @@ export default class SnackbarNotification extends Vue {
   }
 
   get notificationActive(): boolean {
-    return this.$store.getters.getNotification.active
+    return this.$store.getters.notification?.active
   }
 
   set notificationActive(state: boolean) {
