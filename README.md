@@ -1,2 +1,7 @@
 # superbutton
-Configurable Call to Action button for your website.
+
+Configurable floating button for your website.
+
+## Credits
+
+- Logo [svgrepo.com](https://www.svgrepo.com/svg/240317/menu)
