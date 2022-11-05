@@ -83,5 +83,11 @@
 <script>
 export default {
   name: 'IndexPage',
+  mounted() {
+    if (!this.$store.getters.authUser) {
+      return this.$router.push("/login")
+    }
+    this.$router.push("/projects/create")
+  }
 }
 </script>

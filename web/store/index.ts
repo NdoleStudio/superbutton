@@ -1,5 +1,5 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
-import {AppData, NotificationRequest, State, User} from "~/store/types";
+import {AppData, AuthUser, NotificationRequest, State, User} from "~/store/types";
 
 export const state = (): State => ({
   authUser: null,
@@ -33,8 +33,8 @@ export const getters: GetterTree<RootState, RootState> = {
 }
 
 export const mutations: MutationTree<RootState> = {
-  setUser(state: RootState, payload: User| null) {
-    state.user = payload;
+  setAuthUser(state: RootState, payload: AuthUser| null) {
+    state.authUser = payload;
     state.authStateChanged = true;
   },
 
@@ -61,8 +61,8 @@ export const mutations: MutationTree<RootState> = {
 
 export const actions: ActionTree<RootState, RootState> = {
   onAuthStateChanged: (context: ActionContext<RootState, RootState>, { authUser, claims }) => {
-    console.log(claims, authUser)
-    context.commit("setUser", authUser)
+    const { uid, email, emailVerified } = authUser
+    context.commit("setAuthUser", { uid, email, emailVerified })
   },
 
   setNextRoute: (context: ActionContext<RootState, RootState>,  route: string|null) => {

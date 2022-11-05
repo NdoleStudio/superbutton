@@ -32,15 +32,20 @@
   </v-main>
 </template>
 
-<script lang="ts">
+<script>
+
 export default {
   name: "LoginIndex",
   layout: 'auth',
-  middleware: ['guest'],
   data() {
     return {
       to: '/',
     }
   },
+  mounted() {
+    if (this.$store.getters.authUser) {
+      return this.$router.push("/")
+    }
+  }
 }
 </script>
