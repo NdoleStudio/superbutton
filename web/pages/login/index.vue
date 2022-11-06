@@ -16,7 +16,7 @@
           </div>
           <p class="text--secondary text-h6 text-center">
             Login to the {{ $store.getters.app.name }} dashboard
-            <br>
+            <br />
             and manage your floating buttons
           </p>
           <v-card max-width="360" class="mx-auto">
@@ -33,9 +33,8 @@
 </template>
 
 <script>
-
 export default {
-  name: "LoginIndex",
+  name: 'LoginIndex',
   layout: 'auth',
   data() {
     return {
@@ -44,8 +43,8 @@ export default {
   },
   mounted() {
     if (this.$store.getters.authUser) {
-      return this.$router.push("/")
+      return this.$router.push('/')
     }
-  }
+  },
 }
 </script>

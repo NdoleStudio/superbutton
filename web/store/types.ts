@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 
-export interface User  {
+export interface User {
   uid: string
   email: string
   name: string
@@ -9,10 +9,9 @@ export interface User  {
 export type AuthUser = {
   uid: string
   email: string
-  photoURL ?: string
+  photoURL?: string
   displayName: string | null
 }
-
 
 type NotificationType = 'error' | 'success' | 'info'
 

@@ -1,14 +1,13 @@
 <template>
   <div>
-    <v-app-bar
-      app
-      flat
-    >
+    <v-app-bar app flat>
       <v-container class="py-0 fill-height">
         <v-avatar tile size="32">
           <v-img contain :src="require('@/static/logo.svg')"></v-img>
         </v-avatar>
-        <h3 class="text-h4 text--secondary font-weight-thin ml-1">Superbutton</h3>
+        <h3 class="text-h4 text--secondary font-weight-thin ml-1">
+          Superbutton
+        </h3>
         <v-spacer></v-spacer>
         <v-menu v-if="$store.getters.authUser" left bottom>
           <template #activator="{ on }">
@@ -30,9 +29,7 @@
                   <v-icon dense>{{ logoutIcon }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content class="ml-n3">
-                  <v-list-item-title class="pr-16">
-                    Logout
-                  </v-list-item-title>
+                  <v-list-item-title class="pr-16"> Logout </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-item-group>
@@ -47,28 +44,17 @@
           <v-col cols="2">
             <v-sheet rounded="lg">
               <v-list color="transparent">
-                <v-list-item
-                  v-for="n in 5"
-                  :key="n"
-                  link
-                >
+                <v-list-item v-for="n in 5" :key="n" link>
                   <v-list-item-content>
-                    <v-list-item-title>
-                      List Item {{ n }}
-                    </v-list-item-title>
+                    <v-list-item-title> List Item {{ n }} </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
 
                 <v-divider class="my-2"></v-divider>
 
-                <v-list-item
-                  link
-                  color="grey lighten-4"
-                >
+                <v-list-item link color="grey lighten-4">
                   <v-list-item-content>
-                    <v-list-item-title>
-                      Refresh
-                    </v-list-item-title>
+                    <v-list-item-title> Refresh </v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -76,10 +62,7 @@
           </v-col>
 
           <v-col>
-            <v-sheet
-              min-height="70vh"
-              rounded="lg"
-            >
+            <v-sheet min-height="70vh" rounded="lg">
               <!--  -->
             </v-sheet>
           </v-col>
@@ -90,10 +73,10 @@
 </template>
 
 <script>
-import {mdiLogout} from "@mdi/js";
+import { mdiLogout } from '@mdi/js'
 
 export default {
-  name: "ProjectsCreate",
+  name: 'ProjectsCreate',
   layout: 'auth',
   data() {
     return {
@@ -103,21 +86,19 @@ export default {
   },
   mounted() {
     if (!this.$store.getters.authUser) {
-      return this.$router.push("/login")
+      return this.$router.push('/login')
     }
   },
   methods: {
     logout() {
-      this.$fire.auth
-        .signOut()
-        .then(() => {
-          this.$store.dispatch("addNotification", {
-            type: "info",
-            message: "You have successfully logged out",
-          });
-          this.$router.push("/");
-        });
-    }
-  }
+      this.$fire.auth.signOut().then(() => {
+        this.$store.dispatch('addNotification', {
+          type: 'info',
+          message: 'You have successfully logged out',
+        })
+        this.$router.push('/')
+      })
+    },
+  },
 }
 </script>

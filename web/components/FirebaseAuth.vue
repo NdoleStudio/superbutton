@@ -16,7 +16,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ProviderId } from 'firebase/auth'
 import { auth } from 'firebaseui'
-import {NotificationRequest} from "~/store/types";
+import { NotificationRequest } from '~/store/types'
 
 @Component
 export default class FirebaseAuth extends Vue {

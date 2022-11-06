@@ -1,5 +1,5 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
-import {AppData, AuthUser, NotificationRequest, State} from "~/store/types";
+import { AppData, AuthUser, NotificationRequest, State } from '~/store/types'
 
 export const state = (): State => ({
   authUser: null,
@@ -7,15 +7,15 @@ export const state = (): State => ({
   authStateChanged: false,
   notification: null,
   axiosError: null,
-  user: null
+  user: null,
 })
 
 export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
-  authUser: state => state.authUser,
-  authStateChanged: state => state.authStateChanged,
-  notification: state => state.notification,
+  authUser: (state) => state.authUser,
+  authStateChanged: (state) => state.authStateChanged,
+  notification: (state) => state.notification,
 
   app(): AppData {
     let url = process.env.APP_URL as string
@@ -33,9 +33,9 @@ export const getters: GetterTree<RootState, RootState> = {
 }
 
 export const mutations: MutationTree<RootState> = {
-  setAuthUser(state: RootState, payload: AuthUser| null) {
-    state.authUser = payload;
-    state.authStateChanged = true;
+  setAuthUser(state: RootState, payload: AuthUser | null) {
+    state.authUser = payload
+    state.authStateChanged = true
   },
 
   setNextRoute(state: RootState, payload: string | null) {
@@ -53,24 +53,30 @@ export const mutations: MutationTree<RootState> = {
   },
 
   disableNotification(state: State) {
-    if(state.notification) {
+    if (state.notification) {
       state.notification.active = false
     }
   },
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  onAuthStateChanged: (context: ActionContext<RootState, RootState>, { authUser }) => {
+  onAuthStateChanged: (
+    context: ActionContext<RootState, RootState>,
+    { authUser }
+  ) => {
     if (authUser == null) {
-      context.commit("setAuthUser", null)
+      context.commit('setAuthUser', null)
       return
     }
-    const  { uid, email, photoURL, displayName } = authUser
-    context.commit("setAuthUser", { uid, email, photoURL, displayName })
+    const { uid, email, photoURL, displayName } = authUser
+    context.commit('setAuthUser', { uid, email, photoURL, displayName })
   },
 
-  setNextRoute: (context: ActionContext<RootState, RootState>,  route: string|null) => {
-    context.commit("setNextRoute", route)
+  setNextRoute: (
+    context: ActionContext<RootState, RootState>,
+    route: string | null
+  ) => {
+    context.commit('setNextRoute', route)
   },
 
   addNotification(

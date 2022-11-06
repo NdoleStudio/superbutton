@@ -52,20 +52,20 @@ export default {
           storageBucket: 'superbutton-8a6ad.appspot.com',
           messagingSenderId: '1038134704954',
           appId: '1:1038134704954:web:a7046561e1b24fa4ed2e03',
-          measurementId: 'G-GTL1VHGNKJ'
+          measurementId: 'G-GTL1VHGNKJ',
         },
         services: {
           auth: {
             persistence: 'local', // default
             initialize: {
               onAuthStateChangedAction: 'onAuthStateChanged',
-              subscribeManually: false
+              subscribeManually: false,
             },
             ssr: false, // default
-          }
-        }
-      }
-    ]
+          },
+        },
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
