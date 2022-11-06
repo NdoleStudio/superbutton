@@ -12,7 +12,7 @@
         <v-spacer></v-spacer>
         <v-menu v-if="$store.getters.authUser" left bottom>
           <template #activator="{ on }">
-            <v-btn icon x-large v-on="on" id="header-account-settings">
+            <v-btn icon x-large v-on="on">
               <v-avatar size="36" color="black">
                 <img
                   v-if="$store.getters.authUser.photoURL"
