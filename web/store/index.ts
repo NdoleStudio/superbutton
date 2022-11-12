@@ -72,6 +72,13 @@ export const actions: ActionTree<RootState, RootState> = {
     context.commit('setAuthUser', { uid, email, photoURL, displayName })
   },
 
+  setAuthUser: (
+    context: ActionContext<RootState, RootState>,
+    authUser: AuthUser | null
+  ) => {
+    context.commit('setAuthUser', authUser)
+  },
+
   setNextRoute: (
     context: ActionContext<RootState, RootState>,
     route: string | null

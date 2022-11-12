@@ -16,6 +16,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ProviderId } from 'firebase/auth'
 import { auth } from 'firebaseui'
+import firebase from 'firebase/compat'
 import { NotificationRequest } from '~/store/types'
 
 @Component
@@ -35,7 +36,9 @@ export default class FirebaseAuth extends Vue {
     if (process.browser) {
       const firebaseui = require('firebaseui')
       require('firebaseui/dist/firebaseui.css')
-      this.ui = new firebaseui.auth.AuthUI(this.$fire.auth)
+      this.ui =
+        firebaseui.auth.AuthUI.getInstance() ||
+        new firebaseui.auth.AuthUI(this.$fire.auth)
       this.ui?.start('#firebaseui-auth-container', this.uiConfig())
     }
   }
@@ -43,7 +46,19 @@ export default class FirebaseAuth extends Vue {
   uiConfig(): any {
     return {
       callbacks: {
-        signInSuccessWithAuthResult: () => {
+        signInSuccessWithAuthResult: (
+          authResult: firebase.auth.UserCredential
+        ) => {
+          if (authResult.user !== null) {
+            const { uid, email, photoURL, displayName } = authResult.user
+            this.$store.dispatch('setAuthUser', {
+              uid,
+              email,
+              photoURL,
+              displayName,
+            })
+          }
+
           this.$store.dispatch('addNotification', {
             message: 'Login successfull!',
             type: 'success',
