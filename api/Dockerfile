@@ -18,6 +18,7 @@ RUN go install github.com/swaggo/swag/cmd/swag
 RUN swag init
 RUN go install github.com/gobuffalo/packr/v2/packr2@latest
 RUN packr2
+RUN go mod tidy
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$GIT_COMMIT" -o /bin/superbutton .
 
