@@ -35,7 +35,7 @@
       <v-btn icon @click.stop="fixed = !fixed">
         <v-icon>mdi-minus</v-icon>
       </v-btn>
-      <v-toolbar-title>{{ item.title }}</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
       <v-spacer />
       <v-btn icon @click.stop="rightDrawer = !rightDrawer">
         <v-icon>mdi-menu</v-icon>
