@@ -11,8 +11,8 @@ const UserCreated = "user.created"
 
 // UserCreatedPayload stores the data for the user created event
 type UserCreatedPayload struct {
-	ID        entities.UserID `json:"id"`
-	CreatedAt time.Time       `json:"created_at"`
-	Name      *string         `json:"name"`
-	Email     string          `json:"email"`
+	UserID        entities.UserID `json:"user_id"`
+	UserCreatedAt time.Time       `json:"user_created_at"`
+	UserName      *string         `json:"user_name"`
+	UserEmail     string          `json:"user_email"`
 }

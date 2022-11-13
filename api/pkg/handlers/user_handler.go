@@ -40,6 +40,17 @@ func (h *UserHandler) RegisterRoutes(router fiber.Router) {
 }
 
 // me returns the currently authenticated entities.User
+// @Summary      Currently authenticated user
+// @Description  Fetches the currently authenticated user. This method creates the user if one doesn't exist
+// @Security	 BearerAuth
+// @Tags         Users
+// @Produce      json
+// @Success      200 		{object}	responses.Ok[entities.User]
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /users/me 	[post]
 func (h *UserHandler) me(c *fiber.Ctx) error {
 	ctx, span := h.tracer.StartFromFiberCtx(c)
 	defer span.End()

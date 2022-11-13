@@ -38,7 +38,20 @@ func (h *EventsHandler) RegisterRoutes(router fiber.Router) {
 	router.Post("/events/consume", h.Consume)
 }
 
-// Consume a cloud event
+// Consume a cloudevents.Event
+// @Summary      Consume a cloud event
+// @Description  Publish a cloud event to the registered listeners
+// @Security	 BearerAuth
+// @Tags         Events
+// @Accept       json
+// @Produce      json
+// @Param        payload	body 		requests.CloudEvent				true 	"cloud event payload"
+// @Success      204 		{object}	responses.NoContent
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /events/consume [post]
 func (h *EventsHandler) Consume(c *fiber.Ctx) error {
 	ctx, span := h.tracer.StartFromFiberCtx(c)
 	defer span.End()
@@ -55,10 +68,10 @@ func (h *EventsHandler) Consume(c *fiber.Ctx) error {
 	if err := request.Validate(); err != nil {
 		msg := fmt.Sprintf("validation errors [%s], while dispatching event [%+#v]", spew.Sdump(err.Error()), request)
 		ctxLogger.Warn(stacktrace.NewError(msg))
-		return h.responseUnprocessableEntity(c, map[string][]string{"event": {err.Error()}}, "validation errors while dispatching event")
+		return h.responseUnprocessableEntity(c, map[string][]string{"event": {err.Error()}}, "validation errors while consuming event")
 	}
 
 	h.service.Publish(ctx, request)
 
-	return h.responseNoContent(c, "event dispatched successfully")
+	return h.responseNoContent(c, "event consumed successfully")
 }

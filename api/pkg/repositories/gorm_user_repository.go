@@ -2,8 +2,6 @@ package repositories
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -105,29 +103,4 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 	}
 
 	return user, created, nil
-}
-
-// generateRandomBytes returns securely generated random bytes.
-// It will return an error if the system's secure random
-// number generator fails to function correctly, in which
-// case the caller should not continue.
-func (repository *gormUserRepository) generateRandomBytes(n int) ([]byte, error) {
-	b := make([]byte, n)
-	_, err := rand.Read(b)
-	// Note that err == nil only if we read len(b) bytes.
-	if err != nil {
-		return nil, stacktrace.Propagate(err, fmt.Sprintf("cannot generate [%d] random bytes", n))
-	}
-
-	return b, nil
-}
-
-// generateAPIKey returns a URL-safe, base64 encoded
-// securely generated random string.
-// It will return an error if the system's secure random
-// number generator fails to function correctly, in which
-// case the caller should not continue.
-func (repository *gormUserRepository) generateAPIKey(n int) (string, error) {
-	b, err := repository.generateRandomBytes(n)
-	return base64.URLEncoding.EncodeToString(b)[0:n], stacktrace.Propagate(err, "cannot generate random bytes")
 }

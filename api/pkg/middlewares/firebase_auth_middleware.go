@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/davecgh/go-spew/spew"
+
 	"firebase.google.com/go/auth"
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
@@ -24,6 +26,8 @@ func FirebaseAuth(logger telemetry.Logger, tracer telemetry.Tracer, authClient *
 			span.AddEvent(fmt.Sprintf("The request header has no [%s] token", bearerScheme))
 			return c.Next()
 		}
+
+		logger.Info(spew.Sdump(c.GetReqHeaders()))
 
 		if len(authToken) > len(bearerScheme)+1 {
 			authToken = authToken[len(bearerScheme)+1:]

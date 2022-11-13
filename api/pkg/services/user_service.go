@@ -60,10 +60,10 @@ func (service *User) dispatchUserCreatedEvent(ctx context.Context, source string
 	ctxLogger := service.tracer.CtxLogger(service.logger, span)
 
 	event, err := service.createEvent(events.UserCreated, source, &events.UserCreatedPayload{
-		ID:        user.ID,
-		CreatedAt: user.CreatedAt,
-		Name:      user.Name,
-		Email:     user.Email,
+		UserID:        user.ID,
+		UserCreatedAt: user.CreatedAt,
+		UserName:      user.Name,
+		UserEmail:     user.Email,
 	})
 	if err != nil {
 		msg := fmt.Sprintf("cannot created [%s] event for user [%s]", events.UserCreated, user.ID)

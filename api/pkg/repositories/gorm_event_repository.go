@@ -55,8 +55,7 @@ func (repository *gormEventRepository) FetchAll(ctx context.Context) (*[]cloudev
 
 	var events []GormEvent
 	if err := repository.db.WithContext(ctx).Order("time ASC").Find(&events).Error; err != nil {
-		msg := fmt.Sprintf("cannot fetch all cloudevents")
-		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, "cannot fetch all cloudevents"))
 	}
 
 	results := make([]cloudevents.Event, 0, len(events))

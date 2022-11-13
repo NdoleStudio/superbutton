@@ -22,6 +22,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberLogger "github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/swagger"
 	"github.com/hirosassa/zerodriver"
 	"github.com/jinzhu/now"
 	"github.com/palantir/stacktrace"
@@ -65,7 +66,16 @@ func NewContainer(version string, projectID string) (container *Container) {
 
 	container.RegisterEventRoutes()
 
+	// this has to be last since it registers the /* route
+	container.RegisterSwaggerRoutes()
+
 	return container
+}
+
+// RegisterSwaggerRoutes registers routes for swagger
+func (container *Container) RegisterSwaggerRoutes() {
+	container.logger.Debug("registering swagger routes")
+	container.App().Get("/*", swagger.HandlerDefault)
 }
 
 // AuthenticatedMiddleware creates a new instance of middlewares.Authenticated
@@ -153,7 +163,10 @@ func (container *Container) EventsQueue() queue.Client {
 func (container *Container) CloudTasksClient() (client *cloudtasks.Client) {
 	container.logger.Debug(fmt.Sprintf("creating %T", client))
 
-	client, err := cloudtasks.NewClient(context.Background(), option.WithCredentialsJSON(container.FirebaseCredentials()))
+	client, err := cloudtasks.NewClient(
+		context.Background(),
+		option.WithCredentialsJSON(container.FirebaseCredentials()),
+	)
 	if err != nil {
 		container.logger.Fatal(stacktrace.Propagate(err, "cannot initialize cloud tasks client"))
 	}

@@ -12,7 +12,6 @@ type zerologLogger struct {
 	spanContext *trace.SpanContext
 	fields      map[string]string
 	projectID   string
-	level       zerolog.Level
 }
 
 // NewZerologLogger creates a new instance of the zerolog logger

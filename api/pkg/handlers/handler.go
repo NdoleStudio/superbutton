@@ -27,20 +27,20 @@ func (h *handler) responseInternalServerError(c *fiber.Ctx) error {
 	})
 }
 
-func (h *handler) responseUnauthorized(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-		"status":  "error",
-		"message": "You are not authorized to carry out this request.",
-		"data":    "Make sure your API key is set in the [X-API-Key] header in the request",
-	})
-}
+//func (h *handler) responseUnauthorized(c *fiber.Ctx) error {
+//	return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+//		"status":  "error",
+//		"message": "You are not authorized to carry out this request.",
+//		"data":    "Make sure your API key is set in the [X-API-Key] header in the request",
+//	})
+//}
 
-func (h *handler) responseForbidden(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-		"status":  "error",
-		"message": fiber.ErrForbidden.Message,
-	})
-}
+//func (h *handler) responseForbidden(c *fiber.Ctx) error {
+//	return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+//		"status":  "error",
+//		"message": fiber.ErrForbidden.Message,
+//	})
+//}
 
 func (h *handler) responseUnprocessableEntity(c *fiber.Ctx, errors url.Values, message string) error {
 	return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{
@@ -50,12 +50,12 @@ func (h *handler) responseUnprocessableEntity(c *fiber.Ctx, errors url.Values, m
 	})
 }
 
-func (h *handler) responseNotFound(c *fiber.Ctx, message string) error {
-	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-		"status":  "error",
-		"message": message,
-	})
-}
+//func (h *handler) responseNotFound(c *fiber.Ctx, message string) error {
+//	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+//		"status":  "error",
+//		"message": message,
+//	})
+//}
 
 func (h *handler) responseNoContent(c *fiber.Ctx, message string) error {
 	return c.Status(fiber.StatusNoContent).JSON(fiber.Map{
@@ -72,20 +72,20 @@ func (h *handler) responseOK(c *fiber.Ctx, message string, data interface{}) err
 	})
 }
 
-func (h *handler) responseCreated(c *fiber.Ctx, message string, data interface{}) error {
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"status":  "success",
-		"message": message,
-		"data":    data,
-	})
-}
+//func (h *handler) responseCreated(c *fiber.Ctx, message string, data interface{}) error {
+//	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+//		"status":  "success",
+//		"message": message,
+//		"data":    data,
+//	})
+//}
 
-func (h *handler) pluralize(value string, count int) string {
-	if count == 1 {
-		return value
-	}
-	return value + "s"
-}
+//func (h *handler) pluralize(value string, count int) string {
+//	if count == 1 {
+//		return value
+//	}
+//	return value + "s"
+//}
 
 func (h *handler) userFromContext(c *fiber.Ctx) entities.AuthUser {
 	if tokenUser, ok := c.Locals(middlewares.ContextKeyAuthUserID).(entities.AuthUser); ok && !tokenUser.IsNoop() {
@@ -94,6 +94,6 @@ func (h *handler) userFromContext(c *fiber.Ctx) entities.AuthUser {
 	panic("user does not exist in context.")
 }
 
-func (h *handler) userIDFomContext(c *fiber.Ctx) entities.UserID {
-	return h.userFromContext(c).ID
-}
+//func (h *handler) userIDFomContext(c *fiber.Ctx) entities.UserID {
+//	return h.userFromContext(c).ID
+//}

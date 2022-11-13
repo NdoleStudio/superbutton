@@ -4,8 +4,8 @@ repos:
     hooks:
       - id: go-fumpt
       - id: go-mod-tidy
-      - id: go-lint
       - id: go-imports
+      - id: go-staticcheck-mod
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.3.0

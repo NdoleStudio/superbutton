@@ -17,6 +17,7 @@ func (service *service) createEvent(eventType string, source string, payload any
 	event.SetSource(source)
 	event.SetType(eventType)
 	event.SetTime(time.Now().UTC())
+	event.Subject()
 	event.SetID(uuid.New().String())
 
 	if err := event.SetData(cloudevents.ApplicationJSON, payload); err != nil {
