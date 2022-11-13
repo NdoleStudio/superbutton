@@ -16,7 +16,6 @@ RUN go get github.com/swaggo/swag/gen@latest
 RUN go get github.com/swaggo/swag/cmd/swag@latest
 RUN go install github.com/swaggo/swag/cmd/swag
 RUN swag init
-RUN go mod tidy
 
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-X main.Version=$GIT_COMMIT" -o /bin/superbutton .
 
