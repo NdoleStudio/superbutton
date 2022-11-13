@@ -81,9 +81,15 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 	defer span.End()
 
 	err = crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
-		user, err = repository.Load(ctx, authUser.ID)
+		user = new(entities.User)
+		err = repository.db.WithContext(ctx).First(user, authUser.ID).Error
 		if err == nil {
 			return nil
+		}
+
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			msg := fmt.Sprintf("cannot check if user exists with ID [%s]", authUser.ID)
+			return stacktrace.Propagate(err, msg)
 		}
 
 		user = &entities.User{
@@ -94,11 +100,12 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 			UpdatedAt: time.Now().UTC(),
 		}
 		created = true
-		return tx.WithContext(ctx).Where(entities.User{ID: user.ID}).FirstOrCreate(user).Error
+
+		return tx.WithContext(ctx).Where(entities.User{ID: user.ID}).Create(user).Error
 	})
 
 	if err != nil {
-		msg := fmt.Sprintf("cannot create user from auth user [%+#v]", authUser)
+		msg := fmt.Sprintf("cannot lod or create user from auth user [%+#v]", authUser)
 		return user, created, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 

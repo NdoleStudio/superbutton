@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/palantir/stacktrace"
 	"gorm.io/gorm/logger"
 )
 
@@ -18,7 +17,7 @@ type gormLogger struct {
 func NewGormLogger(tracer Tracer, logger Logger) logger.Interface {
 	return &gormLogger{
 		tracer: tracer,
-		logger: logger,
+		logger: logger.WithService(fmt.Sprintf("%T", gormLogger{})),
 	}
 }
 
@@ -43,12 +42,5 @@ func (gorm *gormLogger) Trace(ctx context.Context, begin time.Time, fc func() (s
 	elapsed := time.Since(begin)
 	l := gorm.logger.WithSpan(gorm.tracer.Span(ctx).SpanContext()).WithString("latency", elapsed.String())
 	sql, rows := fc()
-	msg := fmt.Sprintf("[ROWS:%d][%s]", rows, sql)
-
-	if err != nil {
-		l.Error(stacktrace.Propagate(err, msg))
-		return
-	}
-
-	l.Debug(msg)
+	l.Debug(fmt.Sprintf("[ROWS:%d][%s]", rows, sql))
 }

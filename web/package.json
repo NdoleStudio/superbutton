@@ -11,6 +11,7 @@
     "lint:prettier": "prettier --check .",
     "lint": "yarn lint:js && yarn lint:prettier",
     "lintfix": "prettier --write --list-different . && yarn lint:js --fix",
+    "backend:api": "npx swagger-typescript-api -p ..\\api\\docs\\swagger.json -o ./store -n backend.ts --no-client",
     "test": "jest"
   },
   "dependencies": {

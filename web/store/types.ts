@@ -1,10 +1,5 @@
 import { AxiosError } from 'axios'
-
-export interface User {
-  uid: string
-  email: string
-  name: string
-}
+import { EntitiesUser } from '~/store/backend'
 
 export type AuthUser = {
   uid: string
@@ -36,7 +31,7 @@ export type AppData = {
 }
 
 export interface State {
-  user: User | null
+  user: EntitiesUser | null
   authUser: AuthUser | null
   axiosError: AxiosError | null
   nextRoute: string | null

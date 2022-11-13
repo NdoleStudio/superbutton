@@ -1,5 +1,7 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AppData, AuthUser, NotificationRequest, State } from '~/store/types'
+import { EntitiesUser, ResponsesOkEntitiesUser } from '~/store/backend'
+import axios, { setAuthToken } from '~/plugins/axios'
 
 export const state = (): State => ({
   authUser: null,
@@ -38,6 +40,10 @@ export const mutations: MutationTree<RootState> = {
     state.authStateChanged = true
   },
 
+  setUser(state: RootState, payload: EntitiesUser | null) {
+    state.user = payload
+  },
+
   setNextRoute(state: RootState, payload: string | null) {
     state.nextRoute = payload
   },
@@ -60,14 +66,17 @@ export const mutations: MutationTree<RootState> = {
 }
 
 export const actions: ActionTree<RootState, RootState> = {
-  onAuthStateChanged: (
+  async onAuthStateChanged(
     context: ActionContext<RootState, RootState>,
     { authUser }
-  ) => {
+  ) {
     if (authUser == null) {
       context.commit('setAuthUser', null)
+      context.commit('setUser', null)
       return
     }
+
+    setAuthToken(await authUser.getIdToken())
     const { uid, email, photoURL, displayName } = authUser
     context.commit('setAuthUser', { uid, email, photoURL, displayName })
   },
@@ -77,6 +86,11 @@ export const actions: ActionTree<RootState, RootState> = {
     authUser: AuthUser | null
   ) => {
     context.commit('setAuthUser', authUser)
+  },
+
+  async loadUser({ commit }) {
+    const user = await axios.get<ResponsesOkEntitiesUser>('/v1/users/me')
+    commit('setUser', user)
   },
 
   setNextRoute: (

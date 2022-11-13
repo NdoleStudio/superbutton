@@ -20,6 +20,10 @@ func (h *handler) responseBadRequest(c *fiber.Ctx, err error) error {
 	})
 }
 
+func (h *handler) computeRoute(middlewares []fiber.Handler, route fiber.Handler) []fiber.Handler {
+	return append(append([]fiber.Handler{}, middlewares...), route)
+}
+
 func (h *handler) responseInternalServerError(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 		"status":  "error",

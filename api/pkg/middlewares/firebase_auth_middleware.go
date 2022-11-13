@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/davecgh/go-spew/spew"
-
 	"firebase.google.com/go/auth"
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
@@ -27,8 +25,6 @@ func FirebaseAuth(logger telemetry.Logger, tracer telemetry.Tracer, authClient *
 			return c.Next()
 		}
 
-		logger.Info(spew.Sdump(c.GetReqHeaders()))
-
 		if len(authToken) > len(bearerScheme)+1 {
 			authToken = authToken[len(bearerScheme)+1:]
 		}
@@ -46,7 +42,7 @@ func FirebaseAuth(logger telemetry.Logger, tracer telemetry.Tracer, authClient *
 
 		authUser := entities.AuthUser{
 			Email: token.Claims["email"].(string),
-			Name:  token.Claims["name"].(*string),
+			Name:  token.Claims["name"].(string),
 			ID:    entities.UserID(token.Claims["user_id"].(string)),
 		}
 

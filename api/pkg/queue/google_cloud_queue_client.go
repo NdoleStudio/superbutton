@@ -55,6 +55,9 @@ func (queue *googlePushQueue) Enqueue(ctx context.Context, task *Task) (queueID 
 							ServiceAccountEmail: queue.authEmail,
 						},
 					},
+					Headers: map[string]string{
+						"Content-Type": "application/json",
+					},
 				},
 			},
 		},

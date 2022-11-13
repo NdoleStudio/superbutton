@@ -7,7 +7,6 @@ import (
 
 	"github.com/NdoleStudio/superbutton/pkg/services"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gofiber/fiber/v2"
 	"github.com/palantir/stacktrace"
 )
@@ -34,8 +33,9 @@ func NewEventsHandler(
 }
 
 // RegisterRoutes registers the routes for the MessageHandler
-func (h *EventsHandler) RegisterRoutes(router fiber.Router) {
-	router.Post("/events/consume", h.Consume)
+func (h *EventsHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
+	router := app.Group("/v1/events")
+	router.Post("/consume", h.computeRoute(middlewares, h.Consume)...)
 }
 
 // Consume a cloudevents.Event
@@ -60,13 +60,13 @@ func (h *EventsHandler) Consume(c *fiber.Ctx) error {
 
 	var request cloudevents.Event
 	if err := c.BodyParser(&request); err != nil {
-		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
+		msg := fmt.Sprintf("cannot marshall [%s] into %T", c.Body(), request)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
 		return h.responseBadRequest(c, err)
 	}
 
 	if err := request.Validate(); err != nil {
-		msg := fmt.Sprintf("validation errors [%s], while dispatching event [%+#v]", spew.Sdump(err.Error()), request)
+		msg := fmt.Sprintf("validation errors [%s], while dispatching event [%+#v]", err.Error(), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
 		return h.responseUnprocessableEntity(c, map[string][]string{"event": {err.Error()}}, "validation errors while consuming event")
 	}

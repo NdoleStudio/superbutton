@@ -35,8 +35,9 @@ func NewUserHandler(
 }
 
 // RegisterRoutes registers the routes for the MessageHandler
-func (h *UserHandler) RegisterRoutes(router fiber.Router) {
-	router.Get("/users/me", h.me)
+func (h *UserHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
+	router := app.Group("/v1/users")
+	router.Get("/me", h.computeRoute(middlewares, h.me)...)
 }
 
 // me returns the currently authenticated entities.User
@@ -50,7 +51,7 @@ func (h *UserHandler) RegisterRoutes(router fiber.Router) {
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /users/me 	[post]
+// @Router       /users/me 	[get]
 func (h *UserHandler) me(c *fiber.Ctx) error {
 	ctx, span := h.tracer.StartFromFiberCtx(c)
 	defer span.End()

@@ -84,16 +84,28 @@ func (container *Container) AuthenticatedMiddleware() fiber.Handler {
 	return middlewares.Authenticated(container.Tracer())
 }
 
-// AuthRouter creates router for authenticated requests
-func (container *Container) AuthRouter() fiber.Router {
-	container.logger.Debug("creating authRouter")
-	return container.App().Group("v1").Use(container.AuthenticatedMiddleware())
+// GoogleAuthMiddlewares creates router for authenticated requests
+func (container *Container) GoogleAuthMiddlewares(audience string, subject string) []fiber.Handler {
+	container.logger.Debug("creating GoogleAuthMiddlewares")
+	return []fiber.Handler{
+		middlewares.GoogleAuth(container.Logger(), container.Tracer(), audience, subject),
+		container.AuthenticatedMiddleware(),
+	}
+}
+
+// FirebaseAuthMiddlewares creates router for authenticated requests
+func (container *Container) FirebaseAuthMiddlewares() []fiber.Handler {
+	container.logger.Debug("creating FirebaseAuthRouter")
+	return []fiber.Handler{
+		middlewares.FirebaseAuth(container.Logger(), container.Tracer(), container.FirebaseAuthClient()),
+		container.AuthenticatedMiddleware(),
+	}
 }
 
 // RegisterUserRoutes registers routes for the /users prefix
 func (container *Container) RegisterUserRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.UserHandler{}))
-	container.UserHandler().RegisterRoutes(container.AuthRouter())
+	container.UserHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
 // UserHandlerValidator creates a new instance of validators.UserHandlerValidator
@@ -187,7 +199,15 @@ func (container *Container) EventRepository() (repository repositories.EventRepo
 // RegisterEventRoutes registers routes for the /events prefix
 func (container *Container) RegisterEventRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.EventsHandler{}))
-	container.EventsHandler().RegisterRoutes(container.AuthRouter())
+	container.
+		EventsHandler().
+		RegisterRoutes(
+			container.App(),
+			container.GoogleAuthMiddlewares(
+				os.Getenv("QUEUE_URL_EVENTS"),
+				os.Getenv("QUEUE_AUTH_SUBJECT"),
+			),
+		)
 }
 
 // EventsHandler creates a new instance of handlers.EventsHandler
@@ -223,7 +243,6 @@ func (container *Container) App() (app *fiber.App) {
 		),
 	)
 	app.Use(cors.New())
-	app.Use(middlewares.FirebaseAuth(container.Logger(), container.Tracer(), container.FirebaseAuthClient()))
 
 	container.app = app
 

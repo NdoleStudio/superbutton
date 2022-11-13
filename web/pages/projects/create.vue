@@ -88,6 +88,7 @@ export default {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
+    this.$store.dispatch('getUser')
   },
   methods: {
     logout() {

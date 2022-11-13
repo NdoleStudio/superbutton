@@ -13,6 +13,6 @@ const UserCreated = "user.created"
 type UserCreatedPayload struct {
 	UserID        entities.UserID `json:"user_id"`
 	UserCreatedAt time.Time       `json:"user_created_at"`
-	UserName      *string         `json:"user_name"`
+	UserName      string          `json:"user_name"`
 	UserEmail     string          `json:"user_email"`
 }

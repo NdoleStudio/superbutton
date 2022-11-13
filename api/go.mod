@@ -15,7 +15,6 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.10.1
 	github.com/cloudevents/sdk-go/v2 v2.12.0
 	github.com/cockroachdb/cockroach-go/v2 v2.2.17
-	github.com/davecgh/go-spew v1.1.1
 	github.com/gofiber/fiber/v2 v2.39.0
 	github.com/gofiber/swagger v0.1.7
 	github.com/google/uuid v1.3.0
