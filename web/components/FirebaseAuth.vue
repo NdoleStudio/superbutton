@@ -18,6 +18,7 @@ import { ProviderId } from 'firebase/auth'
 import { auth } from 'firebaseui'
 import firebase from 'firebase/compat'
 import { NotificationRequest } from '~/store/types'
+import 'firebaseui/dist/firebaseui.css'
 
 @Component
 export default class FirebaseAuth extends Vue {
@@ -34,11 +35,7 @@ export default class FirebaseAuth extends Vue {
 
   mounted(): void {
     if (process.browser) {
-      const firebaseui = require('firebaseui')
-      require('firebaseui/dist/firebaseui.css')
-      this.ui =
-        firebaseui.auth.AuthUI.getInstance() ||
-        new firebaseui.auth.AuthUI(this.$fire.auth)
+      this.ui = auth.AuthUI.getInstance() || new auth.AuthUI(this.$fire.auth)
       this.ui?.start('#firebaseui-auth-container', this.uiConfig())
     }
   }
