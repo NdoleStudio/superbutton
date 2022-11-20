@@ -66,6 +66,8 @@ func NewContainer(version string, projectID string) (container *Container) {
 
 	container.RegisterEventRoutes()
 
+	container.RegisterProjectRoutes()
+
 	// this has to be last since it registers the /* route
 	container.RegisterSwaggerRoutes()
 
@@ -108,6 +110,12 @@ func (container *Container) RegisterUserRoutes() {
 	container.UserHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
+// RegisterProjectRoutes registers routes for the /projects prefix
+func (container *Container) RegisterProjectRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ProjectHandler{}))
+	container.ProjectHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
 // UserHandlerValidator creates a new instance of validators.UserHandlerValidator
 func (container *Container) UserHandlerValidator() (validator *validators.UserHandlerValidator) {
 	container.logger.Debug(fmt.Sprintf("creating %T", validator))
@@ -117,7 +125,16 @@ func (container *Container) UserHandlerValidator() (validator *validators.UserHa
 	)
 }
 
-// UserHandler creates a new instance of handlers.MessageHandler
+// ProjectHandlerValidator creates a new instance of validators.ProjectHandlerValidator
+func (container *Container) ProjectHandlerValidator() (validator *validators.ProjectHandlerValidator) {
+	container.logger.Debug(fmt.Sprintf("creating %T", validator))
+	return validators.NewProjectHandlerValidator(
+		container.Logger(),
+		container.Tracer(),
+	)
+}
+
+// UserHandler creates a new instance of handlers.UserHandler
 func (container *Container) UserHandler() (handler *handlers.UserHandler) {
 	container.logger.Debug(fmt.Sprintf("creating %T", handler))
 	return handlers.NewUserHandler(
@@ -125,6 +142,17 @@ func (container *Container) UserHandler() (handler *handlers.UserHandler) {
 		container.Tracer(),
 		container.UserHandlerValidator(),
 		container.UserService(),
+	)
+}
+
+// ProjectHandler creates a new instance of handlers.ProjectHandler
+func (container *Container) ProjectHandler() (handler *handlers.ProjectHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewProjectHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.ProjectHandlerValidator(),
+		container.ProjectService(),
 	)
 }
 
@@ -136,6 +164,17 @@ func (container *Container) UserService() (service *services.User) {
 		container.Tracer(),
 		container.EventDispatcher(),
 		container.UserRepository(),
+	)
+}
+
+// ProjectService creates a new instance of services.ProjectService
+func (container *Container) ProjectService() (service *services.ProjectService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewProjectService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+		container.ProjectRepository(),
 	)
 }
 
@@ -271,6 +310,16 @@ func (container *Container) UserRepository() repositories.UserRepository {
 	)
 }
 
+// ProjectRepository registers a new instance of repositories.ProjectRepository
+func (container *Container) ProjectRepository() repositories.ProjectRepository {
+	container.logger.Debug("creating GORM repositories.ProjectRepository")
+	return repositories.NewGormProjectRepository(
+		container.Logger(),
+		container.Tracer(),
+		container.DB(),
+	)
+}
+
 // Logger creates a new instance of telemetry.Logger
 func (container *Container) Logger(skipFrameCount ...int) telemetry.Logger {
 	container.logger.Debug("creating telemetry.Logger")
@@ -315,6 +364,9 @@ func (container *Container) DB() (db *gorm.DB) {
 	}
 	if err = db.AutoMigrate(&repositories.GormEvent{}); err != nil {
 		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &repositories.GormEvent{})))
+	}
+	if err = db.AutoMigrate(&entities.Project{}); err != nil {
+		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.Project{})))
 	}
 
 	return container.db

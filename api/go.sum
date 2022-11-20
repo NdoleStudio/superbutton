@@ -403,6 +403,8 @@ github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a h1:kAe4YSu0O0UFn1DowN
 github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a/go.mod h1:lKJPbtWzJ9JhsTN1k1gZgleJWY/cqq0psdoMmaThG3w=
 github.com/swaggo/swag v1.8.7 h1:2K9ivTD3teEO+2fXV6zrZKDqk5IuU2aJtBDo8U7omWU=
 github.com/swaggo/swag v1.8.7/go.mod h1:ezQVUUhly8dludpVk+/PuwJWvLLanB13ygV5Pr9enSk=
+github.com/thedevsaddam/govalidator v1.9.10 h1:m3dLRbSZ5Hts3VUWYe+vxLMG+FdyQuWOjzTeQRiMCvU=
+github.com/thedevsaddam/govalidator v1.9.10/go.mod h1:Ilx8u7cg5g3LXbSS943cx5kczyNuUn7LH/cK5MYuE90=
 github.com/uptrace/uptrace-go v1.11.5 h1:Gy+8qIZ/TLYq6scu/LZzmtuvuCetpZye70KYlsbIEZY=
 github.com/uptrace/uptrace-go v1.11.5/go.mod h1:1ufgxkVt10iQtqJMbWrXPk1Vxn3eHRD2lMqSkeEqmeQ=
 github.com/urfave/cli/v2 v2.3.0/go.mod h1:LJmUH05zAU44vOAcrfzZQKsZbVcdbOG8rtL3/XcUArI=

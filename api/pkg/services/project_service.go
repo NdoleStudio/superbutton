@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/google/uuid"
-
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/events"
 	"github.com/NdoleStudio/superbutton/pkg/repositories"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"github.com/palantir/stacktrace"
 )
 
@@ -52,30 +52,36 @@ func (service *ProjectService) Index(ctx context.Context, userID entities.UserID
 	return projects, nil
 }
 
+// ProjectCreateParams are the parameters for creating a new project.
 type ProjectCreateParams struct {
-	Name    string
-	Source  string
-	Website string
-	UserID  entities.UserID
+	Name   string
+	Source string
+	URL    string
+	UserID entities.UserID
 }
 
 // Create a new entities.Project
-func (service *ProjectService) Create(ctx context.Context, params ProjectCreateParams) (*entities.Project, error) {
+func (service *ProjectService) Create(ctx context.Context, params *ProjectCreateParams) (*entities.Project, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
 	project := &entities.Project{
-		ID:        uuid.New(),
-		UserID:    params.UserID,
-		URL:       params.Website,
-		Settings:  nil,
-		CreatedAt: time.Now().UTC(),
-		UpdatedAt: time.Now().UTC(),
+		ID:                     uuid.New(),
+		UserID:                 params.UserID,
+		URL:                    params.URL,
+		CreatedAt:              time.Now().UTC(),
+		UpdatedAt:              time.Now().UTC(),
+		Name:                   params.Name,
+		Icon:                   "https://dash.superbutton.app/chat-icon.svg",
+		IntegrationOrder:       pq.StringArray{},
+		Greeting:               "Need some help?",
+		GreetingTimeoutSeconds: 0,
+		Color:                  "#283593",
 	}
 
 	err := service.repository.Store(ctx, project)
 	if err != nil {
-		msg := fmt.Sprintf("could store projects for user with ID [%s]", params.UserID)
+		msg := fmt.Sprintf("could store project for user with ID [%s]", params.UserID)
 		return nil, service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
@@ -85,10 +91,8 @@ func (service *ProjectService) Create(ctx context.Context, params ProjectCreateP
 }
 
 func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, source string, project *entities.Project) {
-	ctx, span := service.tracer.Start(ctx)
+	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
 	defer span.End()
-
-	ctxLogger := service.tracer.CtxLogger(service.logger, span)
 
 	event, err := service.createEvent(events.ProjectCreated, source, &events.ProjectCreatedPayload{
 		UserID:           project.UserID,
@@ -98,7 +102,7 @@ func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, 
 		ProjectURL:       project.URL,
 	})
 	if err != nil {
-		msg := fmt.Sprintf("cannot created [%s] event for project [%s]", events.ProjectCreated, project.ID)
+		msg := fmt.Sprintf("cannot create [%s] event for project [%s]", events.ProjectCreated, project.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return
 	}

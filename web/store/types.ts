@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios'
-import { EntitiesUser } from '~/store/backend'
+import { EntitiesProject, EntitiesUser } from '~/store/backend'
+import { ErrorMessagesSerialized } from '~/plugins/errors'
 
 export type AuthUser = {
   uid: string
@@ -31,6 +32,10 @@ export type AppData = {
 }
 
 export interface State {
+  projects: Array<EntitiesProject>
+  creatingProject: boolean
+  activeProjectId: string | null
+  errorMessages: ErrorMessagesSerialized
   user: EntitiesUser | null
   authUser: AuthUser | null
   axiosError: AxiosError | null

@@ -14,11 +14,17 @@ const (
 
 // Tracer is used for tracing
 type Tracer interface {
-	// StartFromFiberCtx creates a spanContext and a context.Context containing the newly-created spanContext.
+	// StartFromFiberCtx creates a context.Context and trace.Span from fiber.Ctx.
 	StartFromFiberCtx(c *fiber.Ctx, name ...string) (context.Context, trace.Span)
 
-	// Start creates a spanContext and a context.Context containing the newly-created spanContext.
+	// StartFromFiberCtxWithLogger creates a context.Context and trace.Span from fiber.Ctx.
+	StartFromFiberCtxWithLogger(c *fiber.Ctx, logger Logger, name ...string) (context.Context, trace.Span, Logger)
+
+	// Start creates a context.Context and trace.Span
 	Start(c context.Context, name ...string) (context.Context, trace.Span)
+
+	// StartWithLogger creates a context.Context and trace.Span from fiber.Ctx.
+	StartWithLogger(c context.Context, logger Logger, name ...string) (context.Context, trace.Span, Logger)
 
 	// CtxLogger creates a telemetry.Logger with spanContext attributes in the structured logger
 	CtxLogger(logger Logger, span trace.Span) Logger

@@ -35,7 +35,11 @@ export default class FirebaseAuth extends Vue {
 
   mounted(): void {
     if (process.browser) {
-      this.ui = auth.AuthUI.getInstance() || new auth.AuthUI(this.$fire.auth)
+      const firebaseui = require('firebaseui')
+      // eslint-disable-next-line import/no-named-as-default-member
+      this.ui =
+        firebaseui.auth.AuthUI.getInstance() ||
+        new firebaseui.auth.AuthUI(this.$fire.auth)
       this.ui?.start('#firebaseui-auth-container', this.uiConfig())
     }
   }

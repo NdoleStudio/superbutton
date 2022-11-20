@@ -98,6 +98,6 @@ func (h *handler) userFromContext(c *fiber.Ctx) entities.AuthUser {
 	panic("user does not exist in context.")
 }
 
-func (h *handler) userIDFomContext(c *fiber.Ctx) entities.UserID {
-	return h.userFromContext(c).ID
-}
+//func (h *handler) userIDFomContext(c *fiber.Ctx) entities.UserID {
+//	return h.userFromContext(c).ID
+//}

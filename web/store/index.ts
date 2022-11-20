@@ -1,11 +1,27 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
+import { AxiosError, AxiosResponse } from 'axios'
 import { AppData, AuthUser, NotificationRequest, State } from '~/store/types'
-import { EntitiesUser, ResponsesOkEntitiesUser } from '~/store/backend'
+import {
+  EntitiesProject,
+  EntitiesUser,
+  ResponsesOkArrayEntitiesProject,
+  ResponsesOkEntitiesProject,
+  ResponsesOkEntitiesUser,
+} from '~/store/backend'
 import axios, { setAuthToken } from '~/plugins/axios'
+import {
+  ErrorMessages,
+  ErrorMessagesSerialized,
+  getErrorMessages,
+} from '~/plugins/errors'
 
 export const state = (): State => ({
   authUser: null,
+  projects: [],
+  errorMessages: {},
+  creatingProject: false,
   nextRoute: null,
+  activeProjectId: null,
   authStateChanged: false,
   notification: null,
   axiosError: null,
@@ -18,7 +34,11 @@ export const getters: GetterTree<RootState, RootState> = {
   authUser: (state) => state.authUser,
   authStateChanged: (state) => state.authStateChanged,
   notification: (state) => state.notification,
-
+  projects: (state) => state.projects,
+  creatingProject: (state) => state.creatingProject,
+  hasProjects: (state) => state.projects.length > 0,
+  errorMessages: (state) =>
+    ErrorMessages.fromObject<string>(state.errorMessages),
   app(): AppData {
     let url = process.env.APP_URL as string
     if (url.length > 0 && url[url.length - 1] === '/') {
@@ -42,6 +62,26 @@ export const mutations: MutationTree<RootState> = {
 
   setUser(state: RootState, payload: EntitiesUser | null) {
     state.user = payload
+  },
+
+  setProjects(state: RootState, payload: Array<EntitiesProject>) {
+    state.projects = payload
+  },
+
+  setCreatingProject(state: RootState, payload: boolean) {
+    state.creatingProject = payload
+  },
+
+  setActiveProjectId(state: RootState, payload: string) {
+    state.activeProjectId = payload
+  },
+
+  setErrorMessages(state: RootState, payload: ErrorMessagesSerialized) {
+    state.errorMessages = payload
+  },
+
+  clearErrorMessages(state: RootState) {
+    state.errorMessages = {}
   },
 
   setNextRoute(state: RootState, payload: string | null) {
@@ -75,7 +115,6 @@ export const actions: ActionTree<RootState, RootState> = {
       context.commit('setUser', null)
       return
     }
-
     setAuthToken(await authUser.getIdToken())
     const { uid, email, photoURL, displayName } = authUser
     context.commit('setAuthUser', { uid, email, photoURL, displayName })
@@ -88,9 +127,54 @@ export const actions: ActionTree<RootState, RootState> = {
     context.commit('setAuthUser', authUser)
   },
 
-  async loadUser({ commit }) {
+  async loadUser(context: ActionContext<RootState, RootState>) {
     const user = await axios.get<ResponsesOkEntitiesUser>('/v1/users/me')
-    commit('setUser', user)
+    context.commit('setUser', user)
+  },
+
+  async loadProjects(context: ActionContext<RootState, RootState>) {
+    const projects = await axios.get<ResponsesOkArrayEntitiesProject>(
+      '/v1/projects'
+    )
+    await context.commit('setProjects', projects)
+  },
+
+  createProject(
+    context: ActionContext<RootState, RootState>,
+    { name, website }
+  ) {
+    return new Promise<EntitiesProject>((resolve, reject) => {
+      context.commit('setCreatingProject', true)
+      context.commit('clearErrorMessages')
+
+      axios
+        .post<ResponsesOkEntitiesProject>('/v1/projects', { name, website })
+        .then(async (response: AxiosResponse<ResponsesOkEntitiesProject>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message: response.data.message ?? 'Project created successfully',
+              type: 'success',
+            }),
+            context.dispatch('loadProjects'),
+            context.commit('setActiveProjectId', response.data.data.id),
+            context.commit('setCreatingProject', false),
+          ])
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while creating project',
+              type: 'error',
+            }),
+            context.commit('setCreatingProject', false),
+          ])
+          reject(error)
+        })
+    })
   },
 
   setNextRoute: (

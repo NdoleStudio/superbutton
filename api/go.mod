@@ -15,12 +15,15 @@ require (
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.10.1
 	github.com/cloudevents/sdk-go/v2 v2.12.0
 	github.com/cockroachdb/cockroach-go/v2 v2.2.17
+	github.com/davecgh/go-spew v1.1.1
 	github.com/gofiber/fiber/v2 v2.39.0
 	github.com/gofiber/swagger v0.1.7
 	github.com/google/uuid v1.3.0
 	github.com/hirosassa/zerodriver v0.1.3
+	github.com/lib/pq v1.10.6
 	github.com/rs/zerolog v1.28.0
 	github.com/swaggo/swag v1.8.7
+	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/uptrace/uptrace-go v1.11.5
 	go.opentelemetry.io/otel v1.11.1
 	go.opentelemetry.io/otel/sdk v1.11.1

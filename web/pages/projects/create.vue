@@ -40,31 +40,53 @@
 
     <v-main>
       <v-container>
-        <v-row>
-          <v-col cols="2">
-            <v-sheet rounded="lg">
-              <v-list color="transparent">
-                <v-list-item v-for="n in 5" :key="n" link>
-                  <v-list-item-content>
-                    <v-list-item-title> List Item {{ n }} </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-
-                <v-divider class="my-2"></v-divider>
-
-                <v-list-item link color="grey lighten-4">
-                  <v-list-item-content>
-                    <v-list-item-title> Refresh </v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-sheet>
-          </v-col>
-
-          <v-col>
-            <v-sheet min-height="70vh" rounded="lg">
-              <!--  -->
-            </v-sheet>
+        <v-row class="pt-16">
+          <v-col lg="4" md="6" offset-md="3" offset-lg="4">
+            <v-card class="mt-16 pa-8">
+              <v-card-text class="pt-3 text-center">
+                <h4 class="text-h4 text--primary">Welcome</h4>
+                <h5 class="pt-1 pb-6 text--secondary subtitle-1">
+                  Start by setting up your new project
+                </h5>
+                <v-form>
+                  <v-text-field
+                    v-model="formName"
+                    :counter="30"
+                    label="Name"
+                    persistent-placeholder
+                    placeholder="Project name e.g Google"
+                    outlined
+                    class="mb-4"
+                    :error="$store.getters.errorMessages.has('name')"
+                    :error-messages="$store.getters.errorMessages.get('name')"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    v-model="formWebsite"
+                    :counter="255"
+                    class="mb-4"
+                    label="Website"
+                    persistent-placeholder
+                    :error="$store.getters.errorMessages.has('website')"
+                    :error-messages="
+                      $store.getters.errorMessages.get('website')
+                    "
+                    placeholder="Website URL e.g https://google.com"
+                    outlined
+                    required
+                  ></v-text-field>
+                  <loading-button
+                    :loading="$store.getters.creatingProject"
+                    :icon="mdiPlus"
+                    :block="true"
+                    :large="true"
+                    @click="createProject"
+                  >
+                    Create Project
+                  </loading-button>
+                </v-form>
+              </v-card-text>
+            </v-card>
           </v-col>
         </v-row>
       </v-container>
@@ -73,7 +95,7 @@
 </template>
 
 <script>
-import { mdiLogout } from '@mdi/js'
+import { mdiLogout, mdiPlus } from '@mdi/js'
 
 export default {
   name: 'ProjectsCreate',
@@ -81,14 +103,24 @@ export default {
   data() {
     return {
       to: '/',
+      formName: '',
+      mdiPlus,
+      formWebsite: '',
       logoutIcon: mdiLogout,
     }
   },
-  mounted() {
+  async mounted() {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
-    this.$store.dispatch('getUser')
+    await Promise.all([
+      this.$store.dispatch('loadProjects'),
+      this.$store.dispatch('loadUser'),
+    ])
+
+    if (!this.$store.getters.hasProjects) {
+      await this.$router.push('/projects/create')
+    }
   },
   methods: {
     logout() {
@@ -99,6 +131,17 @@ export default {
         })
         this.$router.push('/')
       })
+    },
+
+    createProject() {
+      this.$store
+        .dispatch('createProject', {
+          name: this.formName,
+          website: this.formWebsite,
+        })
+        .then((payload) => {
+          this.$router.push('/projects/' + payload.id)
+        })
     },
   },
 }

@@ -57,6 +57,7 @@ export default {
             persistence: 'local', // default
             initialize: {
               onAuthStateChangedAction: 'onAuthStateChanged',
+              onIdTokenChangedAction: 'onAuthStateChanged',
               subscribeManually: false,
             },
             ssr: false, // default

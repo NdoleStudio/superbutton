@@ -9,76 +9,114 @@
  * ---------------------------------------------------------------
  */
 
+export interface EntitiesProject {
+  /** @example "#283593" */
+  color: string
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example "Need some help?" */
+  greeting: string
+  /** @example 0 */
+  greeting_timeout_seconds: number
+  /** @example "https://cdn.superbutton.app/chat-icon.svg" */
+  icon: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example ["8f9c71b8-b84e-4417-8408-a62274f65a08","8f9c71b8-b84e-4417-8408-a62274f65a02"] */
+  integration_order: string[]
+  /** @example "Joe's Store" */
+  name: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "https://example.com" */
+  url: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
+}
+
 export interface EntitiesUser {
   /** @example "2022-06-05T14:26:02.302718+03:00" */
-  created_at?: string
-  /**
-   * gorm:"uniqueIndex"
-   * @example "name@email.com"
-   */
-  email?: string
+  created_at: string
+  /** @example "name@email.com" */
+  email: string
   /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
-  id?: string
+  id: string
   /** @example "John Doe" */
-  name?: string
+  name: string
   /** @example "2022-06-05T14:26:10.303278+03:00" */
-  updated_at?: string
+  updated_at: string
 }
 
 export interface RequestsCloudEvent {
-  data?: any
-  datacontenttype?: string
-  id?: string
-  source?: string
-  specversion?: string
-  time?: string
-  type?: string
+  data: any
+  datacontenttype: string
+  id: string
+  source: string
+  specversion: string
+  time: string
+  type: string
 }
 
 export interface ResponsesBadRequest {
   /** @example "The request body is not a valid JSON string" */
-  data?: string
+  data: string
   /** @example "The request isn't properly formed" */
-  message?: string
+  message: string
   /** @example "error" */
-  status?: string
+  status: string
 }
 
 export interface ResponsesInternalServerError {
   /** @example "We ran into an internal error while handling the request." */
-  message?: string
+  message: string
   /** @example "error" */
-  status?: string
+  status: string
 }
 
 export interface ResponsesNoContent {
   /** @example "phone deleted successfully" */
-  message?: string
+  message: string
   /** @example "success" */
-  status?: string
+  status: string
+}
+
+export interface ResponsesOkArrayEntitiesProject {
+  data: EntitiesProject[]
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "ok" */
+  status: string
+}
+
+export interface ResponsesOkEntitiesProject {
+  data: EntitiesProject
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "ok" */
+  status: string
 }
 
 export interface ResponsesOkEntitiesUser {
-  data?: EntitiesUser
+  data: EntitiesUser
   /** @example "Request handled successfully" */
-  message?: string
+  message: string
   /** @example "ok" */
-  status?: string
+  status: string
 }
 
 export interface ResponsesUnauthorized {
   /** @example "Make sure your API key is set in the [X-API-Key] header in the request" */
-  data?: string
+  data: string
   /** @example "You are not authorized to carry out this request." */
-  message?: string
+  message: string
   /** @example "error" */
-  status?: string
+  status: string
 }
 
 export interface ResponsesUnprocessableEntity {
-  data?: Record<string, string[]>
+  data: Record<string, string[]>
   /** @example "validation errors while sending message" */
-  message?: string
+  message: string
   /** @example "error" */
-  status?: string
+  status: string
 }
