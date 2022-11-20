@@ -37,6 +37,15 @@ export const getters: GetterTree<RootState, RootState> = {
   projects: (state) => state.projects,
   creatingProject: (state) => state.creatingProject,
   hasProjects: (state) => state.projects.length > 0,
+  activeProjectId: (state) => {
+    const project = state.projects.find((project) => {
+      return project.id === state.activeProjectId
+    })
+    if (project) {
+      return project.id
+    }
+    return state.projects[0].id
+  },
   errorMessages: (state) =>
     ErrorMessages.fromObject<string>(state.errorMessages),
   app(): AppData {
@@ -128,14 +137,24 @@ export const actions: ActionTree<RootState, RootState> = {
   },
 
   async loadUser(context: ActionContext<RootState, RootState>) {
-    const user = await axios.get<ResponsesOkEntitiesUser>('/v1/users/me')
-    context.commit('setUser', user)
+    const response = await axios.get<ResponsesOkEntitiesUser>('/v1/users/me')
+    context.commit('setUser', response.data.data)
   },
 
   async loadProjects(context: ActionContext<RootState, RootState>) {
-    const projects = await axios.get<ResponsesOkArrayEntitiesProject>(
+    const response = await axios.get<ResponsesOkArrayEntitiesProject>(
       '/v1/projects'
     )
+
+    const projects = response.data.data
+
+    const activeProject = context.state.projects.find((project) => {
+      return project.id === context.state.activeProjectId
+    })
+    if (activeProject === undefined) {
+      context.commit('setActiveProjectId', projects[0])
+    }
+
     await context.commit('setProjects', projects)
   },
 

@@ -82,11 +82,27 @@
 <script>
 export default {
   name: 'IndexPage',
-  mounted() {
+  async mounted() {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
-    this.$router.push('/projects/create')
+
+    await Promise.all([
+      this.$store.dispatch('loadProjects'),
+      this.$store.dispatch('loadUser'),
+    ])
+
+    if (!this.$store.getters.hasProjects) {
+      await this.$router.push('/projects/create')
+      return
+    }
+
+    await this.$router.push({
+      name: 'projects-id-settings',
+      params: {
+        id: this.$store.getters.activeProjectId,
+      },
+    })
   },
 }
 </script>

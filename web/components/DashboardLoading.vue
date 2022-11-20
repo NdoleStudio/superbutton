@@ -4,12 +4,12 @@
       <v-row align="center" justify="center">
         <v-col cols="12" md="4" xl="3" class="text-center px-4">
           <h2 class="text-h4 text--secondary mt-4 mb-4">
-            <v-img
-              contain
+            <img
               class="mx-auto d-inline-block mt-n16"
               :src="require('@/static/logo.svg')"
-              max-width="32"
-            ></v-img>
+              style="max-width: 32px"
+              alt="Superbutton Logo"
+            />
             Loading the superbutton dashboard.
           </h2>
           <v-progress-linear
