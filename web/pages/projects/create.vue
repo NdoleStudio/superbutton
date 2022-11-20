@@ -1,7 +1,15 @@
 <template>
   <v-container v-if="$store.getters.authUser">
     <v-row class="pt-16">
-      <v-col lg="4" md="8" offset-md="2" offset-lg="4">
+      <v-col
+        cols="12"
+        md="8"
+        offset-md="2"
+        lg="6"
+        offset-lg="3"
+        xl="4"
+        offset-xl="4"
+      >
         <v-card class="mt-16 pa-8">
           <v-card-text class="pt-3 text-center">
             <h4 class="text-h4 text--primary">Welcome</h4>
