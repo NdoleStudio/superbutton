@@ -80,7 +80,7 @@ func (repository *gormProjectRepository) Load(ctx context.Context, userID entiti
 	project := new(entities.Project)
 	err := repository.db.WithContext(ctx).
 		Where("user_id = ?", userID).
-		Where("project_id = ?", projectID).
+		Where("id = ?", projectID).
 		First(project).
 		Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {

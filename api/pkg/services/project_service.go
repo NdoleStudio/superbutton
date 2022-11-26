@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"time"
 
+	cloudevents "github.com/cloudevents/sdk-go/v2"
+
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/events"
 	"github.com/NdoleStudio/superbutton/pkg/repositories"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 	"github.com/palantir/stacktrace"
 )
 
@@ -72,10 +73,9 @@ func (service *ProjectService) Create(ctx context.Context, params *ProjectCreate
 		CreatedAt:              time.Now().UTC(),
 		UpdatedAt:              time.Now().UTC(),
 		Name:                   params.Name,
-		Icon:                   "https://dash.superbutton.app/chat-icon.svg",
-		IntegrationOrder:       pq.StringArray{},
+		Icon:                   "chat",
 		Greeting:               "Need some help?",
-		GreetingTimeoutSeconds: 0,
+		GreetingTimeoutSeconds: 10,
 		Color:                  "#283593",
 	}
 
@@ -88,6 +88,71 @@ func (service *ProjectService) Create(ctx context.Context, params *ProjectCreate
 	service.dispatchProjectCreatedEvent(ctx, params.Source, project)
 
 	return project, nil
+}
+
+// ProjectUpdateParams are the parameters for updating a project.
+type ProjectUpdateParams struct {
+	UserID                 entities.UserID
+	ProjectID              uuid.UUID
+	Name                   string
+	URL                    string
+	Icon                   string
+	Greeting               string
+	Source                 string
+	GreetingTimeoutSeconds uint
+	Color                  string
+}
+
+// Update an entities.Project
+func (service *ProjectService) Update(ctx context.Context, params *ProjectUpdateParams) (*entities.Project, error) {
+	ctx, span := service.tracer.Start(ctx)
+	defer span.End()
+
+	project, err := service.repository.Load(ctx, params.UserID, params.ProjectID)
+	if err != nil {
+		msg := fmt.Sprintf("cannot load project for user ID [%s] and project [%s]", params.UserID, params.ProjectID)
+		return nil, stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
+	}
+
+	project.Name = params.Name
+	project.URL = params.URL
+	project.UpdatedAt = time.Now().UTC()
+	project.Icon = params.Icon
+	project.GreetingTimeoutSeconds = params.GreetingTimeoutSeconds
+	project.Greeting = params.Greeting
+
+	if err = service.repository.Update(ctx, project); err != nil {
+		msg := fmt.Sprintf("could update project [%s] for user with ID [%s]", project.ID, project.UserID)
+		return nil, service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	service.dispatchProjectUpdatedEvent(ctx, params.Source, project)
+
+	return project, nil
+}
+
+func (service *ProjectService) dispatchProjectUpdatedEvent(ctx context.Context, source string, project *entities.Project) {
+	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
+	defer span.End()
+
+	event, err := service.createEvent(events.ProjectUpdated, source, &events.ProjectUpdatedPayload{
+		UserID:                 project.UserID,
+		ProjectID:              project.ID,
+		ProjectName:            project.Name,
+		ProjectURL:             project.URL,
+		ProjectIcon:            project.Icon,
+		ProjectGreeting:        project.Greeting,
+		ProjectColor:           project.Color,
+		ProjectGreetingTimeout: project.GreetingTimeoutSeconds,
+		ProjectUpdatedAt:       project.UpdatedAt,
+	})
+	if err != nil {
+		msg := fmt.Sprintf("cannot create [%s] event for project [%s]", events.ProjectUpdated, project.ID)
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return
+	}
+
+	service.dispatchEvent(ctx, project, event)
 }
 
 func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, source string, project *entities.Project) {
@@ -107,8 +172,15 @@ func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, 
 		return
 	}
 
-	if err = service.eventDispatcher.Dispatch(ctx, event); err != nil {
-		msg := fmt.Sprintf("cannot dispatch [%s] event for project [%s]", events.ProjectCreated, project.ID)
+	service.dispatchEvent(ctx, project, event)
+}
+
+func (service *ProjectService) dispatchEvent(ctx context.Context, project *entities.Project, event cloudevents.Event) {
+	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
+	defer span.End()
+
+	if err := service.eventDispatcher.Dispatch(ctx, event); err != nil {
+		msg := fmt.Sprintf("cannot dispatch [%s] event for project [%s]", event.Type(), project.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return
 	}

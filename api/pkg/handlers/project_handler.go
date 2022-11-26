@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/NdoleStudio/superbutton/pkg/repositories"
 	"github.com/NdoleStudio/superbutton/pkg/requests"
 	"github.com/davecgh/go-spew/spew"
 
@@ -42,6 +43,7 @@ func (h *ProjectHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Hand
 	router := app.Group("/v1/projects")
 	router.Get("/", h.computeRoute(middlewares, h.index)...)
 	router.Post("/", h.computeRoute(middlewares, h.create)...)
+	router.Put("/:projectID", h.computeRoute(middlewares, h.update)...)
 }
 
 // @Summary      List of projects
@@ -75,6 +77,7 @@ func (h *ProjectHandler) index(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         Projects
 // @Produce      json
+// @Param        payload	body 		requests.ProjectCreateRequest	true 	"project create payload"
 // @Success      200 		{object}	responses.Ok[entities.Project]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
@@ -107,4 +110,51 @@ func (h *ProjectHandler) create(c *fiber.Ctx) error {
 	}
 
 	return h.responseOK(c, "project created successfully", project)
+}
+
+// @Summary      Update a project
+// @Description  This endpoint updates a project for a user
+// @Security	 BearerAuth
+// @Tags         Projects
+// @Produce      json
+// @Param        payload	body 		requests.ProjectUpdateRequest	true 	"project update payload"
+// @Success      200 		{object}	responses.Ok[entities.Project]
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /projects/{projectID} 	[put]
+func (h *ProjectHandler) update(c *fiber.Ctx) error {
+	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
+	defer span.End()
+
+	var request requests.ProjectUpdateRequest
+	if err := c.BodyParser(&request); err != nil {
+		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
+		ctxLogger.Warn(stacktrace.Propagate(err, msg))
+		return h.responseBadRequest(c, err)
+	}
+	request.ProjectID = c.Params("projectID")
+
+	if errors := h.validator.ValidateUpdate(ctx, request.Sanitize()); len(errors) != 0 {
+		msg := fmt.Sprintf("validation errors [%s], while creating project with request [%s]", spew.Sdump(errors), c.Body())
+		ctxLogger.Warn(stacktrace.NewError(msg))
+		return h.responseUnprocessableEntity(c, errors, "validation errors while creating project")
+	}
+
+	authUser := h.userFromContext(c)
+	project, err := h.service.Update(ctx, request.ToProjectUpdatePrams(c.OriginalURL(), authUser.ID))
+	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
+		msg := fmt.Sprintf("cannot find project with id [%s] for user [%s]", request.ProjectID, authUser.ID)
+		ctxLogger.Warn(stacktrace.Propagate(err, msg))
+		return h.responseNotFound(c, msg)
+	}
+
+	if err != nil {
+		msg := fmt.Sprintf("cannot update project [%s] user with ID [%s]", request.ProjectID, authUser.ID)
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return h.responseInternalServerError(c)
+	}
+
+	return h.responseOK(c, "project updated successfully", project)
 }

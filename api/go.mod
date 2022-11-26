@@ -20,7 +20,6 @@ require (
 	github.com/gofiber/swagger v0.1.7
 	github.com/google/uuid v1.3.0
 	github.com/hirosassa/zerodriver v0.1.3
-	github.com/lib/pq v1.10.6
 	github.com/rs/zerolog v1.28.0
 	github.com/swaggo/swag v1.8.7
 	github.com/thedevsaddam/govalidator v1.9.10

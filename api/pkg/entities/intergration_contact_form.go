@@ -11,6 +11,8 @@ type IntegrationContactForm struct {
 	ID              uuid.UUID `json:"id" gorm:"primaryKey;type:string;" example:"8f9c71b8-b84e-4417-8408-a62274f65a08"`
 	UserID          UserID    `json:"user_id" example:"WB7DRDWrJZRGbYrv2CKGkqbzvqdC"`
 	ProjectID       uuid.UUID `json:"project_id" example:"8f9c71b8-b84e-4417-8408-a62274f65a08"`
+	Enabled         bool      `json:"enabled" example:"true"`
+	Name            string    `json:"name" example:"FAQ"`
 	NameText        string    `json:"name_text" example:"Name"`
 	NameEnabled     bool      `json:"name_enabled" example:"true"`
 	EmailText       string    `json:"email_text" example:"Email"`

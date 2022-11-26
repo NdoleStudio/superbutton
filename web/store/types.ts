@@ -1,5 +1,9 @@
 import { AxiosError } from 'axios'
-import { EntitiesProject, EntitiesUser } from '~/store/backend'
+import {
+  EntitiesProject,
+  EntitiesUser,
+  RequestsProjectUpdateRequest,
+} from '~/store/backend'
 import { ErrorMessagesSerialized } from '~/plugins/errors'
 
 export type AuthUser = {
@@ -21,6 +25,10 @@ export interface Notification {
 export interface NotificationRequest {
   message: string
   type: NotificationType
+}
+
+export interface UpdateProjectRequest extends RequestsProjectUpdateRequest {
+  projectId: string
 }
 
 export type AppData = {

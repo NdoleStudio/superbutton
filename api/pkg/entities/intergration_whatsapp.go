@@ -6,11 +6,13 @@ import (
 	"github.com/google/uuid"
 )
 
-// IntegrationWhatsApp contains whatsapp integration settings
-type IntegrationWhatsApp struct {
+// IntegrationWhatsapp contains whatsapp integration settings
+type IntegrationWhatsapp struct {
 	ID          uuid.UUID `json:"id" gorm:"primaryKey;type:string;" example:"8f9c71b8-b84e-4417-8408-a62274f65a08"`
 	UserID      UserID    `json:"user_id" example:"WB7DRDWrJZRGbYrv2CKGkqbzvqdC"`
 	ProjectID   uuid.UUID `json:"project_id" example:"8f9c71b8-b84e-4417-8408-a62274f65a08"`
+	Enabled     bool      `json:"enabled" example:"true"`
+	Name        string    `json:"name" example:"FAQ"`
 	Text        string    `json:"text" example:"Contact us on WhatsApp"`
 	PhoneNumber string    `json:"phone_number" example:"+18005550199"`
 	Icon        string    `json:"icon" example:"https://cdn.superbutton.app/whatsapp-icon.svg"`

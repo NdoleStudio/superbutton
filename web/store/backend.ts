@@ -22,8 +22,6 @@ export interface EntitiesProject {
   icon: string
   /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
   id: string
-  /** @example ["8f9c71b8-b84e-4417-8408-a62274f65a08","8f9c71b8-b84e-4417-8408-a62274f65a02"] */
-  integration_order: string[]
   /** @example "Joe's Store" */
   name: string
   /** @example "2022-06-05T14:26:10.303278+03:00" */
@@ -55,6 +53,20 @@ export interface RequestsCloudEvent {
   specversion: string
   time: string
   type: string
+}
+
+export interface RequestsProjectCreateRequest {
+  name: string
+  website: string
+}
+
+export interface RequestsProjectUpdateRequest {
+  color: string
+  greeting: string
+  greeting_timeout: number
+  icon: string
+  name: string
+  website: string
 }
 
 export interface ResponsesBadRequest {

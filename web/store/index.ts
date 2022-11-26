@@ -1,6 +1,12 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AxiosError, AxiosResponse } from 'axios'
-import { AppData, AuthUser, NotificationRequest, State } from '~/store/types'
+import {
+  AppData,
+  AuthUser,
+  NotificationRequest,
+  State,
+  UpdateProjectRequest,
+} from '~/store/types'
 import {
   EntitiesProject,
   EntitiesUser,
@@ -37,6 +43,15 @@ export const getters: GetterTree<RootState, RootState> = {
   projects: (state) => state.projects,
   creatingProject: (state) => state.creatingProject,
   hasProjects: (state) => state.projects.length > 0,
+  activeProject: (state): EntitiesProject | null => {
+    const project = state.projects.find((project) => {
+      return project.id === state.activeProjectId
+    })
+    if (project) {
+      return project
+    }
+    return null
+  },
   activeProjectId: (state) => {
     const project = state.projects.find((project) => {
       return project.id === state.activeProjectId
@@ -44,7 +59,10 @@ export const getters: GetterTree<RootState, RootState> = {
     if (project) {
       return project.id
     }
-    return state.projects[0].id
+    if (state.projects.length) {
+      return state.projects[0].id
+    }
+    return '0'
   },
   errorMessages: (state) =>
     ErrorMessages.fromObject<string>(state.errorMessages),
@@ -152,7 +170,7 @@ export const actions: ActionTree<RootState, RootState> = {
       return project.id === context.state.activeProjectId
     })
     if (activeProject === undefined) {
-      context.commit('setActiveProjectId', projects[0])
+      context.commit('setActiveProjectId', projects[0].id)
     }
 
     await context.commit('setProjects', projects)
@@ -190,6 +208,42 @@ export const actions: ActionTree<RootState, RootState> = {
               type: 'error',
             }),
             context.commit('setCreatingProject', false),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updateProject(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateProjectRequest
+  ) {
+    return new Promise<EntitiesProject>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesProject>(
+          `/v1/projects/${payload.projectId}`,
+          payload
+        )
+        .then(async (response: AxiosResponse<ResponsesOkEntitiesProject>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message: response.data.message ?? 'Project updated successfully',
+              type: 'success',
+            }),
+            context.dispatch('loadProjects'),
+          ])
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating project',
+              type: 'error',
+            }),
           ])
           reject(error)
         })
