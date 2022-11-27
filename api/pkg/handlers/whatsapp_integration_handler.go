@@ -44,8 +44,44 @@ func NewWhatsappIntegrationHandler(
 func (h *WhatsappIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
 	router := app.Group("/v1/projects/:projectID/whatsapp-integrations")
 	router.Post("/", h.computeRoute(middlewares, h.create)...)
+	router.Get("/:integrationID", h.computeRoute(middlewares, h.show)...)
 	router.Put("/:integrationID", h.computeRoute(middlewares, h.update)...)
 	router.Delete("/:integrationID", h.computeRoute(middlewares, h.delete)...)
+}
+
+// @Summary      Get whatsapp integration
+// @Description  Fetches a specific whatsapp integration
+// @Security	 BearerAuth
+// @Tags         WhatsappIntegration
+// @Produce      json
+// @Success      200 		{object}	responses.Ok[entities.WhatsappIntegration]
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure 	 404    	{object}	responses.NotFound
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /projects/:projectID/whatsapp-integrations/:integrationID 	[get]
+func (h *WhatsappIntegrationHandler) show(c *fiber.Ctx) error {
+	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
+	defer span.End()
+
+	if errors := h.mergeErrors(h.validateUUID(c, "integrationID")); len(errors) != 0 {
+		msg := fmt.Sprintf("validation errors [%s], while deleting integration with request [%s]", spew.Sdump(errors), c.Body())
+		ctxLogger.Warn(stacktrace.NewError(msg))
+		return h.responseUnprocessableEntity(c, errors, "validation errors while deleting integration")
+	}
+
+	integrationID := uuid.MustParse(c.Params("integrationID"))
+	authUser := h.userFromContext(c)
+
+	integration, err := h.service.Get(ctx, authUser.ID, integrationID)
+	if err != nil {
+		msg := fmt.Sprintf("cannot fetch intergration [%s] for user with ID [%s]", authUser.ID, integrationID)
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return h.responseInternalServerError(c)
+	}
+
+	return h.responseOK(c, "integration fetched successfully", integration)
 }
 
 // @Summary      Create a WhatsappIntegration
@@ -144,6 +180,7 @@ func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
 // @Success      200 		{object}	responses.NoContent
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/whatsapp-integrations/{integrationID} [delete]

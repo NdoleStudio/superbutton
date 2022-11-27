@@ -36,6 +36,15 @@ export interface AddWhatsappIntegrationRequest
   projectId: string
 }
 
+export interface ProjectIntegrationIdRequest {
+  projectId: string
+  integrationId: string
+}
+
+export interface UpdateWhatsappIntegrationRequest
+  extends RequestsWhatsappIntegrationCreateRequest,
+    ProjectIntegrationIdRequest {}
+
 export type AppData = {
   url: string
   name: string

@@ -5,14 +5,17 @@ import {
   AppData,
   AuthUser,
   NotificationRequest,
+  ProjectIntegrationIdRequest,
   State,
   UpdateProjectRequest,
+  UpdateWhatsappIntegrationRequest,
 } from '~/store/types'
 import {
   EntitiesProject,
   EntitiesProjectIntegration,
   EntitiesUser,
   EntitiesWhatsappIntegration,
+  ResponsesNoContent,
   ResponsesOkArrayEntitiesProject,
   ResponsesOkArrayEntitiesProjectIntegration,
   ResponsesOkEntitiesProject,
@@ -296,6 +299,109 @@ export const actions: ActionTree<RootState, RootState> = {
     })
   },
 
+  getWhatsappIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<EntitiesWhatsappIntegration>((resolve, reject) => {
+      axios
+        .get<ResponsesOkEntitiesWhatsappIntegration>(
+          `/v1/projects/${payload.projectId}/whatsapp-integrations/${payload.integrationId}`
+        )
+        .then(
+          (response: AxiosResponse<ResponsesOkEntitiesWhatsappIntegration>) => {
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching whatsapp integration integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updateWhatsappIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateWhatsappIntegrationRequest
+  ) {
+    return new Promise<EntitiesWhatsappIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesWhatsappIntegration>(
+          `/v1/projects/${payload.projectId}/whatsapp-integrations/${payload.integrationId}`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesWhatsappIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Whatsapp integration updated successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating whatsapp integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  deleteWhatsappIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateWhatsappIntegrationRequest
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(
+          `/v1/projects/${payload.projectId}/whatsapp-integrations/${payload.integrationId}`
+        )
+        .then(async (response: AxiosResponse<ResponsesNoContent>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                response.data.message ??
+                'Whatsapp integration deleted successfully',
+              type: 'success',
+            }),
+          ])
+          resolve(true)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while deleting whatsapp integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
   getProjectIntegrations(
     context: ActionContext<RootState, RootState>,
     projectId: string
@@ -317,7 +423,7 @@ export const actions: ActionTree<RootState, RootState> = {
             context.dispatch('addNotification', {
               message:
                 error.response?.data?.message ??
-                'Error while fetching integrations integration',
+                'Error while fetching project integration',
               type: 'error',
             }),
           ])
@@ -325,7 +431,6 @@ export const actions: ActionTree<RootState, RootState> = {
         })
     })
   },
-
   setNextRoute: (
     context: ActionContext<RootState, RootState>,
     route: string | null

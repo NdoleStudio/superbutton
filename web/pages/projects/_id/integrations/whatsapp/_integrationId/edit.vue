@@ -2,7 +2,7 @@
   <v-container v-if="$store.getters.authUser">
     <v-row>
       <v-col>
-        <h1 class="text-h4 mb-4">Create Whatsapp Integration</h1>
+        <h1 class="text-h4 mb-4">Edit Whatsapp Integration</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -45,14 +45,27 @@
             placeholder="Whatsapp phone number"
           >
           </v-phone-input>
-          <loading-button
-            :loading="savingIntegration"
-            :icon="mdiPlus"
-            :large="true"
-            @click="saveIntegration"
-          >
-            Add Whatsapp
-          </loading-button>
+          <div class="d-flex">
+            <loading-button
+              :loading="savingIntegration"
+              :icon="mdiPlus"
+              :large="true"
+              @click="saveIntegration"
+            >
+              Update Whatsapp
+            </loading-button>
+            <v-spacer></v-spacer>
+            <v-btn
+              large
+              :disabled="savingIntegration"
+              color="error"
+              text
+              @click="deleteIntegration"
+            >
+              <v-icon left>{{ mdiDelete }}</v-icon>
+              Delete
+            </v-btn>
+          </div>
         </v-form>
       </v-col>
     </v-row>
@@ -60,15 +73,16 @@
 </template>
 
 <script>
-import { mdiPlus, mdiMenuDown } from '@mdi/js'
+import { mdiPlus, mdiMenuDown, mdiDelete } from '@mdi/js'
 
 export default {
-  name: 'ProjectsIntegrationsWhatsappCreate',
+  name: 'ProjectsIntegrationsWhatsappEdit',
   layout: 'project',
   data() {
     return {
       mdiPlus,
       mdiMenuDown,
+      mdiDelete,
       savingIntegration: false,
       formName: '',
       formText: '',
@@ -79,19 +93,60 @@ export default {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
-
     await Promise.all([this.$store.dispatch('loadProjects')])
-
-    if (this.$store.getters.activeProjectId !== this.$route.params.id) {
-      await this.$router.push('/')
-    }
+    this.loadIntegration()
   },
   methods: {
+    loadIntegration() {
+      this.savingIntegration = true
+      this.$store
+        .dispatch('getWhatsappIntegration', {
+          projectId: this.$store.getters.activeProjectId,
+          integrationId: this.$route.params.integrationId,
+        })
+        .then((payload) => {
+          this.setDefaults(payload)
+        })
+        .finally(() => {
+          this.savingIntegration = false
+        })
+    },
+    /**
+     *
+     * @param {EntitiesWhatsappIntegration} integration
+     */
+    setDefaults(integration) {
+      this.formName = integration.name
+      this.formText = integration.text
+      this.formPhoneNumber = integration.phone_number
+    },
+
+    deleteIntegration() {
+      this.savingIntegration = true
+      this.$store
+        .dispatch('deleteWhatsappIntegration', {
+          projectId: this.$store.getters.activeProjectId,
+          integrationId: this.$route.params.integrationId,
+        })
+        .then(() => {
+          this.$router.push({
+            name: 'projects-id-integrations',
+            params: {
+              id: this.$store.getters.activeProjectId,
+            },
+          })
+        })
+        .finally(() => {
+          this.savingIntegration = false
+        })
+    },
+
     saveIntegration() {
       this.savingIntegration = true
       this.$store
-        .dispatch('addWhatsappIntegration', {
+        .dispatch('updateWhatsappIntegration', {
           projectId: this.$store.getters.activeProjectId,
+          integrationId: this.$route.params.integrationId,
           name: this.formName,
           text: this.formText,
           phone_number: this.formPhoneNumber,

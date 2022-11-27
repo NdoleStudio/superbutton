@@ -38,6 +38,20 @@ func NewWhatsappIntegrationService(
 	}
 }
 
+// Get returns an entities.WhatsappIntegration for an authenticated user
+func (service *WhatsappIntegrationService) Get(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) (*entities.WhatsappIntegration, error) {
+	ctx, span := service.tracer.Start(ctx)
+	defer span.End()
+
+	integration, err := service.repository.Load(ctx, userID, integrationID)
+	if err != nil {
+		msg := fmt.Sprintf("could whatsapp integrations for user with ID [%s] and ID [%s]", userID, integrationID)
+		return nil, service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	return integration, nil
+}
+
 // Index fetches all entities.Project for an authenticated user
 func (service *WhatsappIntegrationService) Index(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.WhatsappIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)

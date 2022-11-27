@@ -38,11 +38,21 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="item in whatsappIntegrations" :key="item.name">
+                      <tr v-for="item in whatsappIntegrations" :key="item.id">
                         <td>{{ item.name }}</td>
                         <td>{{ item.integration_id }}</td>
                         <td>
-                          <v-btn small class="secondary">
+                          <v-btn
+                            small
+                            class="secondary"
+                            :to="{
+                              name: 'projects-id-integrations-whatsapp-integrationId-edit',
+                              params: {
+                                id: $store.getters.activeProjectId,
+                                integrationId: item.integration_id,
+                              },
+                            }"
+                          >
                             <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
                             Edit
                           </v-btn>
