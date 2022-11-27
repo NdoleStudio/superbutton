@@ -98,10 +98,10 @@ export default {
         })
         .then(() => {
           this.$router.push({
-            name: "projects-id-integrations",
+            name: 'projects-id-integrations',
             params: {
-              id: this.$store.getters.activeProjectId
-            }
+              id: this.$store.getters.activeProjectId,
+            },
           })
         })
         .finally(() => {
