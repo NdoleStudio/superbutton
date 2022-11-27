@@ -92,7 +92,7 @@
       <v-container v-else class="pt-8">
         <v-row>
           <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="3">
-            <v-list color="transparent" shaped>
+            <v-list color="transparent" rounded>
               <v-list-item
                 v-for="item in items"
                 :key="item.name"
@@ -104,7 +104,9 @@
                   <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  <v-list-item-title class="text-h5">{{
+                    item.name
+                  }}</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
