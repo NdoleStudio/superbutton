@@ -2,7 +2,7 @@
   <v-container v-if="$store.getters.authUser">
     <v-row>
       <v-col>
-        <h1 class="text-h4 mb-4">Project Settings</h1>
+        <h1 class="text-h4 mb-4">Settings</h1>
       </v-col>
     </v-row>
     <v-row>

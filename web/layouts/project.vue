@@ -2,14 +2,16 @@
   <v-app>
     <v-app-bar app flat>
       <v-container class="py-0 fill-height">
-        <nuxt-link to="/" class="text-decoration-none d-flex">
-          <v-avatar tile size="33" class="mt-1">
-            <v-img contain :src="require('@/static/logo.svg')"></v-img>
-          </v-avatar>
-          <h3 class="text-h4 text--secondary font-weight-thin ml-1">
-            Superbutton
-          </h3>
-        </nuxt-link>
+        <v-badge class="logo-badge" color="#8338ec" content="beta">
+          <nuxt-link to="/" class="text-decoration-none d-flex">
+            <v-avatar tile size="33" class="mt-1">
+              <v-img contain :src="require('@/static/logo.svg')"></v-img>
+            </v-avatar>
+            <h3 class="text-h4 text--secondary font-weight-thin ml-1">
+              Superbutton
+            </h3>
+          </nuxt-link>
+        </v-badge>
         <v-spacer></v-spacer>
 
         <v-menu offset-y left bottom>
@@ -137,3 +139,13 @@ export default {
   },
 }
 </script>
+
+<style lang="scss">
+.logo-badge {
+  .v-badge__wrapper {
+    span {
+      margin-bottom: -12px;
+    }
+  }
+}
+</style>
