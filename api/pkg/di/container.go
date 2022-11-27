@@ -67,6 +67,7 @@ func NewContainer(version string, projectID string) (container *Container) {
 	container.RegisterProjectRoutes()
 	container.RegisterWhatsappIntegrationRoutes()
 	container.ProjectIntegrationRoutes()
+	container.RegisterContentIntegrationRoutes()
 
 	// this has to be last since it registers the /* route
 	container.RegisterSwaggerRoutes()
@@ -122,6 +123,12 @@ func (container *Container) RegisterWhatsappIntegrationRoutes() {
 	container.WhatsappIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
+// RegisterContentIntegrationRoutes registers routes for the /projects/:projectID/whatsapp-integrations prefix
+func (container *Container) RegisterContentIntegrationRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ContentIntegrationHandler{}))
+	container.ContentIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
 // ProjectIntegrationRoutes registers routes for the /projects/:projectID/integrations prefix
 func (container *Container) ProjectIntegrationRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ProjectIntegrationHandler{}))
@@ -132,6 +139,15 @@ func (container *Container) ProjectIntegrationRoutes() {
 func (container *Container) UserHandlerValidator() (validator *validators.UserHandlerValidator) {
 	container.logger.Debug(fmt.Sprintf("creating %T", validator))
 	return validators.NewUserHandlerValidator(
+		container.Logger(),
+		container.Tracer(),
+	)
+}
+
+// ContentIntegrationHandlerValidator creates a new instance of validators.ContentIntegrationHandlerValidator
+func (container *Container) ContentIntegrationHandlerValidator() (validator *validators.ContentIntegrationHandlerValidator) {
+	container.logger.Debug(fmt.Sprintf("creating %T", validator))
+	return validators.NewContentIntegrationHandlerValidator(
 		container.Logger(),
 		container.Tracer(),
 	)
@@ -174,6 +190,17 @@ func (container *Container) WhatsappIntegrationHandler() (handler *handlers.What
 		container.Tracer(),
 		container.WhatsappIntegrationHandlerValidator(),
 		container.WhatsappIntegrationService(),
+	)
+}
+
+// ContentIntegrationHandler creates a new instance of handlers.ContentIntegrationHandler
+func (container *Container) ContentIntegrationHandler() (handler *handlers.ContentIntegrationHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewContentIntegrationHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.ContentIntegrationHandlerValidator(),
+		container.ContentIntegrationService(),
 	)
 }
 
@@ -229,6 +256,18 @@ func (container *Container) WhatsappIntegrationService() (service *services.What
 		container.EventDispatcher(),
 		container.ProjectRepository(),
 		container.WhatsappIntegrationRepository(),
+	)
+}
+
+// ContentIntegrationService creates a new instance of services.ContentIntegrationService
+func (container *Container) ContentIntegrationService() (service *services.ContentIntegrationService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewContentIntegrationService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+		container.ProjectRepository(),
+		container.ContentIntegrationRepository(),
 	)
 }
 
@@ -387,8 +426,18 @@ func (container *Container) ProjectRepository() repositories.ProjectRepository {
 
 // WhatsappIntegrationRepository registers a new instance of repositories.WhatsappIntegrationRepository
 func (container *Container) WhatsappIntegrationRepository() repositories.WhatsappIntegrationRepository {
-	container.logger.Debug("creating GORM repositories.UserRepository")
+	container.logger.Debug("creating GORM repositories.WhatsappIntegrationRepository")
 	return repositories.NewGormWhatsappIntegrationRepository(
+		container.Logger(),
+		container.Tracer(),
+		container.DB(),
+	)
+}
+
+// ContentIntegrationRepository registers a new instance of repositories.ContentIntegrationRepository
+func (container *Container) ContentIntegrationRepository() repositories.ContentIntegrationRepository {
+	container.logger.Debug("creating GORM repositories.ContentIntegrationRepository")
+	return repositories.NewGormContentIntegrationRepository(
 		container.Logger(),
 		container.Tracer(),
 		container.DB(),
@@ -458,6 +507,9 @@ func (container *Container) DB() (db *gorm.DB) {
 	}
 	if err = db.AutoMigrate(&entities.WhatsappIntegration{}); err != nil {
 		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.WhatsappIntegration{})))
+	}
+	if err = db.AutoMigrate(&entities.ContentIntegration{}); err != nil {
+		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.ContentIntegration{})))
 	}
 
 	return container.db

@@ -12,7 +12,7 @@ const (
 	IntegrationTypeWhatsapp    = IntegrationType("whatsapp")
 	IntegrationTypePhoneCall   = IntegrationType("phone-call")
 	IntegrationTypeURL         = IntegrationType("url")
-	IntegrationTypeText        = IntegrationType("text")
+	IntegrationTypeContent     = IntegrationType("content")
 	IntegrationTypeContactForm = IntegrationType("contact-form")
 )
 

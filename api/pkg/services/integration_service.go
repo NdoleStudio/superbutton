@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/uuid"
+
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/events"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
@@ -17,6 +19,14 @@ type integrationService struct {
 	tracer          telemetry.Tracer
 	logger          telemetry.Logger
 	eventDispatcher *EventDispatcher
+}
+
+// IntegrationDeleteParams are the parameters for updating a new whatsapp integration.
+type IntegrationDeleteParams struct {
+	Source        string
+	IntegrationID uuid.UUID
+	ProjectID     uuid.UUID
+	UserID        entities.UserID
 }
 
 func (service *integrationService) dispatchIntegrationDeletedEvent(ctx context.Context, source string, integration *entities.Integration) {

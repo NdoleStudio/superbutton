@@ -12,22 +12,22 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
-// WhatsappIntegrationService is responsible for managing entities.WhatsappIntegration
-type WhatsappIntegrationService struct {
+// ContentIntegrationService is responsible for managing entities.ContentIntegration
+type ContentIntegrationService struct {
 	integrationService
 	projectRepository repositories.ProjectRepository
-	repository        repositories.WhatsappIntegrationRepository
+	repository        repositories.ContentIntegrationRepository
 }
 
-// NewWhatsappIntegrationService creates a new WhatsappIntegrationService
-func NewWhatsappIntegrationService(
+// NewContentIntegrationService creates a new ContentIntegrationService
+func NewContentIntegrationService(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
 	eventDispatcher *EventDispatcher,
 	projectRepository repositories.ProjectRepository,
-	repository repositories.WhatsappIntegrationRepository,
-) (s *WhatsappIntegrationService) {
-	return &WhatsappIntegrationService{
+	repository repositories.ContentIntegrationRepository,
+) (s *ContentIntegrationService) {
+	return &ContentIntegrationService{
 		repository:        repository,
 		projectRepository: projectRepository,
 		integrationService: integrationService{
@@ -39,7 +39,7 @@ func NewWhatsappIntegrationService(
 }
 
 // Get returns an entities.WhatsappIntegration for an authenticated user
-func (service *WhatsappIntegrationService) Get(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) (*entities.WhatsappIntegration, error) {
+func (service *ContentIntegrationService) Get(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) (*entities.ContentIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
@@ -53,7 +53,7 @@ func (service *WhatsappIntegrationService) Get(ctx context.Context, userID entit
 }
 
 // Index fetches all entities.Project for an authenticated user
-func (service *WhatsappIntegrationService) Index(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.WhatsappIntegration, error) {
+func (service *ContentIntegrationService) Index(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.ContentIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
@@ -66,18 +66,19 @@ func (service *WhatsappIntegrationService) Index(ctx context.Context, userID ent
 	return integrations, nil
 }
 
-// WhatsappIntegrationCreateParams are the parameters for creating a new whatsapp integration.
-type WhatsappIntegrationCreateParams struct {
-	Name        string
-	Text        string
-	PhoneNumber string
-	Source      string
-	ProjectID   uuid.UUID
-	UserID      entities.UserID
+// ContentIntegrationCreateParams are the parameters for creating a new content integration.
+type ContentIntegrationCreateParams struct {
+	Name      string
+	Summary   string
+	Text      string
+	Source    string
+	Title     string
+	ProjectID uuid.UUID
+	UserID    entities.UserID
 }
 
 // Create a new entities.WhatsappIntegration
-func (service *WhatsappIntegrationService) Create(ctx context.Context, params *WhatsappIntegrationCreateParams) (*entities.WhatsappIntegration, error) {
+func (service *ContentIntegrationService) Create(ctx context.Context, params *ContentIntegrationCreateParams) (*entities.ContentIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
@@ -86,21 +87,20 @@ func (service *WhatsappIntegrationService) Create(ctx context.Context, params *W
 		return nil, stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
 	}
 
-	integration := &entities.WhatsappIntegration{
-		ID:          uuid.New(),
-		UserID:      params.UserID,
-		ProjectID:   params.ProjectID,
-		Text:        params.Text,
-		PhoneNumber: params.PhoneNumber,
-		Name:        params.Name,
-		Enabled:     true,
-		Icon:        "whatsapp",
-		CreatedAt:   time.Now().UTC(),
-		UpdatedAt:   time.Now().UTC(),
+	integration := &entities.ContentIntegration{
+		ID:        uuid.New(),
+		UserID:    params.UserID,
+		ProjectID: params.ProjectID,
+		Enabled:   true,
+		Name:      params.Name,
+		Title:     params.Title,
+		Summary:   params.Summary,
+		Text:      params.Text,
+		CreatedAt: time.Now().UTC(),
+		UpdatedAt: time.Now().UTC(),
 	}
-
 	if err := service.repository.Store(ctx, integration); err != nil {
-		msg := fmt.Sprintf("could store whatsapp integration for user with ID [%s] and project [%s]", params.UserID, params.ProjectID)
+		msg := fmt.Sprintf("could store content integration for user with ID [%s] and project [%s]", params.UserID, params.ProjectID)
 		return nil, service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
@@ -109,18 +109,19 @@ func (service *WhatsappIntegrationService) Create(ctx context.Context, params *W
 	return integration, nil
 }
 
-// WhatsappIntegrationUpdateParams are the parameters for updating a new whatsapp integration.
-type WhatsappIntegrationUpdateParams struct {
+// ContentIntegrationUpdateParams are the parameters for updating a content integration.
+type ContentIntegrationUpdateParams struct {
 	Name          string
+	Summary       string
 	Text          string
-	PhoneNumber   string
+	Title         string
 	Source        string
 	IntegrationID uuid.UUID
 	UserID        entities.UserID
 }
 
 // Update a new entities.WhatsappIntegration
-func (service *WhatsappIntegrationService) Update(ctx context.Context, params *WhatsappIntegrationUpdateParams) (*entities.WhatsappIntegration, error) {
+func (service *ContentIntegrationService) Update(ctx context.Context, params *ContentIntegrationUpdateParams) (*entities.ContentIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
@@ -132,10 +133,11 @@ func (service *WhatsappIntegrationService) Update(ctx context.Context, params *W
 
 	integration.Name = params.Name
 	integration.Text = params.Text
-	integration.PhoneNumber = params.PhoneNumber
+	integration.Summary = params.Summary
+	integration.Title = params.Title
 
 	if err = service.repository.Update(ctx, integration); err != nil {
-		msg := fmt.Sprintf("could update whatsapp integration for user with ID [%s] and id [%s]", params.UserID, params.IntegrationID)
+		msg := fmt.Sprintf("could update content integration for user with ID [%s] and id [%s]", params.UserID, params.IntegrationID)
 		return nil, service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
@@ -144,19 +146,19 @@ func (service *WhatsappIntegrationService) Update(ctx context.Context, params *W
 	return integration, nil
 }
 
-// Delete a entities.WhatsappIntegration
-func (service *WhatsappIntegrationService) Delete(ctx context.Context, params *IntegrationDeleteParams) error {
+// Delete a entities.ContentIntegration
+func (service *ContentIntegrationService) Delete(ctx context.Context, params *IntegrationDeleteParams) error {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
 
 	integration, err := service.repository.Load(ctx, params.UserID, params.IntegrationID)
 	if err != nil {
-		msg := fmt.Sprintf("cannot load integrtion [%s] for user ID [%s]", params.IntegrationID, params.UserID)
+		msg := fmt.Sprintf("cannot load text integrtion [%s] for user ID [%s]", params.IntegrationID, params.UserID)
 		return stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
 	}
 
 	if err = service.repository.Delete(ctx, params.UserID, params.IntegrationID); err != nil {
-		msg := fmt.Sprintf("cannot delete integrtion [%s] for user ID [%s]", params.IntegrationID, params.UserID)
+		msg := fmt.Sprintf("cannot delete text integrtion [%s] for user ID [%s]", params.IntegrationID, params.UserID)
 		return stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
 	}
 

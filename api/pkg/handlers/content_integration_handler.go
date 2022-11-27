@@ -16,23 +16,23 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
-// WhatsappIntegrationHandler handles user http requests.
-type WhatsappIntegrationHandler struct {
+// ContentIntegrationHandler handles user http requests.
+type ContentIntegrationHandler struct {
 	handler
 	logger    telemetry.Logger
 	tracer    telemetry.Tracer
-	validator *validators.WhatsappIntegrationHandlerValidator
-	service   *services.WhatsappIntegrationService
+	validator *validators.ContentIntegrationHandlerValidator
+	service   *services.ContentIntegrationService
 }
 
-// NewWhatsappIntegrationHandler creates a new WhatsappIntegrationHandler
-func NewWhatsappIntegrationHandler(
+// NewContentIntegrationHandler creates a new ContentIntegrationHandler
+func NewContentIntegrationHandler(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
-	validator *validators.WhatsappIntegrationHandlerValidator,
-	service *services.WhatsappIntegrationService,
-) (h *WhatsappIntegrationHandler) {
-	return &WhatsappIntegrationHandler{
+	validator *validators.ContentIntegrationHandlerValidator,
+	service *services.ContentIntegrationService,
+) (h *ContentIntegrationHandler) {
+	return &ContentIntegrationHandler{
 		logger:    logger.WithService(fmt.Sprintf("%T", h)),
 		tracer:    tracer,
 		validator: validator,
@@ -40,35 +40,35 @@ func NewWhatsappIntegrationHandler(
 	}
 }
 
-// RegisterRoutes registers the routes for the MessageHandler
-func (h *WhatsappIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
-	router := app.Group("/v1/projects/:projectID/whatsapp-integrations")
+// RegisterRoutes registers the routes for the ContentIntegrationHandler
+func (h *ContentIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
+	router := app.Group("/v1/projects/:projectID/content-integrations")
 	router.Post("/", h.computeRoute(middlewares, h.create)...)
 	router.Get("/:integrationID", h.computeRoute(middlewares, h.show)...)
 	router.Put("/:integrationID", h.computeRoute(middlewares, h.update)...)
 	router.Delete("/:integrationID", h.computeRoute(middlewares, h.delete)...)
 }
 
-// @Summary      Get whatsapp integration
-// @Description  Fetches a specific whatsapp integration
+// @Summary      Get content integration
+// @Description  Fetches a specific content integration
 // @Security	 BearerAuth
-// @Tags         WhatsappIntegration
+// @Tags         ContentIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.WhatsappIntegration]
+// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/:projectID/whatsapp-integrations/:integrationID 	[get]
-func (h *WhatsappIntegrationHandler) show(c *fiber.Ctx) error {
+// @Router       /projects/:projectID/content-integrations/:integrationID 	[get]
+func (h *ContentIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
 	if errors := h.mergeErrors(h.validateUUID(c, "integrationID")); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while deleting integration with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while fetching content integration with ID [%s]", spew.Sdump(errors), c.Params("integrationID"))
 		ctxLogger.Warn(stacktrace.NewError(msg))
-		return h.responseUnprocessableEntity(c, errors, "validation errors while deleting integration")
+		return h.responseUnprocessableEntity(c, errors, "validation errors while fetching content integration")
 	}
 
 	integrationID := uuid.MustParse(c.Params("integrationID"))
@@ -76,31 +76,31 @@ func (h *WhatsappIntegrationHandler) show(c *fiber.Ctx) error {
 
 	integration, err := h.service.Get(ctx, authUser.ID, integrationID)
 	if err != nil {
-		msg := fmt.Sprintf("cannot fetch intergration [%s] for user with ID [%s]", authUser.ID, integrationID)
+		msg := fmt.Sprintf("cannot fetch text intergration [%s] for user with ID [%s]", authUser.ID, integrationID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
 
-	return h.responseOK(c, "integration fetched successfully", integration)
+	return h.responseOK(c, "content integration fetched successfully", integration)
 }
 
-// @Summary      Create a WhatsappIntegration
-// @Description  This endpoint creates a new whatsapp integration for a project
+// @Summary      Create a content integration
+// @Description  This endpoint creates a new content integration for a project
 // @Security	 BearerAuth
 // @Tags         WhatsappIntegration
 // @Produce      json
-// @Param        payload	body 		requests.WhatsappIntegrationCreateRequest	true 	"whatsapp integration create payload"
-// @Success      200 		{object}	responses.Ok[entities.WhatsappIntegration]
+// @Param        payload	body 		requests.ContentIntegrationCreateRequest	true 	"content integration create payload"
+// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/whatsapp-integrations [post]
-func (h *WhatsappIntegrationHandler) create(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/content-integrations [post]
+func (h *ContentIntegrationHandler) create(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
-	var request requests.WhatsappIntegrationCreateRequest
+	var request requests.ContentIntegrationCreateRequest
 	if err := c.BodyParser(&request); err != nil {
 		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
@@ -109,39 +109,39 @@ func (h *WhatsappIntegrationHandler) create(c *fiber.Ctx) error {
 	request.ProjectID = c.Params("projectID")
 
 	if errors := h.validator.ValidateCreate(ctx, request.Sanitize()); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while creating project with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while content integration with request [%s]", spew.Sdump(errors), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
-		return h.responseUnprocessableEntity(c, errors, "validation errors while creating project")
+		return h.responseUnprocessableEntity(c, errors, "validation errors while integration")
 	}
 
 	authUser := h.userFromContext(c)
 	integration, err := h.service.Create(ctx, request.ToCreateParams(c.OriginalURL(), authUser.ID))
 	if err != nil {
-		msg := fmt.Sprintf("cannot create whatsapp integration for user with ID [%s]", authUser.ID)
+		msg := fmt.Sprintf("cannot create content integration for user with ID [%s]", authUser.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
 
-	return h.responseOK(c, "whatsapp integration created successfully", integration)
+	return h.responseOK(c, "content integration created successfully", integration)
 }
 
-// @Summary      Update a whatsapp integration
-// @Description  This endpoint updates a whatsapp integration for a project
+// @Summary      Update a content integration
+// @Description  This endpoint updates a content integration for a project
 // @Security	 BearerAuth
-// @Tags         WhatsappIntegration
+// @Tags         ContentIntegration
 // @Produce      json
-// @Param        payload	body 		requests.WhatsappIntegrationUpdateRequest	true 	"whatsapp integration update payload"
-// @Success      200 		{object}	responses.Ok[entities.WhatsappIntegration]
+// @Param        payload	body 		requests.ContentIntegrationUpdateRequest	true 	"content integration update payload"
+// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/whatsapp-integrations/{integrationID} [put]
-func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/content-integrations/{integrationID} [put]
+func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
-	var request requests.WhatsappIntegrationUpdateRequest
+	var request requests.ContentIntegrationUpdateRequest
 	if err := c.BodyParser(&request); err != nil {
 		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
@@ -150,7 +150,7 @@ func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
 	request.IntegrationID = c.Params("integrationID")
 
 	if errors := h.validator.ValidateUpdate(ctx, request.Sanitize()); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while updating project with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while updating content integration with request [%s]", spew.Sdump(errors), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
 		return h.responseUnprocessableEntity(c, errors, "validation errors while updating integration")
 	}
@@ -158,13 +158,13 @@ func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
 	authUser := h.userFromContext(c)
 	integration, err := h.service.Update(ctx, request.ToUpdateParams(c.OriginalURL(), authUser.ID))
 	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
-		msg := fmt.Sprintf("cannot find integration with id [%s] for user [%s]", request.IntegrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot find content integration with id [%s] for user [%s]", request.IntegrationID, authUser.ID)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
 		return h.responseNotFound(c, msg)
 	}
 
 	if err != nil {
-		msg := fmt.Sprintf("cannot update integration [%s] for user with ID [%s]", request.IntegrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot update content integration [%s] for user with ID [%s]", request.IntegrationID, authUser.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
@@ -172,10 +172,10 @@ func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
 	return h.responseOK(c, "integration updated successfully", integration)
 }
 
-// @Summary      Delete a whatsapp integration
-// @Description  This endpoint deletes a whatsapp integration for a project
+// @Summary      Delete a content integration
+// @Description  This endpoint deletes a content integration for a project
 // @Security	 BearerAuth
-// @Tags         WhatsappIntegration
+// @Tags         ContentIntegration
 // @Produce      json
 // @Success      200 		{object}	responses.NoContent
 // @Failure      400		{object}	responses.BadRequest
@@ -183,8 +183,8 @@ func (h *WhatsappIntegrationHandler) update(c *fiber.Ctx) error {
 // @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/whatsapp-integrations/{integrationID} [delete]
-func (h *WhatsappIntegrationHandler) delete(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/content-integrations/{integrationID} [delete]
+func (h *ContentIntegrationHandler) delete(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
@@ -205,13 +205,13 @@ func (h *WhatsappIntegrationHandler) delete(c *fiber.Ctx) error {
 		UserID:        authUser.ID,
 	})
 	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
-		msg := fmt.Sprintf("cannot find whatsapp integration with id [%s] for user [%s]", integrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot find content integration with id [%s] for user [%s]", integrationID, authUser.ID)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
 		return h.responseNotFound(c, msg)
 	}
 
 	if err != nil {
-		msg := fmt.Sprintf("cannot delete whatsapp integration [%s] for user with ID [%s]", integrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot delete integration [%s] for user with ID [%s]", integrationID, authUser.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}

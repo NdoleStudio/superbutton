@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// WhatsappIntegrationUpdateRequest is the payload for the /projects/:projectID/whatsapp-integration/:integrationID endpoint
+// WhatsappIntegrationUpdateRequest is the payload for the /projects/:projectID/whatsapp-integrations/:integrationID endpoint
 type WhatsappIntegrationUpdateRequest struct {
 	request
 	IntegrationID string `json:"integrationID" swaggerignore:"true"`
