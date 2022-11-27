@@ -15,6 +15,21 @@ updates:
       prefix: fix
       prefix-development: chore
       include: scope
+  # Fetch and update latest `npm` packages
+  - package-ecosystem: npm
+    directory: "/widget"
+    schedule:
+      interval: daily
+      time: "00:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - AchoArnold
+    assignees:
+      - AchoArnold
+    commit-message:
+      prefix: fix
+      prefix-development: chore
+      include: scope
   # Fetch and update latest `go` packages
   - package-ecosystem: gomod
     directory: "/api"
