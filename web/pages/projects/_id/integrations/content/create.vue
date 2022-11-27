@@ -3,11 +3,11 @@
     <v-row>
       <v-col class="d-flex">
         <back-button :icon="true" :large="true"></back-button>
-        <h1 class="ml-2 text-h4 mb-4">Create Whatsapp Integration</h1>
+        <h1 class="text-h4 ml-2 mb-4">Add Content</h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" lg="8">
+      <v-col cols="12" lg="8" xl="6">
         <v-form>
           <v-text-field
             v-model="formName"
@@ -15,7 +15,7 @@
             :counter="30"
             label="Name"
             persistent-placeholder
-            placeholder="e.g Customer Service"
+            placeholder="e.g FAQ"
             outlined
             class="mb-4"
             :error="$store.getters.errorMessages.has('name')"
@@ -23,36 +23,53 @@
             required
           ></v-text-field>
           <v-text-field
-            v-model="formText"
+            v-model="formTitle"
             :disabled="savingIntegration"
-            :counter="30"
+            :counter="50"
             class="mb-4"
-            label="Text"
+            label="Title"
             persistent-placeholder
-            :error="$store.getters.errorMessages.has('text')"
-            :error-messages="$store.getters.errorMessages.get('text')"
-            placeholder="e.g Contact us on WhatsApp"
+            :error="$store.getters.errorMessages.has('title')"
+            :error-messages="$store.getters.errorMessages.get('title')"
+            placeholder="e.g How to create smart buttons."
             outlined
             required
           ></v-text-field>
-          <v-phone-input
-            v-model="formPhoneNumber"
+          <v-textarea
+            v-model="formSummary"
             :disabled="savingIntegration"
-            outlined
-            label="Phone Number"
+            :counter="300"
+            class="mb-4"
+            label="Summary"
+            :rows="3"
             persistent-placeholder
-            :error="$store.getters.errorMessages.has('phone_number')"
-            :error-messages="$store.getters.errorMessages.get('phone_number')"
-            placeholder="Whatsapp phone number"
-          >
-          </v-phone-input>
+            :error="$store.getters.errorMessages.has('summary')"
+            :error-messages="$store.getters.errorMessages.get('summary')"
+            placeholder="e.g This is a summary that appears under the title"
+            outlined
+            required
+          ></v-textarea>
+          <v-textarea
+            v-model="formText"
+            :disabled="savingIntegration"
+            :counter="1000"
+            class="mb-4"
+            label="Text"
+            :rows="6"
+            persistent-placeholder
+            :error="$store.getters.errorMessages.has('text')"
+            :error-messages="$store.getters.errorMessages.get('text')"
+            placeholder="This is a complete text for the content you want to add. It can be up to 1000 characters"
+            outlined
+            required
+          ></v-textarea>
           <loading-button
             :loading="savingIntegration"
             :icon="mdiPlus"
             :large="true"
             @click="saveIntegration"
           >
-            Add Whatsapp
+            Add Content
           </loading-button>
         </v-form>
       </v-col>
@@ -64,7 +81,7 @@
 import { mdiPlus, mdiMenuDown } from '@mdi/js'
 
 export default {
-  name: 'ProjectsIntegrationsWhatsappCreate',
+  name: 'ProjectsIntegrationsContentCreate',
   layout: 'project',
   data() {
     return {
@@ -72,30 +89,27 @@ export default {
       mdiMenuDown,
       savingIntegration: false,
       formName: '',
+      formTitle: '',
+      formSummary: '',
       formText: '',
-      formPhoneNumber: '',
     }
   },
   async mounted() {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
-
     await Promise.all([this.$store.dispatch('loadProjects')])
-
-    if (this.$store.getters.activeProjectId !== this.$route.params.id) {
-      await this.$router.push('/')
-    }
   },
   methods: {
     saveIntegration() {
       this.savingIntegration = true
       this.$store
-        .dispatch('addWhatsappIntegration', {
+        .dispatch('addContentIntegration', {
           projectId: this.$store.getters.activeProjectId,
           name: this.formName,
           text: this.formText,
-          phone_number: this.formPhoneNumber,
+          title: this.formTitle,
+          summary: this.formSummary,
         })
         .then(() => {
           this.$router.push({

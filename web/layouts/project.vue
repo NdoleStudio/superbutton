@@ -12,8 +12,33 @@
             </h3>
           </nuxt-link>
         </v-badge>
+        <div style="max-width: 250px">
+          <v-select
+            v-if="$store.getters.hasProjects"
+            :value="$store.getters.activeProjectId"
+            outlined
+            dense
+            label="Project"
+            class="ml-16 mb-n4 mt-2"
+            :items="projects"
+            @change="onProjectChange"
+          >
+            <template #append-item>
+              <div class="ml-3 mt-4">
+                <v-btn
+                  text
+                  color="primary"
+                  :to="{ name: 'projects-create' }"
+                  small
+                >
+                  <v-icon small>{{ mdiPlus }}</v-icon>
+                  Add Project
+                </v-btn>
+              </div>
+            </template>
+          </v-select>
+        </div>
         <v-spacer></v-spacer>
-
         <v-menu offset-y left bottom>
           <template #activator="{ on, attrs }">
             <v-btn icon x-large v-bind="attrs" v-on="on">
@@ -102,7 +127,19 @@ export default {
     return {
       logoutIcon: mdiLogout,
       mdiPlus,
-      items: [
+    }
+  },
+  computed: {
+    projects() {
+      return this.$store.getters.projects.map((project) => {
+        return {
+          text: project.name,
+          value: project.id,
+        }
+      })
+    },
+    items() {
+      return [
         {
           name: 'Settings',
           icon: mdiCogOutline,
@@ -123,8 +160,8 @@ export default {
             },
           },
         },
-      ],
-    }
+      ]
+    },
   },
   methods: {
     logout() {
@@ -134,6 +171,17 @@ export default {
           message: 'You have successfully logged out',
         })
         this.$router.push('/')
+      })
+    },
+    onProjectChange(item) {
+      console.log(item)
+      this.$store.dispatch('setActiveProjectId', item).then(() => {
+        this.$router.push({
+          name: 'projects-id-settings',
+          params: {
+            id: item,
+          },
+        })
       })
     },
   },

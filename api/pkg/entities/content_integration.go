@@ -27,6 +27,7 @@ func (integration *ContentIntegration) Integration() *Integration {
 		ProjectID:     integration.ProjectID,
 		IntegrationID: integration.ID,
 		Type:          IntegrationTypeContent,
+		Name:          integration.Name,
 		CreatedAt:     integration.CreatedAt,
 		UpdatedAt:     integration.UpdatedAt,
 	}

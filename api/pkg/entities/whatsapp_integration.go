@@ -27,6 +27,7 @@ func (integration *WhatsappIntegration) Integration() *Integration {
 		ProjectID:     integration.ProjectID,
 		IntegrationID: integration.ID,
 		Type:          IntegrationTypeWhatsapp,
+		Name:          integration.Name,
 		CreatedAt:     integration.CreatedAt,
 		UpdatedAt:     integration.UpdatedAt,
 	}

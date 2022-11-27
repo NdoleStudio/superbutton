@@ -32,6 +32,22 @@ func NewGormProjectRepository(
 	}
 }
 
+func (repository *gormProjectRepository) Delete(ctx context.Context, userID entities.UserID, projectID uuid.UUID) error {
+	ctx, span := repository.tracer.Start(ctx)
+	defer span.End()
+
+	err := repository.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Where("id = ?", projectID).
+		Delete(&entities.Project{}).
+		Error
+	if err != nil {
+		msg := fmt.Sprintf("cannot save project with ID [%s] for user [%s]", projectID, userID)
+		return repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+	return nil
+}
+
 func (repository *gormProjectRepository) Store(ctx context.Context, project *entities.Project) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()

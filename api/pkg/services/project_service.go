@@ -131,6 +131,26 @@ func (service *ProjectService) Update(ctx context.Context, params *ProjectUpdate
 	return project, nil
 }
 
+// Delete an entities.Project
+func (service *ProjectService) Delete(ctx context.Context, source string, userID entities.UserID, projectID uuid.UUID) error {
+	ctx, span := service.tracer.Start(ctx)
+	defer span.End()
+
+	_, err := service.repository.Load(ctx, userID, projectID)
+	if err != nil {
+		msg := fmt.Sprintf("cannot load project [%s] for user ID [%s]", projectID, userID)
+		return stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
+	}
+
+	if err = service.repository.Delete(ctx, userID, projectID); err != nil {
+		msg := fmt.Sprintf("cannot delete project [%s] for user ID [%s]", projectID, userID)
+		return stacktrace.PropagateWithCode(err, stacktrace.GetCode(err), msg)
+	}
+
+	service.dispatchProjectDeletedEvent(ctx, source, userID, projectID)
+	return nil
+}
+
 func (service *ProjectService) dispatchProjectUpdatedEvent(ctx context.Context, source string, project *entities.Project) {
 	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
 	defer span.End()
@@ -152,7 +172,7 @@ func (service *ProjectService) dispatchProjectUpdatedEvent(ctx context.Context, 
 		return
 	}
 
-	service.dispatchEvent(ctx, project, event)
+	service.dispatchEvent(ctx, project.ID, event)
 }
 
 func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, source string, project *entities.Project) {
@@ -172,15 +192,33 @@ func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, 
 		return
 	}
 
-	service.dispatchEvent(ctx, project, event)
+	service.dispatchEvent(ctx, project.ID, event)
 }
 
-func (service *ProjectService) dispatchEvent(ctx context.Context, project *entities.Project, event *cloudevents.Event) {
+func (service *ProjectService) dispatchProjectDeletedEvent(ctx context.Context, source string, userID entities.UserID, projectID uuid.UUID) {
+	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
+	defer span.End()
+
+	event, err := service.createEvent(events.ProjectDeleted, source, &events.ProjectDeletedPayload{
+		UserID:           userID,
+		ProjectDeletedAt: time.Now().UTC(),
+		ProjectID:        projectID,
+	})
+	if err != nil {
+		msg := fmt.Sprintf("cannot create [%s] event for project [%s]", events.ProjectDeleted, projectID)
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return
+	}
+
+	service.dispatchEvent(ctx, projectID, event)
+}
+
+func (service *ProjectService) dispatchEvent(ctx context.Context, projectID uuid.UUID, event *cloudevents.Event) {
 	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
 	defer span.End()
 
 	if err := service.eventDispatcher.Dispatch(ctx, event); err != nil {
-		msg := fmt.Sprintf("cannot dispatch [%s] event for project [%s]", event.Type(), project.ID)
+		msg := fmt.Sprintf("cannot dispatch [%s] event for project [%s]", event.Type(), projectID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return
 	}

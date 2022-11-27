@@ -2,8 +2,11 @@ import { AxiosError } from 'axios'
 import {
   EntitiesProject,
   EntitiesUser,
+  RequestsContentIntegrationCreateRequest,
+  RequestsContentIntegrationUpdateRequest,
   RequestsProjectUpdateRequest,
   RequestsWhatsappIntegrationCreateRequest,
+  RequestsWhatsappIntegrationUpdateRequest,
 } from '~/store/backend'
 import { ErrorMessagesSerialized } from '~/plugins/errors'
 
@@ -41,8 +44,17 @@ export interface ProjectIntegrationIdRequest {
   integrationId: string
 }
 
+export interface AddContentIntegrationRequest
+  extends RequestsContentIntegrationCreateRequest {
+  projectId: string
+}
+
+export interface UpdateContentIntegrationRequest
+  extends RequestsContentIntegrationUpdateRequest,
+    ProjectIntegrationIdRequest {}
+
 export interface UpdateWhatsappIntegrationRequest
-  extends RequestsWhatsappIntegrationCreateRequest,
+  extends RequestsWhatsappIntegrationUpdateRequest,
     ProjectIntegrationIdRequest {}
 
 export type AppData = {

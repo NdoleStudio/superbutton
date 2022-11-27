@@ -9,6 +9,29 @@
  * ---------------------------------------------------------------
  */
 
+export interface EntitiesContentIntegration {
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example true */
+  enabled: boolean
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example "FAQ" */
+  name: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  project_id: string
+  /** @example "Configurable floating button for your website" */
+  summary: string
+  /** @example "SuperButton is the best app to create configurable floating buttons on your website." */
+  text: string
+  /** @example "What is SuperButton?" */
+  title: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
+}
+
 export interface EntitiesProject {
   /** @example "#283593" */
   color: string
@@ -41,7 +64,7 @@ export interface EntitiesProjectIntegration {
   integration_id: string
   name: string
   /** @example 1 */
-  order: number
+  position: number
   /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
   project_id: string
   /** @example "whatsapp" */
@@ -98,6 +121,20 @@ export interface RequestsCloudEvent {
   type: string
 }
 
+export interface RequestsContentIntegrationCreateRequest {
+  name: string
+  summary: string
+  text: string
+  title: string
+}
+
+export interface RequestsContentIntegrationUpdateRequest {
+  name: string
+  summary: string
+  text: string
+  title: string
+}
+
 export interface RequestsProjectCreateRequest {
   name: string
   website: string
@@ -113,6 +150,12 @@ export interface RequestsProjectUpdateRequest {
 }
 
 export interface RequestsWhatsappIntegrationCreateRequest {
+  name: string
+  phone_number: string
+  text: string
+}
+
+export interface RequestsWhatsappIntegrationUpdateRequest {
   name: string
   phone_number: string
   text: string
@@ -141,6 +184,13 @@ export interface ResponsesNoContent {
   status: string
 }
 
+export interface ResponsesNotFound {
+  /** @example "cannot find message with ID [32343a19-da5e-4b1b-a767-3298a73703ca]" */
+  message: string
+  /** @example "error" */
+  status: string
+}
+
 export interface ResponsesOkArrayEntitiesProject {
   data: EntitiesProject[]
   /** @example "Request handled successfully" */
@@ -151,6 +201,14 @@ export interface ResponsesOkArrayEntitiesProject {
 
 export interface ResponsesOkArrayEntitiesProjectIntegration {
   data: EntitiesProjectIntegration[]
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkEntitiesContentIntegration {
+  data: EntitiesContentIntegration
   /** @example "Request handled successfully" */
   message: string
   /** @example "success" */

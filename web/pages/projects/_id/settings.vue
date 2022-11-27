@@ -124,14 +124,27 @@
             outlined
             required
           ></v-text-field>
-          <loading-button
-            :loading="savingProject"
-            :icon="mdiContentSave"
-            :large="true"
-            @click="updateProject"
-          >
-            Update Project
-          </loading-button>
+          <div class="d-flex">
+            <loading-button
+              :loading="savingProject"
+              :icon="mdiContentSave"
+              :large="true"
+              @click="updateProject"
+            >
+              Update Project
+            </loading-button>
+            <v-spacer></v-spacer>
+            <v-btn
+              large
+              :disabled="savingProject"
+              color="error"
+              text
+              @click="deleteProject"
+            >
+              <v-icon left>{{ mdiDelete }}</v-icon>
+              Delete
+            </v-btn>
+          </div>
         </v-form>
       </v-col>
     </v-row>
@@ -139,7 +152,13 @@
 </template>
 
 <script>
-import { mdiPlus, mdiContentSave, mdiSquare, mdiMenuDown } from '@mdi/js'
+import {
+  mdiPlus,
+  mdiContentSave,
+  mdiSquare,
+  mdiMenuDown,
+  mdiDelete,
+} from '@mdi/js'
 
 export default {
   name: 'ProjectsSettings',
@@ -151,6 +170,7 @@ export default {
       mdiContentSave,
       mdiSquare,
       mdiMenuDown,
+      mdiDelete,
       savingProject: false,
       formName: '',
       formWebsite: '',
@@ -222,6 +242,28 @@ export default {
           greeting: this.formGreeting,
           greeting_timeout: parseInt(this.formGreetingTimeoutSeconds) ?? 0,
           color: this.formColor,
+        })
+        .finally(() => {
+          this.savingProject = false
+        })
+    },
+    deleteProject() {
+      this.savingProject = true
+      this.$store
+        .dispatch('deleteProject', this.$store.getters.activeProjectId)
+        .then(() => {
+          if (this.$store.getters.hasProjects) {
+            this.$router.push({
+              name: 'projects-id-integrations',
+              params: {
+                id: this.$store.getters.activeProjectId,
+              },
+            })
+            return
+          }
+          this.$router.push({
+            name: 'projects-create',
+          })
         })
         .finally(() => {
           this.savingProject = false

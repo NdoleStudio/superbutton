@@ -55,6 +55,9 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-row>
+      <back-button class="mx-auto mt-4"></back-button>
+    </v-row>
   </v-container>
 </template>
 

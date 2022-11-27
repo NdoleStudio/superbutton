@@ -3,6 +3,8 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/NdoleStudio/superbutton/pkg/repositories"
 	"github.com/NdoleStudio/superbutton/pkg/requests"
 	"github.com/davecgh/go-spew/spew"
@@ -44,6 +46,7 @@ func (h *ProjectHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Hand
 	router.Get("/", h.computeRoute(middlewares, h.index)...)
 	router.Post("/", h.computeRoute(middlewares, h.create)...)
 	router.Put("/:projectID", h.computeRoute(middlewares, h.update)...)
+	router.Delete("/:projectID", h.computeRoute(middlewares, h.delete)...)
 }
 
 // @Summary      List of projects
@@ -157,4 +160,45 @@ func (h *ProjectHandler) update(c *fiber.Ctx) error {
 	}
 
 	return h.responseOK(c, "project updated successfully", project)
+}
+
+// @Summary      Delete a project
+// @Description  This endpoint deletes a project
+// @Security	 BearerAuth
+// @Tags         Projects
+// @Produce      json
+// @Success      200 		{object}	responses.NoContent
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure 	 404    	{object}	responses.NotFound
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /projects/{projectID} [delete]
+func (h *ProjectHandler) delete(c *fiber.Ctx) error {
+	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
+	defer span.End()
+
+	if errors := h.mergeErrors(h.validateUUID(c, "projectID")); len(errors) != 0 {
+		msg := fmt.Sprintf("validation errors [%s], while deleting project with url [%s]", spew.Sdump(errors), c.OriginalURL())
+		ctxLogger.Warn(stacktrace.NewError(msg))
+		return h.responseUnprocessableEntity(c, errors, "validation errors while deleting project")
+	}
+
+	authUser := h.userFromContext(c)
+	projectID := uuid.MustParse(c.Params("projectID"))
+
+	err := h.service.Delete(ctx, c.OriginalURL(), authUser.ID, projectID)
+	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
+		msg := fmt.Sprintf("cannot delete project with id [%s] for user [%s]", projectID, authUser.ID)
+		ctxLogger.Warn(stacktrace.Propagate(err, msg))
+		return h.responseNotFound(c, msg)
+	}
+
+	if err != nil {
+		msg := fmt.Sprintf("cannot delete project [%s] for user with ID [%s]", projectID, authUser.ID)
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return h.responseInternalServerError(c)
+	}
+
+	return h.responseNoContent(c, "project deleted successfully")
 }

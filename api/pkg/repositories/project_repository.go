@@ -21,4 +21,7 @@ type ProjectRepository interface {
 
 	// Load an entities.Project by entities.UserID
 	Load(ctx context.Context, userID entities.UserID, projectID uuid.UUID) (*entities.Project, error)
+
+	// Delete an entities.Project by entities.UserID and projectID
+	Delete(ctx context.Context, userID entities.UserID, projectID uuid.UUID) error
 }

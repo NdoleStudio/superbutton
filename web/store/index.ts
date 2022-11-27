@@ -1,16 +1,19 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
+  AddContentIntegrationRequest,
   AddWhatsappIntegrationRequest,
   AppData,
   AuthUser,
   NotificationRequest,
   ProjectIntegrationIdRequest,
   State,
+  UpdateContentIntegrationRequest,
   UpdateProjectRequest,
   UpdateWhatsappIntegrationRequest,
 } from '~/store/types'
 import {
+  EntitiesContentIntegration,
   EntitiesProject,
   EntitiesProjectIntegration,
   EntitiesUser,
@@ -18,6 +21,7 @@ import {
   ResponsesNoContent,
   ResponsesOkArrayEntitiesProject,
   ResponsesOkArrayEntitiesProjectIntegration,
+  ResponsesOkEntitiesContentIntegration,
   ResponsesOkEntitiesProject,
   ResponsesOkEntitiesUser,
   ResponsesOkEntitiesWhatsappIntegration,
@@ -184,6 +188,13 @@ export const actions: ActionTree<RootState, RootState> = {
     await context.commit('setProjects', projects)
   },
 
+  async setActiveProjectId(
+    context: ActionContext<RootState, RootState>,
+    projectId: string
+  ) {
+    await context.commit('setActiveProjectId', projectId)
+  },
+
   createProject(
     context: ActionContext<RootState, RootState>,
     { name, website }
@@ -201,9 +212,9 @@ export const actions: ActionTree<RootState, RootState> = {
               type: 'success',
             }),
             context.dispatch('loadProjects'),
-            context.commit('setActiveProjectId', response.data.data.id),
             context.commit('setCreatingProject', false),
           ])
+          context.commit('setActiveProjectId', response.data.data.id)
           resolve(response.data.data)
         })
         .catch(async (error: AxiosError) => {
@@ -250,6 +261,36 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Validation errors while updating project',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+  deleteProject(
+    context: ActionContext<RootState, RootState>,
+    projectId: string
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(`/v1/projects/${projectId}`)
+        .then(async (response: AxiosResponse<ResponsesNoContent>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message: response.data.message ?? 'Project deleted successfully',
+              type: 'success',
+            }),
+            context.dispatch('loadProjects'),
+          ])
+          resolve(true)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while deleting project',
               type: 'error',
             }),
           ])
@@ -394,6 +435,150 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Validation errors while deleting whatsapp integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updateContentIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateContentIntegrationRequest
+  ) {
+    return new Promise<EntitiesContentIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesContentIntegration>(
+          `/v1/projects/${payload.projectId}/content-integrations/${payload.integrationId}`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesContentIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Content integration updated successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating content integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  deleteContentIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateContentIntegrationRequest
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(
+          `/v1/projects/${payload.projectId}/content-integrations/${payload.integrationId}`
+        )
+        .then(async (response: AxiosResponse<ResponsesNoContent>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                response.data.message ??
+                'Content integration deleted successfully',
+              type: 'success',
+            }),
+          ])
+          resolve(true)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while deleting content integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  addContentIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: AddContentIntegrationRequest
+  ) {
+    return new Promise<EntitiesContentIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .post<ResponsesOkEntitiesContentIntegration>(
+          `/v1/projects/${payload.projectId}/content-integrations`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesContentIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Content integration added successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while adding content integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  getContentIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<EntitiesContentIntegration>((resolve, reject) => {
+      axios
+        .get<ResponsesOkEntitiesContentIntegration>(
+          `/v1/projects/${payload.projectId}/content-integrations/${payload.integrationId}`
+        )
+        .then(
+          (response: AxiosResponse<ResponsesOkEntitiesContentIntegration>) => {
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching content integration',
               type: 'error',
             }),
           ])
