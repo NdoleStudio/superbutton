@@ -24,10 +24,12 @@ func NewWhatsappIntegrationService(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
 	eventDispatcher *EventDispatcher,
+	projectRepository repositories.ProjectRepository,
 	repository repositories.WhatsappIntegrationRepository,
 ) (s *WhatsappIntegrationService) {
 	return &WhatsappIntegrationService{
-		repository: repository,
+		repository:        repository,
+		projectRepository: projectRepository,
 		integrationService: integrationService{
 			tracer:          tracer,
 			logger:          logger.WithService(fmt.Sprintf("%T", s)),

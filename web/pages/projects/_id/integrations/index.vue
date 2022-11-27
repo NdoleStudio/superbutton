@@ -16,9 +16,41 @@
                     mdiWhatsapp
                   }}</v-icon>
                   <h3 class="text-h6 font-weight-bold">Whatsapp</h3>
+                  <v-progress-circular
+                    v-if="loadingIntegrations"
+                    class="ml-2 mt-2"
+                    size="16"
+                    width="1"
+                    indeterminate
+                    color="primary"
+                  ></v-progress-circular>
                 </div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
+                <v-divider></v-divider>
+                <v-simple-table v-if="whatsappIntegrations.length" class="mb-4">
+                  <template #default>
+                    <thead class="text-uppercase">
+                      <tr>
+                        <th class="text-left">Name</th>
+                        <th class="text-left">Identifier</th>
+                        <th class="">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="item in whatsappIntegrations" :key="item.name">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.integration_id }}</td>
+                        <td>
+                          <v-btn small class="secondary">
+                            <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
+                            Edit
+                          </v-btn>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </v-simple-table>
                 <v-btn
                   :to="{
                     name: 'projects-id-integrations-whatsapp-create',
@@ -40,6 +72,14 @@
                   mdiStickerText
                 }}</v-icon>
                 <h3 class="text-h6 font-weight-bold">Content</h3>
+                <v-progress-circular
+                  v-if="loadingIntegrations"
+                  class="ml-2 mt-2"
+                  size="16"
+                  width="1"
+                  indeterminate
+                  color="purple"
+                ></v-progress-circular>
               </div>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
@@ -56,7 +96,12 @@
 </template>
 
 <script>
-import { mdiPlus, mdiStickerText, mdiWhatsapp } from '@mdi/js'
+import {
+  mdiPlus,
+  mdiStickerText,
+  mdiWhatsapp,
+  mdiSquareEditOutline,
+} from '@mdi/js'
 
 export default {
   name: 'ProjectsIntegrations',
@@ -68,33 +113,47 @@ export default {
       mdiPlus,
       mdiStickerText,
       mdiWhatsapp,
+      mdiSquareEditOutline,
+      projectIntegrations: [],
       formWebsite: '',
+      loadingIntegrations: false,
     }
+  },
+  computed: {
+    /**
+     * @returns {EntitiesProjectIntegration[]}
+     */
+    whatsappIntegrations() {
+      return this.projectIntegrations.filter((integration) => {
+        return integration.type === 'whatsapp'
+      })
+    },
+    /**
+     * @returns {EntitiesProjectIntegration[]}
+     */
+    contentIntegrations() {
+      return this.projectIntegrations.filter((integration) => {
+        return integration.type === 'text'
+      })
+    },
   },
   async mounted() {
     if (!this.$store.getters.authUser) {
       return this.$router.push('/login')
     }
     await Promise.all([this.$store.dispatch('loadProjects')])
-
-    if (!this.$store.getters.hasProjects) {
-      // await this.$router.push('/projects/create')
-    }
+    this.loadIntegrations()
   },
   methods: {
-    createProject() {
+    loadIntegrations() {
+      this.loadingIntegrations = true
       this.$store
-        .dispatch('createProject', {
-          name: this.formName,
-          website: this.formWebsite,
-        })
+        .dispatch('getProjectIntegrations', this.$store.getters.activeProjectId)
         .then((payload) => {
-          this.$router.push({
-            name: 'projects-id-settings',
-            params: {
-              id: payload.id,
-            },
-          })
+          this.projectIntegrations = payload
+        })
+        .finally(() => {
+          this.loadingIntegrations = false
         })
     },
   },

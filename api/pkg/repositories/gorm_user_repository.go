@@ -82,7 +82,7 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 
 	err = crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
 		user = new(entities.User)
-		err = repository.db.WithContext(ctx).First(user, authUser.ID).Error
+		err = tx.First(user, authUser.ID).Error
 		if err == nil {
 			return nil
 		}
@@ -101,7 +101,7 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 		}
 		created = true
 
-		return tx.WithContext(ctx).Where(entities.User{ID: user.ID}).Create(user).Error
+		return tx.Where(entities.User{ID: user.ID}).Create(user).Error
 	})
 
 	if err != nil {

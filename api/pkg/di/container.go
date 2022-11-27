@@ -63,10 +63,10 @@ func NewContainer(version string, projectID string) (container *Container) {
 	container.InitializeTraceProvider(version, os.Getenv("GCP_PROJECT_ID"))
 
 	container.RegisterUserRoutes()
-
 	container.RegisterEventRoutes()
-
 	container.RegisterProjectRoutes()
+	container.RegisterWhatsappIntegrationRoutes()
+	container.ProjectIntegrationRoutes()
 
 	// this has to be last since it registers the /* route
 	container.RegisterSwaggerRoutes()
@@ -227,6 +227,7 @@ func (container *Container) WhatsappIntegrationService() (service *services.What
 		container.Logger(),
 		container.Tracer(),
 		container.EventDispatcher(),
+		container.ProjectRepository(),
 		container.WhatsappIntegrationRepository(),
 	)
 }
@@ -451,6 +452,12 @@ func (container *Container) DB() (db *gorm.DB) {
 	}
 	if err = db.AutoMigrate(&entities.Project{}); err != nil {
 		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.Project{})))
+	}
+	if err = db.AutoMigrate(&entities.ProjectIntegration{}); err != nil {
+		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.ProjectIntegration{})))
+	}
+	if err = db.AutoMigrate(&entities.WhatsappIntegration{}); err != nil {
+		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.WhatsappIntegration{})))
 	}
 
 	return container.db

@@ -39,6 +39,7 @@ func (repository *gormProjectIntegrationRepository) Fetch(ctx context.Context, u
 	err := repository.db.WithContext(ctx).
 		Where("user_id = ?", userID).
 		Where("project_id = ?", projectID).
+		Order("position asc").
 		Find(&integrations).
 		Error
 	if err != nil {

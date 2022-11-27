@@ -38,18 +38,23 @@ func (repository *gormWhatsappIntegrationRepository) Store(ctx context.Context, 
 	defer span.End()
 
 	err := crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
-		err := tx.WithContext(ctx).Create(integration).Error
+		err := tx.Create(integration).Error
 		if err != nil {
 			return stacktrace.Propagate(err, fmt.Sprintf("cannot store integration with ID [%s]", integration.ID))
 		}
 
 		projectIntegration := new(entities.ProjectIntegration)
-		tx.WithContext(ctx).
+		err = tx.
 			Where("user_id = ?", integration.UserID).
 			Where("project_id = ?", integration.ProjectID).
-			Select("order").Order("order desc").First(projectIntegration)
+			Select("position").Order("position desc").First(projectIntegration).
+			Error
+		if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+			msg := fmt.Sprintf("cannot fetch last inegration for project [%s] and user [%s]", integration.ProjectID, integration.UserID)
+			return stacktrace.Propagate(err, msg)
+		}
 
-		err = tx.WithContext(ctx).Create(integration.NewProjectIntegration(projectIntegration.Order + 1)).Error
+		err = tx.Create(integration.NewProjectIntegration(projectIntegration.Position + 1)).Error
 		if err != nil {
 			return stacktrace.Propagate(err, fmt.Sprintf("cannot store project integration with ID [%s]", integration.ID))
 		}
@@ -69,12 +74,12 @@ func (repository *gormWhatsappIntegrationRepository) Update(ctx context.Context,
 	defer span.End()
 
 	err := crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
-		err := tx.WithContext(ctx).Save(integration).Error
+		err := tx.Save(integration).Error
 		if err != nil {
 			return stacktrace.Propagate(err, fmt.Sprintf("cannot save integration with ID [%s]", integration.ID))
 		}
 
-		err = tx.WithContext(ctx).
+		err = tx.
 			Model(&entities.ProjectIntegration{}).
 			Where("integration_id = ?", integration.ID).
 			Updates(map[string]interface{}{"updated_at": integration.UpdatedAt, "name": integration.Name}).
@@ -115,7 +120,7 @@ func (repository *gormWhatsappIntegrationRepository) Delete(ctx context.Context,
 	defer span.End()
 
 	err := crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
-		err := tx.WithContext(ctx).
+		err := tx.
 			Where("user_id = ?", userID).
 			Where("id = ?", integrationID).
 			Delete(&entities.WhatsappIntegration{}).
@@ -124,7 +129,7 @@ func (repository *gormWhatsappIntegrationRepository) Delete(ctx context.Context,
 			return stacktrace.Propagate(err, fmt.Sprintf("cannot delete whatsapp integration with ID [%s]", integrationID))
 		}
 
-		err = tx.WithContext(ctx).
+		err = tx.
 			Where("integration_id = ?", integrationID).
 			Where("user_id = ?", userID).
 			Delete(&entities.ProjectIntegration{}).

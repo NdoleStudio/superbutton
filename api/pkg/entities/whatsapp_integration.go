@@ -40,7 +40,7 @@ func (integration *WhatsappIntegration) NewProjectIntegration(order uint) *Proje
 		IntegrationID: integration.ID,
 		Type:          IntegrationTypeWhatsapp,
 		Name:          integration.Name,
-		Order:         order,
+		Position:      order,
 		CreatedAt:     integration.CreatedAt,
 		UpdatedAt:     integration.UpdatedAt,
 	}
