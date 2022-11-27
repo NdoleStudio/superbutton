@@ -65,6 +65,7 @@ export default {
         },
       },
     ],
+    '@nuxtjs/sentry',
   ],
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
@@ -81,6 +82,27 @@ export default {
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
           success: colors.green.accent3,
+        },
+      },
+    },
+  },
+  sentry: {
+    dsn: process.env.SENTRY_DSN,
+    config: {
+      environment: process.env.SENTRY_ENVIRONMENT,
+      release:
+        process.env.SENTRY_PROJECT_NAME +
+        '@' +
+        process.env.NUXT_ENV_CURRENT_GIT_SHA,
+    },
+    tracing: {
+      tracesSampleRate: 1.0,
+      vueOptions: {
+        tracing: true,
+        tracingOptions: {
+          hooks: ['mount', 'update'],
+          timeout: 2000,
+          trackComponents: true,
         },
       },
     },

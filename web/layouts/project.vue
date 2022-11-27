@@ -174,7 +174,6 @@ export default {
       })
     },
     onProjectChange(item) {
-      console.log(item)
       this.$store.dispatch('setActiveProjectId', item).then(() => {
         this.$router.push({
           name: 'projects-id-settings',
