@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar app flat>
       <v-container class="py-0 fill-height">
-        <v-badge class="logo-badge" color="#8338ec" content="beta">
+        <v-badge class="logo-badge" color="#8338ec" content="Beta">
           <nuxt-link to="/" class="text-decoration-none d-flex">
             <v-avatar tile size="33" class="mt-1">
               <v-img contain :src="require('@/static/logo.svg')"></v-img>

@@ -19,7 +19,14 @@
                 </div>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-btn class="primary" small>
+                <v-btn
+                  :to="{
+                    name: 'projects-id-integrations-whatsapp-create',
+                    params: { id: $store.getters.activeProjectId },
+                  }"
+                  class="primary"
+                  small
+                >
                   <v-icon left>{{ mdiPlus }}</v-icon>
                   Add Whatsapp
                 </v-btn>

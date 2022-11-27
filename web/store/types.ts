@@ -3,6 +3,7 @@ import {
   EntitiesProject,
   EntitiesUser,
   RequestsProjectUpdateRequest,
+  RequestsWhatsappIntegrationCreateRequest,
 } from '~/store/backend'
 import { ErrorMessagesSerialized } from '~/plugins/errors'
 
@@ -28,6 +29,10 @@ export interface NotificationRequest {
 }
 
 export interface UpdateProjectRequest extends RequestsProjectUpdateRequest {
+  projectId: string
+}
+export interface AddWhatsappIntegrationRequest
+  extends RequestsWhatsappIntegrationCreateRequest {
   projectId: string
 }
 

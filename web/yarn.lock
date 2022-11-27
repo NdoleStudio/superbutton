@@ -3718,6 +3718,11 @@ autoprefixer@^9.6.1:
     postcss "^7.0.32"
     postcss-value-parser "^4.1.0"
 
+awesome-phonenumber@^2.69.0:
+  version "2.73.0"
+  resolved "https://registry.yarnpkg.com/awesome-phonenumber/-/awesome-phonenumber-2.73.0.tgz#c921f47450ba10bb2e4a6305cc85d802f57a96cf"
+  integrity sha512-zirkzWFUheNnnPY1QE05PQd+5drn+5kVy76gZ3WyXnLwzXOguw6sqksyZGO1qyNnYj3Y/SDITXnS/TCk/hJXpQ==
+
 axios-retry@^3.1.9:
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/axios-retry/-/axios-retry-3.3.1.tgz#47624646138aedefbad2ac32f226f4ee94b6dcab"
@@ -4836,6 +4841,11 @@ cosmiconfig@^6.0.0:
     parse-json "^5.0.0"
     path-type "^4.0.0"
     yaml "^1.7.2"
+
+country-telephone-data@^0.6.3:
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/country-telephone-data/-/country-telephone-data-0.6.3.tgz#02828e76ce8c32af8dd60b8e478e5b3deaad3542"
+  integrity sha512-3tQLA0vec+NDVlcaHhXGqILq/oQRsv4fRi4EedCfJqUuJUjQGdcSPM8r2IJIT2kZ5yWbiOCkXMgy7YTo8FNS2w==
 
 crc@^3.8.0:
   version "3.8.0"
@@ -6385,6 +6395,11 @@ firebaseui@^6.0.2:
   dependencies:
     dialog-polyfill "^0.4.7"
     material-design-lite "^1.2.0"
+
+flag-icons@^6.1.1, flag-icons@^6.6.6:
+  version "6.6.6"
+  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-6.6.6.tgz#9ddff81e1126778ca6a5a1e0e2cfac2e865f2cb7"
+  integrity sha512-4lHDKxldnQ7q617pf9Dx9nAetT+9zcMpUexbRrc9kjLw9KJgZ83zA5Dky3Vv7ZDzUjAiZ46x/cy5P0HnEnqA2A==
 
 flat-cache@^3.0.4:
   version "3.0.4"
@@ -12579,6 +12594,17 @@ uuid@^8.0.0, uuid@^8.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
+v-phone-input@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/v-phone-input/-/v-phone-input-2.0.0.tgz#7cc65b01f0770882651b70b322a949ac20d62525"
+  integrity sha512-HXy23lB3Z7htun5Y5QeqSRPv5hdAtvoxY8vmv+pr6S5Ow577/X/oe+GRTE0vqjYxyvqmvxgBl5Gpi0b91/AOfQ==
+  dependencies:
+    awesome-phonenumber "^2.69.0"
+    country-telephone-data "^0.6.3"
+  optionalDependencies:
+    flag-icons "^6.1.1"
+    world-flags-sprite "^0.0.2"
+
 v8-to-istanbul@^8.1.0:
   version "8.1.1"
   resolved "https://registry.yarnpkg.com/v8-to-istanbul/-/v8-to-istanbul-8.1.1.tgz#77b752fd3975e31bbcef938f85e9bd1c7a8d60ed"
@@ -13044,6 +13070,11 @@ worker-farm@^1.7.0:
   integrity sha512-rvw3QTZc8lAxyVrqcSGVm5yP/IJ2UcB3U0graE3LCFoZ0Yn2x4EoVSqJKdB/T5M+FLcRPjz4TDacRf3OCfNUzw==
   dependencies:
     errno "~0.1.7"
+
+world-flags-sprite@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/world-flags-sprite/-/world-flags-sprite-0.0.2.tgz#a2dc2c7dfbf385ece2ff8dd6a05c516c5c47e1f0"
+  integrity sha512-v4Qjd8+5hBNVyn9AKFcVTaKZWaz0fZliHZ7FK0ugPMbAv+oI5BZrT72rBxmGiD6D86yshA08FTo/CcAaZW7buw==
 
 wrap-ansi@^6.0.0:
   version "6.2.0"

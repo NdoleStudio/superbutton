@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"fmt"
 	"net/url"
+
+	"github.com/google/uuid"
 
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/middlewares"
@@ -74,6 +77,30 @@ func (h *handler) responseOK(c *fiber.Ctx, message string, data interface{}) err
 		"message": message,
 		"data":    data,
 	})
+}
+
+func (h *handler) mergeErrors(errors ...url.Values) url.Values {
+	result := url.Values{}
+	for _, item := range errors {
+		for key, values := range item {
+			for _, value := range values {
+				result.Add(key, value)
+			}
+		}
+	}
+	return result
+}
+
+func (h *handler) validateUUID(c *fiber.Ctx, param string) url.Values {
+	_, err := uuid.Parse(c.Params(param))
+	if err != nil {
+		return url.Values{
+			param: []string{
+				fmt.Sprintf("%s is not a valid UUID string e.g b05b8cc4-6e13-11ed-a1eb-0242ac120002", param),
+			},
+		}
+	}
+	return nil
 }
 
 //func (h *handler) responseCreated(c *fiber.Ctx, message string, data interface{}) error {

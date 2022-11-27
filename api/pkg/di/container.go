@@ -116,10 +116,31 @@ func (container *Container) RegisterProjectRoutes() {
 	container.ProjectHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
+// RegisterWhatsappIntegrationRoutes registers routes for the /projects/:projectID/whatsapp-integrations prefix
+func (container *Container) RegisterWhatsappIntegrationRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.WhatsappIntegrationHandler{}))
+	container.WhatsappIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
+// ProjectIntegrationRoutes registers routes for the /projects/:projectID/integrations prefix
+func (container *Container) ProjectIntegrationRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ProjectIntegrationHandler{}))
+	container.ProjectIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
 // UserHandlerValidator creates a new instance of validators.UserHandlerValidator
 func (container *Container) UserHandlerValidator() (validator *validators.UserHandlerValidator) {
 	container.logger.Debug(fmt.Sprintf("creating %T", validator))
 	return validators.NewUserHandlerValidator(
+		container.Logger(),
+		container.Tracer(),
+	)
+}
+
+// WhatsappIntegrationHandlerValidator creates a new instance of validators.WhatsappIntegrationHandlerValidator
+func (container *Container) WhatsappIntegrationHandlerValidator() (validator *validators.WhatsappIntegrationHandlerValidator) {
+	container.logger.Debug(fmt.Sprintf("creating %T", validator))
+	return validators.NewWhatsappIntegrationHandlerValidator(
 		container.Logger(),
 		container.Tracer(),
 	)
@@ -145,6 +166,27 @@ func (container *Container) UserHandler() (handler *handlers.UserHandler) {
 	)
 }
 
+// WhatsappIntegrationHandler creates a new instance of handlers.WhatsappIntegrationHandler
+func (container *Container) WhatsappIntegrationHandler() (handler *handlers.WhatsappIntegrationHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewWhatsappIntegrationHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.WhatsappIntegrationHandlerValidator(),
+		container.WhatsappIntegrationService(),
+	)
+}
+
+// ProjectIntegrationHandler creates a new instance of handlers.ProjectIntegrationHandler
+func (container *Container) ProjectIntegrationHandler() (handler *handlers.ProjectIntegrationHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewIntegrationHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.ProjectIntegrationService(),
+	)
+}
+
 // ProjectHandler creates a new instance of handlers.ProjectHandler
 func (container *Container) ProjectHandler() (handler *handlers.ProjectHandler) {
 	container.logger.Debug(fmt.Sprintf("creating %T", handler))
@@ -164,6 +206,28 @@ func (container *Container) UserService() (service *services.User) {
 		container.Tracer(),
 		container.EventDispatcher(),
 		container.UserRepository(),
+	)
+}
+
+// ProjectIntegrationService creates a new instance of services.ProjectIntegrationService
+func (container *Container) ProjectIntegrationService() (service *services.ProjectIntegrationService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewProjectIntegrationService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+		container.ProjectIntegrationRepository(),
+	)
+}
+
+// WhatsappIntegrationService creates a new instance of services.WhatsappIntegrationService
+func (container *Container) WhatsappIntegrationService() (service *services.WhatsappIntegrationService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewWhatsappIntegrationService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+		container.WhatsappIntegrationRepository(),
 	)
 }
 
@@ -314,6 +378,26 @@ func (container *Container) UserRepository() repositories.UserRepository {
 func (container *Container) ProjectRepository() repositories.ProjectRepository {
 	container.logger.Debug("creating GORM repositories.ProjectRepository")
 	return repositories.NewGormProjectRepository(
+		container.Logger(),
+		container.Tracer(),
+		container.DB(),
+	)
+}
+
+// WhatsappIntegrationRepository registers a new instance of repositories.WhatsappIntegrationRepository
+func (container *Container) WhatsappIntegrationRepository() repositories.WhatsappIntegrationRepository {
+	container.logger.Debug("creating GORM repositories.UserRepository")
+	return repositories.NewGormWhatsappIntegrationRepository(
+		container.Logger(),
+		container.Tracer(),
+		container.DB(),
+	)
+}
+
+// ProjectIntegrationRepository registers a new instance of repositories.ProjectIntegrationRepository
+func (container *Container) ProjectIntegrationRepository() repositories.ProjectIntegrationRepository {
+	container.logger.Debug("creating GORM repositories.UserRepository")
+	return repositories.NewGormProjectIntegrationRepository(
 		container.Logger(),
 		container.Tracer(),
 		container.DB(),

@@ -11,7 +11,7 @@ import (
 
 type service struct{}
 
-func (service *service) createEvent(eventType string, source string, payload any) (cloudevents.Event, error) {
+func (service *service) createEvent(eventType string, source string, payload any) (*cloudevents.Event, error) {
 	event := cloudevents.NewEvent()
 
 	event.SetSource(source)
@@ -22,8 +22,8 @@ func (service *service) createEvent(eventType string, source string, payload any
 
 	if err := event.SetData(cloudevents.ApplicationJSON, payload); err != nil {
 		msg := fmt.Sprintf("cannot encode %T [%#+v] as JSON", payload, payload)
-		return event, stacktrace.Propagate(err, msg)
+		return &event, stacktrace.Propagate(err, msg)
 	}
 
-	return event, nil
+	return &event, nil
 }

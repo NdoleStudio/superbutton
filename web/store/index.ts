@@ -1,6 +1,7 @@
 import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
+  AddWhatsappIntegrationRequest,
   AppData,
   AuthUser,
   NotificationRequest,
@@ -242,6 +243,43 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Validation errors while updating project',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  addWhatsappIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: AddWhatsappIntegrationRequest
+  ) {
+    return new Promise<EntitiesProject>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .post<ResponsesOkEntitiesProject>(
+          `/v1/projects/${payload.projectId}/whatsapp-integrations`,
+          payload
+        )
+        .then(async (response: AxiosResponse<ResponsesOkEntitiesProject>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                response.data.message ??
+                'Whatsapp integration added successfully',
+              type: 'success',
+            }),
+          ])
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while adding whatsapp integration',
               type: 'error',
             }),
           ])

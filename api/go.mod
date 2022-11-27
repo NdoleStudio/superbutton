@@ -20,6 +20,7 @@ require (
 	github.com/gofiber/swagger v0.1.7
 	github.com/google/uuid v1.3.0
 	github.com/hirosassa/zerodriver v0.1.3
+	github.com/nyaruka/phonenumbers v1.1.2
 	github.com/rs/zerolog v1.28.0
 	github.com/swaggo/swag v1.8.7
 	github.com/thedevsaddam/govalidator v1.9.10

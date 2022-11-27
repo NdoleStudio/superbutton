@@ -175,7 +175,7 @@ func (service *ProjectService) dispatchProjectCreatedEvent(ctx context.Context, 
 	service.dispatchEvent(ctx, project, event)
 }
 
-func (service *ProjectService) dispatchEvent(ctx context.Context, project *entities.Project, event cloudevents.Event) {
+func (service *ProjectService) dispatchEvent(ctx context.Context, project *entities.Project, event *cloudevents.Event) {
 	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
 	defer span.End()
 

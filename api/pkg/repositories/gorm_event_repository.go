@@ -49,7 +49,7 @@ func NewGormEventRepository(
 }
 
 // FetchAll returns all cloudevents.Event ordered by time in ascending order
-func (repository *gormEventRepository) FetchAll(ctx context.Context) (*[]cloudevents.Event, error) {
+func (repository *gormEventRepository) FetchAll(ctx context.Context) ([]*cloudevents.Event, error) {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
@@ -58,20 +58,20 @@ func (repository *gormEventRepository) FetchAll(ctx context.Context) (*[]cloudev
 		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, "cannot fetch all cloudevents"))
 	}
 
-	results := make([]cloudevents.Event, 0, len(events))
+	results := make([]*cloudevents.Event, 0, len(events))
 	for _, event := range events {
 		var cloudevent cloudevents.Event
 		if err := json.Unmarshal(event.Data, &cloudevent); err != nil {
 			msg := fmt.Sprintf("cannot unmarshal [%s] into [%T]", event.Data, cloudevent)
 			return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 		}
-		results = append(results, cloudevent)
+		results = append(results, &cloudevent)
 	}
-	return &results, nil
+	return results, nil
 }
 
 // Create creates a new cloudevents.Event
-func (repository *gormEventRepository) Create(ctx context.Context, event cloudevents.Event) error {
+func (repository *gormEventRepository) Create(ctx context.Context, event *cloudevents.Event) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
@@ -97,7 +97,7 @@ func (repository *gormEventRepository) Create(ctx context.Context, event cloudev
 }
 
 // Save updates a cloudevents.Event
-func (repository *gormEventRepository) Save(ctx context.Context, event cloudevents.Event) error {
+func (repository *gormEventRepository) Save(ctx context.Context, event *cloudevents.Event) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 

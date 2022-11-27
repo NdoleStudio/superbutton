@@ -44,7 +44,7 @@ func NewEventDispatcher(
 }
 
 // Dispatch a new event by adding it to the queue to be processed async
-func (dispatcher *EventDispatcher) Dispatch(ctx context.Context, event cloudevents.Event) error {
+func (dispatcher *EventDispatcher) Dispatch(ctx context.Context, event *cloudevents.Event) error {
 	ctx, span := dispatcher.tracer.Start(ctx)
 	defer span.End()
 
@@ -112,7 +112,7 @@ func (dispatcher *EventDispatcher) Publish(ctx context.Context, event cloudevent
 	wg.Wait()
 }
 
-func (dispatcher *EventDispatcher) createTask(event cloudevents.Event) (*queue.Task, error) {
+func (dispatcher *EventDispatcher) createTask(event *cloudevents.Event) (*queue.Task, error) {
 	eventContent, err := json.Marshal(event)
 	if err != nil {
 		return nil, stacktrace.Propagate(err, fmt.Sprintf("cannot marshall [%T] with ID [%s]", event, event.ID()))

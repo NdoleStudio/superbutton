@@ -32,6 +32,26 @@ export interface EntitiesProject {
   user_id: string
 }
 
+export interface EntitiesProjectIntegration {
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  integration_id: string
+  name: string
+  /** @example 1 */
+  order: number
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  project_id: string
+  /** @example "whatsapp" */
+  type: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
+}
+
 export interface EntitiesUser {
   /** @example "2022-06-05T14:26:02.302718+03:00" */
   created_at: string
@@ -43,6 +63,29 @@ export interface EntitiesUser {
   name: string
   /** @example "2022-06-05T14:26:10.303278+03:00" */
   updated_at: string
+}
+
+export interface EntitiesWhatsappIntegration {
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example true */
+  enabled: boolean
+  /** @example "https://cdn.superbutton.app/whatsapp-icon.svg" */
+  icon: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example "FAQ" */
+  name: string
+  /** @example "+18005550199" */
+  phone_number: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  project_id: string
+  /** @example "Contact us on WhatsApp" */
+  text: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
 }
 
 export interface RequestsCloudEvent {
@@ -67,6 +110,12 @@ export interface RequestsProjectUpdateRequest {
   icon: string
   name: string
   website: string
+}
+
+export interface RequestsWhatsappIntegrationCreateRequest {
+  name: string
+  phone_number: string
+  text: string
 }
 
 export interface ResponsesBadRequest {
@@ -96,7 +145,15 @@ export interface ResponsesOkArrayEntitiesProject {
   data: EntitiesProject[]
   /** @example "Request handled successfully" */
   message: string
-  /** @example "ok" */
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkArrayEntitiesProjectIntegration {
+  data: EntitiesProjectIntegration[]
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
   status: string
 }
 
@@ -104,7 +161,7 @@ export interface ResponsesOkEntitiesProject {
   data: EntitiesProject
   /** @example "Request handled successfully" */
   message: string
-  /** @example "ok" */
+  /** @example "success" */
   status: string
 }
 
@@ -112,7 +169,15 @@ export interface ResponsesOkEntitiesUser {
   data: EntitiesUser
   /** @example "Request handled successfully" */
   message: string
-  /** @example "ok" */
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkEntitiesWhatsappIntegration {
+  data: EntitiesWhatsappIntegration
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
   status: string
 }
 
