@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/NdoleStudio/superbutton/pkg/requests"
-
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
 	"github.com/thedevsaddam/govalidator"
 )
@@ -47,8 +46,7 @@ func (validator *WhatsappIntegrationHandlerValidator) ValidateUpdate(ctx context
 			},
 			"phone_number": []string{
 				"required",
-				"min:1",
-				"max:30",
+				phoneNumberRule,
 			},
 			"integrationID": []string{
 				"required",
