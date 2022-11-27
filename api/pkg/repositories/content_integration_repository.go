@@ -19,6 +19,9 @@ type ContentIntegrationRepository interface {
 	// Fetch all entities.ContentIntegration for a user
 	Fetch(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.ContentIntegration, error)
 
+	// FetchMultiple returns multiple entities.ContentIntegration by userID
+	FetchMultiple(ctx context.Context, userID entities.UserID, projectIDs []uuid.UUID) ([]*entities.ContentIntegration, error)
+
 	// Delete an entities.WhatsappIntegration
 	Delete(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) error
 

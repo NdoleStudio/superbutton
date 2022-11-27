@@ -33,6 +33,24 @@ func NewGormContentIntegrationRepository(
 	}
 }
 
+func (repository *gormContentIntegrationRepository) FetchMultiple(ctx context.Context, userID entities.UserID, IDs []uuid.UUID) ([]*entities.ContentIntegration, error) {
+	ctx, span := repository.tracer.Start(ctx)
+	defer span.End()
+
+	var integrations []*entities.ContentIntegration
+	err := repository.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Where("id IN ?", IDs).
+		Find(&integrations).
+		Error
+	if err != nil {
+		msg := fmt.Sprintf("cannot load content integrations for user with ID [%s] and projects [%+#v]", userID, IDs)
+		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	return integrations, nil
+}
+
 func (repository *gormContentIntegrationRepository) Store(ctx context.Context, integration *entities.ContentIntegration) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()

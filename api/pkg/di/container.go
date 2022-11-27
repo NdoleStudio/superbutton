@@ -69,6 +69,9 @@ func NewContainer(version string, projectID string) (container *Container) {
 	container.ProjectIntegrationRoutes()
 	container.RegisterContentIntegrationRoutes()
 
+	// UnAuthenticated routes
+	container.RegisterProjectSettingsRoutes()
+
 	// this has to be last since it registers the /* route
 	container.RegisterSwaggerRoutes()
 
@@ -109,6 +112,12 @@ func (container *Container) FirebaseAuthMiddlewares() []fiber.Handler {
 func (container *Container) RegisterUserRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.UserHandler{}))
 	container.UserHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
+// RegisterProjectSettingsRoutes registers routes for the /project-settings prefix
+func (container *Container) RegisterProjectSettingsRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ProjectSettingsHandler{}))
+	container.ProjectSettingsHandler().RegisterRoutes(container.App())
 }
 
 // RegisterProjectRoutes registers routes for the /projects prefix
@@ -225,6 +234,16 @@ func (container *Container) ProjectHandler() (handler *handlers.ProjectHandler) 
 	)
 }
 
+// ProjectSettingsHandler creates a new instance of handlers.ProjectSettingsHandler
+func (container *Container) ProjectSettingsHandler() (handler *handlers.ProjectSettingsHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewProjectSettingsHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.ProjectSettingService(),
+	)
+}
+
 // UserService creates a new instance of services.UserService
 func (container *Container) UserService() (service *services.User) {
 	container.logger.Debug(fmt.Sprintf("creating %T", service))
@@ -243,6 +262,19 @@ func (container *Container) ProjectIntegrationService() (service *services.Proje
 		container.Logger(),
 		container.Tracer(),
 		container.EventDispatcher(),
+		container.ProjectIntegrationRepository(),
+	)
+}
+
+// ProjectSettingService creates a new instance of services.ProjectSettingsService
+func (container *Container) ProjectSettingService() (service *services.ProjectSettingsService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewProjectSettingsService(
+		container.Logger(),
+		container.Tracer(),
+		container.ProjectRepository(),
+		container.WhatsappIntegrationRepository(),
+		container.ContentIntegrationRepository(),
 		container.ProjectIntegrationRepository(),
 	)
 }

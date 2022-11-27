@@ -19,6 +19,9 @@ type WhatsappIntegrationRepository interface {
 	// Fetch all entities.WhatsappIntegration for a user
 	Fetch(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.WhatsappIntegration, error)
 
+	// FetchMultiple returns multiple entities.WhatsappIntegration by userID
+	FetchMultiple(ctx context.Context, userID entities.UserID, projectIDs []uuid.UUID) ([]*entities.WhatsappIntegration, error)
+
 	// Delete an entities.WhatsappIntegration
 	Delete(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) error
 

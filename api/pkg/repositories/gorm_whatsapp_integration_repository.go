@@ -33,6 +33,24 @@ func NewGormWhatsappIntegrationRepository(
 	}
 }
 
+func (repository *gormWhatsappIntegrationRepository) FetchMultiple(ctx context.Context, userID entities.UserID, IDs []uuid.UUID) ([]*entities.WhatsappIntegration, error) {
+	ctx, span := repository.tracer.Start(ctx)
+	defer span.End()
+
+	var integrations []*entities.WhatsappIntegration
+	err := repository.db.WithContext(ctx).
+		Where("user_id = ?", userID).
+		Where("id IN ?", IDs).
+		Find(&integrations).
+		Error
+	if err != nil {
+		msg := fmt.Sprintf("cannot load whatsapp integrations for user with ID [%s] and projects [%+#v]", userID, IDs)
+		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	return integrations, nil
+}
+
 func (repository *gormWhatsappIntegrationRepository) Store(ctx context.Context, integration *entities.WhatsappIntegration) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
