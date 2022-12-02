@@ -2283,10 +2283,10 @@
   optionalDependencies:
     firebase-admin "^10.0.0"
 
-"@nuxtjs/html-validator@^1.2.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@nuxtjs/html-validator/-/html-validator-1.2.0.tgz#8880a943e3a93c0c0a69ba8e46858c93c808a389"
-  integrity sha512-WJCuqlqmTJdDUDkg/gdgNSNYaCiRtYI8f0l9A74KwIMYUFFY0QSaIzTd3uUe+1JdQz2N6RMKDrBKFpK/1fSpNA==
+"@nuxtjs/html-validator@^1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@nuxtjs/html-validator/-/html-validator-1.2.1.tgz#7da4809437fdcc6af18ebbf3d048f45ebb396d61"
+  integrity sha512-DuzD4cEJYwmBYvDgcPGgO90dAPiyk9Zyk8G44wdjNvzXHzxa5n1HfDPZ63O/+U3VSgxgUBeeYRPjSZhI//FjhA==
   dependencies:
     "@nuxt/kit" "^3.0.0"
     chalk "^5.1.2"
