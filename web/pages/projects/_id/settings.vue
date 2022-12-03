@@ -114,11 +114,9 @@
             class="mb-4"
             label="Greeting Timeout (seconds)"
             persistent-placeholder
-            :error="
-              $store.getters.errorMessages.has('greeting_timeout_seconds')
-            "
+            :error="$store.getters.errorMessages.has('greeting_timeout')"
             :error-messages="
-              $store.getters.errorMessages.get('greeting_timeout_seconds')
+              $store.getters.errorMessages.get('greeting_timeout')
             "
             placeholder="10"
             outlined
