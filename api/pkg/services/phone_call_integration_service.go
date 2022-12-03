@@ -92,6 +92,7 @@ func (service *PhoneCallIntegrationService) Create(ctx context.Context, params *
 		UserID:      params.UserID,
 		ProjectID:   params.ProjectID,
 		Enabled:     true,
+		Icon:        string(service.integrationType),
 		Name:        params.Name,
 		PhoneNumber: params.PhoneNumber,
 		Text:        params.Text,

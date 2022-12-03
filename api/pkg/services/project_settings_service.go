@@ -15,12 +15,13 @@ import (
 )
 
 type ProjectSettingsService struct {
-	tracer                        telemetry.Tracer
-	logger                        telemetry.Logger
-	projectRepository             repositories.ProjectRepository
-	whatsappIntegrationRepository repositories.WhatsappIntegrationRepository
-	contentIntegrationRepository  repositories.ContentIntegrationRepository
-	projectIntegrationRepository  repositories.ProjectIntegrationRepository
+	tracer                         telemetry.Tracer
+	logger                         telemetry.Logger
+	projectRepository              repositories.ProjectRepository
+	whatsappIntegrationRepository  repositories.WhatsappIntegrationRepository
+	contentIntegrationRepository   repositories.ContentIntegrationRepository
+	projectIntegrationRepository   repositories.ProjectIntegrationRepository
+	phoneCallIntegrationRepository repositories.PhoneCallIntegrationRepository
 }
 
 // NewProjectSettingsService creates a new ProjectSettingsService
@@ -31,14 +32,16 @@ func NewProjectSettingsService(
 	whatsappIntegrationRepository repositories.WhatsappIntegrationRepository,
 	contentIntegrationRepository repositories.ContentIntegrationRepository,
 	projectIntegrationRepository repositories.ProjectIntegrationRepository,
+	phoneCallIntegrationRepository repositories.PhoneCallIntegrationRepository,
 ) (s *ProjectSettingsService) {
 	return &ProjectSettingsService{
-		logger:                        logger.WithService(fmt.Sprintf("%T", s)),
-		tracer:                        tracer,
-		projectRepository:             projectRepository,
-		whatsappIntegrationRepository: whatsappIntegrationRepository,
-		contentIntegrationRepository:  contentIntegrationRepository,
-		projectIntegrationRepository:  projectIntegrationRepository,
+		logger:                         logger.WithService(fmt.Sprintf("%T", s)),
+		tracer:                         tracer,
+		projectRepository:              projectRepository,
+		whatsappIntegrationRepository:  whatsappIntegrationRepository,
+		contentIntegrationRepository:   contentIntegrationRepository,
+		projectIntegrationRepository:   projectIntegrationRepository,
+		phoneCallIntegrationRepository: phoneCallIntegrationRepository,
 	}
 }
 
@@ -82,6 +85,7 @@ func (service *ProjectSettingsService) fetchInParallel(ctx context.Context, user
 	errGroup, ctx := errgroup.WithContext(ctx)
 	for key, value := range integrationGroups {
 		ids := value
+		integrationType := key
 		switch key {
 		case entities.IntegrationTypeWhatsapp:
 			errGroup.Go(func() error {
@@ -94,7 +98,7 @@ func (service *ProjectSettingsService) fetchInParallel(ctx context.Context, user
 
 				for _, integration := range integrations {
 					integrationSettings[integration.ID] = &entities.ProjectSettingsIntegration{
-						Type:     entities.IntegrationTypeWhatsapp,
+						Type:     integrationType,
 						ID:       integration.ID,
 						Settings: integration,
 					}
@@ -105,14 +109,32 @@ func (service *ProjectSettingsService) fetchInParallel(ctx context.Context, user
 			errGroup.Go(func() error {
 				integrations, err := service.contentIntegrationRepository.FetchMultiple(ctx, userID, ids)
 				if err != nil {
-					return stacktrace.Propagate(err, fmt.Sprintf("cannot fetch whatsapp integraions for userID [%s] and projects [%+#v]", userID, ids))
+					return stacktrace.Propagate(err, fmt.Sprintf("cannot fetch [%s] integraions for userID [%s] and projects [%+#v]", integrationType, userID, ids))
 				}
 				lock.Lock()
 				defer lock.Unlock()
 
 				for _, integration := range integrations {
 					integrationSettings[integration.ID] = &entities.ProjectSettingsIntegration{
-						Type:     entities.IntegrationTypeContent,
+						Type:     integrationType,
+						ID:       integration.ID,
+						Settings: integration,
+					}
+				}
+				return nil
+			})
+		case entities.IntegrationTypePhoneCall:
+			errGroup.Go(func() error {
+				integrations, err := service.phoneCallIntegrationRepository.FetchMultiple(ctx, userID, ids)
+				if err != nil {
+					return stacktrace.Propagate(err, fmt.Sprintf("cannot fetch [%s] integraions for userID [%s] and projects [%+#v]", integrationType, userID, ids))
+				}
+				lock.Lock()
+				defer lock.Unlock()
+
+				for _, integration := range integrations {
+					integrationSettings[integration.ID] = &entities.ProjectSettingsIntegration{
+						Type:     integrationType,
 						ID:       integration.ID,
 						Settings: integration,
 					}

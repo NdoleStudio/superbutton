@@ -51,6 +51,22 @@
         </div>
         <template v-for="integration in settings.integrations" v-else>
           <div
+            v-if="integration.type === 'phone-call'"
+            :key="integration.id"
+            class="sb-widget__window__body__integration sb-widget__window__body__integration--phone-call"
+            @click="openPhoneCall(integration.settings.phone_number)"
+          >
+            <div class="sb-widget__window__body__integration--phone-call__icon">
+              <div
+                class="sb-widget__window__body__integration--phone-call__image"
+                :style="phoneCallIconStyle"
+              ></div>
+            </div>
+            <div class="sb-widget__window__body__integration--phone-call__text">
+              {{ integration.settings.text }}
+            </div>
+          </div>
+          <div
             v-if="integration.type === 'whatsapp'"
             :key="integration.id"
             class="sb-widget__window__body__integration sb-widget__window__body__integration--whatsapp"
@@ -139,6 +155,17 @@ interface WhatsappIntegration {
   }
 }
 
+interface PhoneCallConfiguration {
+  id: string
+  type: 'phone-call'
+  settings: {
+    enabled: boolean
+    text: string
+    phone_number: string
+    icon: string
+  }
+}
+
 export interface ContentIntegration {
   type: 'content'
   id: string
@@ -161,7 +188,9 @@ interface Project {
 
 interface Settings {
   project: Project | null
-  integrations: Array<WhatsappIntegration | ContentIntegration>
+  integrations: Array<
+    WhatsappIntegration | ContentIntegration | PhoneCallConfiguration
+  >
 }
 
 @Component
@@ -196,6 +225,16 @@ export default class SuperbuttonWidget extends Vue {
   get whatsappIconStyle() {
     return {
       backgroundImage: `url(${this.iconUrl('whatsapp')}`,
+      backgroundRepeat: 'no-repeat',
+      height: '16px',
+      width: '16px',
+      backgroundSize: 'cover',
+    }
+  }
+
+  get phoneCallIconStyle() {
+    return {
+      backgroundImage: `url(${this.iconUrl('phone-call')}`,
       backgroundRepeat: 'no-repeat',
       height: '16px',
       width: '16px',
@@ -248,6 +287,10 @@ export default class SuperbuttonWidget extends Vue {
       ?.focus()
   }
 
+  openPhoneCall(phoneNumber: string) {
+    window.open(`tel:+${phoneNumber}`)?.focus()
+  }
+
   openContentIntegration(integrationId: string) {
     this.activeIntegrationId = integrationId
   }
@@ -283,6 +326,7 @@ export default class SuperbuttonWidget extends Vue {
     fetch(`http://localhost:8000/v1/settings/${userId}/projects/${projectId}`)
       .then((response) => response.json())
       .then((response) => {
+        console.log(response.data)
         this.settings = response.data
         this.settingsLoaded = true
         this.displayGreeting()
@@ -401,6 +445,23 @@ export default class SuperbuttonWidget extends Vue {
         }
         &__text {
           font-size: 13px;
+        }
+      }
+
+      &__integration--phone-call {
+        display: flex;
+        &:hover {
+          background-color: #3759c4;
+          color: white;
+        }
+
+        &__icon {
+          background-color: #3759c4;
+          border-radius: 2px;
+          margin-right: 8px;
+          height: 24px;
+          width: 24px;
+          padding: 4px;
         }
       }
 

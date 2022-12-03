@@ -89,7 +89,7 @@ func (h *PhoneCallIntegrationHandler) show(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         PhoneCallIntegration
 // @Produce      json
-// @Param        payload	body 		requests.ContentIntegrationCreateRequest	true 	"phone call integration create payload"
+// @Param        payload	body 		requests.PhoneCallIntegrationCreateRequest	true 	"phone call integration create payload"
 // @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized

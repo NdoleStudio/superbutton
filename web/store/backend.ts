@@ -169,6 +169,12 @@ export interface RequestsContentIntegrationUpdateRequest {
   title: string
 }
 
+export interface RequestsPhoneCallIntegrationCreateRequest {
+  name: string
+  phone_number: string
+  text: string
+}
+
 export interface RequestsPhoneCallIntegrationUpdateRequest {
   name: string
   phone_number: string

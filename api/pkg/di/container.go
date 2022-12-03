@@ -303,6 +303,7 @@ func (container *Container) ProjectSettingService() (service *services.ProjectSe
 		container.WhatsappIntegrationRepository(),
 		container.ContentIntegrationRepository(),
 		container.ProjectIntegrationRepository(),
+		container.PhoneCallIntegrationRepository(),
 	)
 }
 

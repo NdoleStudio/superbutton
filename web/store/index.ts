@@ -2,6 +2,7 @@ import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
   AddContentIntegrationRequest,
+  AddPhoneCallIntegrationRequest,
   AddWhatsappIntegrationRequest,
   AppData,
   AuthUser,
@@ -9,11 +10,13 @@ import {
   ProjectIntegrationIdRequest,
   State,
   UpdateContentIntegrationRequest,
+  UpdatePhoneCallIntegrationRequest,
   UpdateProjectRequest,
   UpdateWhatsappIntegrationRequest,
 } from '~/store/types'
 import {
   EntitiesContentIntegration,
+  EntitiesPhoneCallIntegration,
   EntitiesProject,
   EntitiesProjectIntegration,
   EntitiesUser,
@@ -22,6 +25,7 @@ import {
   ResponsesOkArrayEntitiesProject,
   ResponsesOkArrayEntitiesProjectIntegration,
   ResponsesOkEntitiesContentIntegration,
+  ResponsesOkEntitiesPhoneCallIntegration,
   ResponsesOkEntitiesProject,
   ResponsesOkEntitiesUser,
   ResponsesOkEntitiesWhatsappIntegration,
@@ -579,6 +583,150 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Error while fetching content integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updatePhoneCallIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdatePhoneCallIntegrationRequest
+  ) {
+    return new Promise<EntitiesPhoneCallIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesPhoneCallIntegration>(
+          `/v1/projects/${payload.projectId}/phone-call-integrations/${payload.integrationId}`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesPhoneCallIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Phone Call integration updated successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating phone call integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  deletePhoneCallIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(
+          `/v1/projects/${payload.projectId}/phone-call-integrations/${payload.integrationId}`
+        )
+        .then(async (response: AxiosResponse<ResponsesNoContent>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                response.data.message ??
+                'Phone call integration deleted successfully',
+              type: 'success',
+            }),
+          ])
+          resolve(true)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while deleting phone call integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  addPhoneCallIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: AddPhoneCallIntegrationRequest
+  ) {
+    return new Promise<EntitiesPhoneCallIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .post<ResponsesOkEntitiesPhoneCallIntegration>(
+          `/v1/projects/${payload.projectId}/phone-call-integrations`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesPhoneCallIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Phone call integration added successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while adding content integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  getPhoneCallIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<EntitiesContentIntegration>((resolve, reject) => {
+      axios
+        .get<ResponsesOkEntitiesContentIntegration>(
+          `/v1/projects/${payload.projectId}/phone-call-integrations/${payload.integrationId}`
+        )
+        .then(
+          (response: AxiosResponse<ResponsesOkEntitiesContentIntegration>) => {
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching phone call integration',
               type: 'error',
             }),
           ])

@@ -4,6 +4,8 @@ import {
   EntitiesUser,
   RequestsContentIntegrationCreateRequest,
   RequestsContentIntegrationUpdateRequest,
+  RequestsPhoneCallIntegrationCreateRequest,
+  RequestsPhoneCallIntegrationUpdateRequest,
   RequestsProjectUpdateRequest,
   RequestsWhatsappIntegrationCreateRequest,
   RequestsWhatsappIntegrationUpdateRequest,
@@ -48,6 +50,15 @@ export interface AddContentIntegrationRequest
   extends RequestsContentIntegrationCreateRequest {
   projectId: string
 }
+
+export interface AddPhoneCallIntegrationRequest
+  extends RequestsPhoneCallIntegrationCreateRequest {
+  projectId: string
+}
+
+export interface UpdatePhoneCallIntegrationRequest
+  extends RequestsPhoneCallIntegrationUpdateRequest,
+    ProjectIntegrationIdRequest {}
 
 export interface UpdateContentIntegrationRequest
   extends RequestsContentIntegrationUpdateRequest,
