@@ -85,6 +85,7 @@
       </v-container>
     </v-app-bar>
     <v-main>
+      <superbutton-widget></superbutton-widget>
       <snackbar-notification></snackbar-notification>
       <dashboard-loading
         v-if="!$store.getters.authStateChanged"

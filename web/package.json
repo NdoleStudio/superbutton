@@ -24,6 +24,7 @@
     "firebase": "^9.14.0",
     "firebaseui": "^6.0.2",
     "flag-icons": "^6.6.6",
+    "microtip": "^0.2.2",
     "nuxt": "^2.15.8",
     "v-phone-input": "^2.0.0",
     "vue": "^2.6.14",
