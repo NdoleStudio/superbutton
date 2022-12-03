@@ -11,7 +11,7 @@ type IntegrationType string
 const (
 	IntegrationTypeWhatsapp    = IntegrationType("whatsapp")
 	IntegrationTypePhoneCall   = IntegrationType("phone-call")
-	IntegrationTypeURL         = IntegrationType("url")
+	IntegrationTypeLink        = IntegrationType("link")
 	IntegrationTypeContent     = IntegrationType("content")
 	IntegrationTypeContactForm = IntegrationType("contact-form")
 )

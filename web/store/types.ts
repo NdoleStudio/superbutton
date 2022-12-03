@@ -4,6 +4,8 @@ import {
   EntitiesUser,
   RequestsContentIntegrationCreateRequest,
   RequestsContentIntegrationUpdateRequest,
+  RequestsLinkIntegrationCreateRequest,
+  RequestsLinkIntegrationUpdateRequest,
   RequestsPhoneCallIntegrationCreateRequest,
   RequestsPhoneCallIntegrationUpdateRequest,
   RequestsProjectUpdateRequest,
@@ -66,6 +68,15 @@ export interface UpdateContentIntegrationRequest
 
 export interface UpdateWhatsappIntegrationRequest
   extends RequestsWhatsappIntegrationUpdateRequest,
+    ProjectIntegrationIdRequest {}
+
+export interface AddLinkIntegrationRequest
+  extends RequestsLinkIntegrationCreateRequest {
+  projectId: string
+}
+
+export interface UpdateLinkIntegrationRequest
+  extends RequestsLinkIntegrationUpdateRequest,
     ProjectIntegrationIdRequest {}
 
 export type AppData = {

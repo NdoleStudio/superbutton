@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="d-flex">
         <back-button :icon="true" :large="true"></back-button>
-        <h1 class="text-h4 ml-2 mb-4">Edit Whatsapp Integration</h1>
+        <h1 class="text-h4 ml-2 mb-4">Edit Phone Call Integration</h1>
       </v-col>
     </v-row>
     <v-row>

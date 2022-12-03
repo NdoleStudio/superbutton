@@ -13,9 +13,10 @@ import (
 
 // gormIntegrationRepository is responsible for persisting integrations
 type gormIntegrationRepository struct {
-	logger telemetry.Logger
-	tracer telemetry.Tracer
-	db     *gorm.DB
+	logger          telemetry.Logger
+	tracer          telemetry.Tracer
+	integrationType entities.IntegrationType
+	db              *gorm.DB
 }
 
 func (repository *gormIntegrationRepository) getPosition(tx *gorm.DB, integration *entities.Integration) (uint, error) {

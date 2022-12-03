@@ -3,7 +3,7 @@
     <v-row>
       <v-col class="d-flex">
         <back-button :icon="true" :large="true"></back-button>
-        <h1 class="text-h4 ml-2 mb-4">Edit Content</h1>
+        <h1 class="text-h4 ml-2 mb-4">Edit Link Integration</h1>
       </v-col>
     </v-row>
     <v-row>
@@ -15,7 +15,7 @@
             :counter="30"
             label="Name"
             persistent-placeholder
-            placeholder="e.g FAQ"
+            placeholder="e.g Customer Service"
             outlined
             class="mb-4"
             :error="$store.getters.errorMessages.has('name')"
@@ -23,46 +23,31 @@
             required
           ></v-text-field>
           <v-text-field
-            v-model="formTitle"
-            :disabled="savingIntegration"
-            :counter="50"
-            class="mb-4"
-            label="Title"
-            persistent-placeholder
-            :error="$store.getters.errorMessages.has('title')"
-            :error-messages="$store.getters.errorMessages.get('title')"
-            placeholder="e.g How to create smart buttons."
-            outlined
-            required
-          ></v-text-field>
-          <v-textarea
-            v-model="formSummary"
-            :disabled="savingIntegration"
-            :counter="300"
-            class="mb-4"
-            label="Summary"
-            :rows="3"
-            persistent-placeholder
-            :error="$store.getters.errorMessages.has('summary')"
-            :error-messages="$store.getters.errorMessages.get('summary')"
-            placeholder="e.g This is a summary that appears under the title"
-            outlined
-            required
-          ></v-textarea>
-          <v-textarea
             v-model="formText"
             :disabled="savingIntegration"
-            :counter="1000"
+            :counter="30"
             class="mb-4"
             label="Text"
-            :rows="6"
             persistent-placeholder
             :error="$store.getters.errorMessages.has('text')"
             :error-messages="$store.getters.errorMessages.get('text')"
-            placeholder="This is a complete text for the content you want to add. It can be up to 1000 characters"
+            placeholder="e.g Visit our FAQ page"
             outlined
             required
-          ></v-textarea>
+          ></v-text-field>
+          <v-text-field
+            v-model="formWebsite"
+            :disabled="savingIntegration"
+            :counter="30"
+            class="mb-4"
+            label="Website"
+            persistent-placeholder
+            :error="$store.getters.errorMessages.has('website')"
+            :error-messages="$store.getters.errorMessages.get('website')"
+            placeholder="e.g https://example.com"
+            outlined
+            required
+          ></v-text-field>
           <div class="d-flex">
             <loading-button
               :loading="savingIntegration"
@@ -70,7 +55,7 @@
               :large="true"
               @click="saveIntegration"
             >
-              Update Content
+              Update Phone Integration
             </loading-button>
             <v-spacer></v-spacer>
             <v-btn
@@ -94,7 +79,7 @@
 import { mdiPlus, mdiMenuDown, mdiDelete } from '@mdi/js'
 
 export default {
-  name: 'ProjectsIntegrationsWhatsappEdit',
+  name: 'ProjectsIntegrationsLinkEdit',
   layout: 'project',
   data() {
     return {
@@ -103,10 +88,8 @@ export default {
       mdiDelete,
       savingIntegration: false,
       formName: '',
-      content: '',
-      formTitle: '',
-      formSummary: '',
       formText: '',
+      formWebsite: '',
     }
   },
   async mounted() {
@@ -120,7 +103,7 @@ export default {
     loadIntegration() {
       this.savingIntegration = true
       this.$store
-        .dispatch('getContentIntegration', {
+        .dispatch('getLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
         })
@@ -133,19 +116,18 @@ export default {
     },
     /**
      *
-     * @param {EntitiesContentIntegration} integration
+     * @param {EntitiesLinkIntegration} integration
      */
     setDefaults(integration) {
       this.formName = integration.name
       this.formText = integration.text
-      this.formSummary = integration.summary
-      this.formTitle = integration.title
+      this.formWebsite = integration.url
     },
 
     deleteIntegration() {
       this.savingIntegration = true
       this.$store
-        .dispatch('deleteContentIntegration', {
+        .dispatch('deleteLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
         })
@@ -165,13 +147,12 @@ export default {
     saveIntegration() {
       this.savingIntegration = true
       this.$store
-        .dispatch('updateContentIntegration', {
+        .dispatch('updateLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
           name: this.formName,
           text: this.formText,
-          title: this.formTitle,
-          summary: this.formSummary,
+          website: this.formWebsite,
         })
         .then(() => {
           this.$router.push({

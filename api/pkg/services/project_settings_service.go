@@ -22,6 +22,7 @@ type ProjectSettingsService struct {
 	contentIntegrationRepository   repositories.ContentIntegrationRepository
 	projectIntegrationRepository   repositories.ProjectIntegrationRepository
 	phoneCallIntegrationRepository repositories.PhoneCallIntegrationRepository
+	linkIntegrationRepository      repositories.LinkIntegrationRepository
 }
 
 // NewProjectSettingsService creates a new ProjectSettingsService
@@ -33,6 +34,7 @@ func NewProjectSettingsService(
 	contentIntegrationRepository repositories.ContentIntegrationRepository,
 	projectIntegrationRepository repositories.ProjectIntegrationRepository,
 	phoneCallIntegrationRepository repositories.PhoneCallIntegrationRepository,
+	linkIntegrationRepository repositories.LinkIntegrationRepository,
 ) (s *ProjectSettingsService) {
 	return &ProjectSettingsService{
 		logger:                         logger.WithService(fmt.Sprintf("%T", s)),
@@ -42,6 +44,7 @@ func NewProjectSettingsService(
 		contentIntegrationRepository:   contentIntegrationRepository,
 		projectIntegrationRepository:   projectIntegrationRepository,
 		phoneCallIntegrationRepository: phoneCallIntegrationRepository,
+		linkIntegrationRepository:      linkIntegrationRepository,
 	}
 }
 
@@ -126,6 +129,24 @@ func (service *ProjectSettingsService) fetchInParallel(ctx context.Context, user
 		case entities.IntegrationTypePhoneCall:
 			errGroup.Go(func() error {
 				integrations, err := service.phoneCallIntegrationRepository.FetchMultiple(ctx, userID, ids)
+				if err != nil {
+					return stacktrace.Propagate(err, fmt.Sprintf("cannot fetch [%s] integraions for userID [%s] and projects [%+#v]", integrationType, userID, ids))
+				}
+				lock.Lock()
+				defer lock.Unlock()
+
+				for _, integration := range integrations {
+					integrationSettings[integration.ID] = &entities.ProjectSettingsIntegration{
+						Type:     integrationType,
+						ID:       integration.ID,
+						Settings: integration,
+					}
+				}
+				return nil
+			})
+		case entities.IntegrationTypeLink:
+			errGroup.Go(func() error {
+				integrations, err := service.linkIntegrationRepository.FetchMultiple(ctx, userID, ids)
 				if err != nil {
 					return stacktrace.Propagate(err, fmt.Sprintf("cannot fetch [%s] integraions for userID [%s] and projects [%+#v]", integrationType, userID, ids))
 				}

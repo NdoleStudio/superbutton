@@ -11,6 +11,71 @@
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">
+                <v-icon color="#1E88E5" class="mr-4">{{ mdiOpenInNew }}</v-icon>
+                <h3 class="text-h6 font-weight-bold">Link</h3>
+                <v-progress-circular
+                  v-if="loadingIntegrations"
+                  class="ml-2 mt-2"
+                  size="16"
+                  width="1"
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+              </div>
+            </v-expansion-panel-header>
+            <v-expansion-panel-content>
+              <v-divider></v-divider>
+              <v-simple-table v-if="linkIntegrations.length">
+                <template #default>
+                  <thead class="text-uppercase">
+                    <tr>
+                      <th class="text-left" style="width: 30%">Name</th>
+                      <th class="text-left" style="width: 50%">Identifier</th>
+                      <th class="">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in linkIntegrations" :key="item.id">
+                      <td>{{ item.name }}</td>
+                      <td>{{ item.integration_id }}</td>
+                      <td>
+                        <v-btn
+                          small
+                          class="secondary"
+                          :to="{
+                            name: 'projects-id-integrations-link-integrationId-edit',
+                            params: {
+                              id: $store.getters.activeProjectId,
+                              integrationId: item.integration_id,
+                            },
+                          }"
+                        >
+                          <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
+                          Edit
+                        </v-btn>
+                      </td>
+                    </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+              <v-btn
+                :to="{
+                  name: 'projects-id-integrations-link-create',
+                  params: { id: $store.getters.activeProjectId },
+                }"
+                class="primary mt-4"
+                small
+              >
+                <v-icon left>{{ mdiPlus }}</v-icon>
+                Add Phone
+              </v-btn>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+        </v-expansion-panels>
+        <v-expansion-panels :value="0" class="mb-4" readonly>
+          <v-expansion-panel>
+            <v-expansion-panel-header>
+              <div class="d-flex">
                 <v-icon color="#3759c4" class="mr-4">{{ mdiPhone }}</v-icon>
                 <h3 class="text-h6 font-weight-bold">Phone Call</h3>
                 <v-progress-circular
@@ -216,6 +281,7 @@ import {
   mdiWhatsapp,
   mdiPhone,
   mdiSquareEditOutline,
+  mdiOpenInNew,
 } from '@mdi/js'
 
 export default {
@@ -229,6 +295,7 @@ export default {
       mdiStickerText,
       mdiWhatsapp,
       mdiPhone,
+      mdiOpenInNew,
       mdiSquareEditOutline,
       projectIntegrations: [],
       formWebsite: '',
@@ -258,6 +325,15 @@ export default {
     phoneCallIntegrations() {
       return this.projectIntegrations.filter((integration) => {
         return integration.type === 'phone-call'
+      })
+    },
+
+    /**
+     * @returns {EntitiesProjectIntegration[]}
+     */
+    linkIntegrations() {
+      return this.projectIntegrations.filter((integration) => {
+        return integration.type === 'link'
       })
     },
   },

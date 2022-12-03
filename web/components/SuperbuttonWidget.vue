@@ -46,7 +46,10 @@
             </div>
           </div>
         </div>
-        <div v-if="activeIntegration" style="padding: 16px">
+        <div
+          v-if="activeIntegration"
+          class="sb-widget__window__body__integration--active__text"
+        >
           {{ activeIntegration.settings.text }}
         </div>
         <template v-for="integration in settings.integrations" v-else>
@@ -63,6 +66,22 @@
               ></div>
             </div>
             <div class="sb-widget__window__body__integration--phone-call__text">
+              {{ integration.settings.text }}
+            </div>
+          </div>
+          <div
+            v-if="integration.type === 'link'"
+            :key="integration.id"
+            class="sb-widget__window__body__integration sb-widget__window__body__integration--link"
+            @click="openLink(integration.settings.url)"
+          >
+            <div class="sb-widget__window__body__integration--link__icon">
+              <div
+                class="sb-widget__window__body__integration--link__image"
+                :style="linkIconStyle"
+              ></div>
+            </div>
+            <div class="sb-widget__window__body__integration--link__text">
               {{ integration.settings.text }}
             </div>
           </div>
@@ -166,6 +185,18 @@ interface PhoneCallConfiguration {
   }
 }
 
+export interface LinkIntegration {
+  type: 'link'
+  id: string
+  settings: {
+    enabled: boolean
+    title: string
+    url: string
+    text: string
+    icon: string
+  }
+}
+
 export interface ContentIntegration {
   type: 'content'
   id: string
@@ -189,7 +220,10 @@ interface Project {
 interface Settings {
   project: Project | null
   integrations: Array<
-    WhatsappIntegration | ContentIntegration | PhoneCallConfiguration
+    | WhatsappIntegration
+    | ContentIntegration
+    | PhoneCallConfiguration
+    | LinkIntegration
   >
 }
 
@@ -235,6 +269,16 @@ export default class SuperbuttonWidget extends Vue {
   get phoneCallIconStyle() {
     return {
       backgroundImage: `url(${this.iconUrl('phone-call')}`,
+      backgroundRepeat: 'no-repeat',
+      height: '16px',
+      width: '16px',
+      backgroundSize: 'cover',
+    }
+  }
+
+  get linkIconStyle() {
+    return {
+      backgroundImage: `url(${this.iconUrl('link')}`,
       backgroundRepeat: 'no-repeat',
       height: '16px',
       width: '16px',
@@ -291,6 +335,10 @@ export default class SuperbuttonWidget extends Vue {
     window.open(`tel:${phoneNumber}`)?.focus()
   }
 
+  openLink(url: string) {
+    window.open(url, '_blank')?.focus()
+  }
+
   openContentIntegration(integrationId: string) {
     this.activeIntegrationId = integrationId
   }
@@ -326,7 +374,6 @@ export default class SuperbuttonWidget extends Vue {
     fetch(`http://localhost:8000/v1/settings/${userId}/projects/${projectId}`)
       .then((response) => response.json())
       .then((response) => {
-        console.log(response.data)
         this.settings = response.data
         this.settingsLoaded = true
         this.displayGreeting()
@@ -392,6 +439,12 @@ export default class SuperbuttonWidget extends Vue {
           font-weight: bold;
           font-size: 16px;
         }
+        &__text {
+          padding-left: 16px;
+          padding-right: 16px;
+          margin-top: -8px;
+          white-space: pre-line;
+        }
         &__back-button {
           cursor: pointer;
           display: flex;
@@ -428,6 +481,9 @@ export default class SuperbuttonWidget extends Vue {
         background-color: white;
         cursor: pointer;
         display: flex;
+        box-shadow: 0 5px 7px -3.5px rgba(0, 0, 0, 0.2),
+          0 6.5px 6px 1.5px rgba(0, 0, 0, 0.14),
+          0 4.5px 11px 4px rgba(0, 0, 0, 0.12) !important;
       }
 
       &__integration--content {
@@ -457,6 +513,23 @@ export default class SuperbuttonWidget extends Vue {
 
         &__icon {
           background-color: #7ed766;
+          border-radius: 2px;
+          margin-right: 8px;
+          height: 24px;
+          width: 24px;
+          padding: 4px;
+        }
+      }
+
+      &__integration--link {
+        display: flex;
+        &:hover {
+          background-color: #1e88e5;
+          color: white;
+        }
+
+        &__icon {
+          background-color: #1e88e5;
           border-radius: 2px;
           margin-right: 8px;
           height: 24px;

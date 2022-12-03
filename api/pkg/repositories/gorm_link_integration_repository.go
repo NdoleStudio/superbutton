@@ -13,53 +13,53 @@ import (
 	"gorm.io/gorm"
 )
 
-// gormPhoneCallIntegrationRepository is responsible for persisting entities.PhoneCallIntegration
-type gormPhoneCallIntegrationRepository struct {
+// gormLinkIntegrationRepository is responsible for persisting entities.LinkIntegration
+type gormLinkIntegrationRepository struct {
 	gormIntegrationRepository
 }
 
-// NewGormPhoneCallIntegrationRepository creates the GORM version of the PhoneCallIntegrationRepository
-func NewGormPhoneCallIntegrationRepository(
+// NewGormLinkIntegrationRepository creates the GORM version of the LinkIntegrationRepository
+func NewGormLinkIntegrationRepository(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
 	db *gorm.DB,
-) PhoneCallIntegrationRepository {
-	return &gormPhoneCallIntegrationRepository{
+) LinkIntegrationRepository {
+	return &gormLinkIntegrationRepository{
 		gormIntegrationRepository{
-			integrationType: entities.IntegrationTypePhoneCall,
-			logger:          logger.WithService(fmt.Sprintf("%T", &gormPhoneCallIntegrationRepository{})),
+			integrationType: entities.IntegrationTypeLink,
+			logger:          logger.WithService(fmt.Sprintf("%T", &gormLinkIntegrationRepository{})),
 			tracer:          tracer,
 			db:              db,
 		},
 	}
 }
 
-func (repository *gormPhoneCallIntegrationRepository) FetchMultiple(ctx context.Context, userID entities.UserID, IDs []uuid.UUID) ([]*entities.PhoneCallIntegration, error) {
+func (repository *gormLinkIntegrationRepository) FetchMultiple(ctx context.Context, userID entities.UserID, IDs []uuid.UUID) ([]*entities.LinkIntegration, error) {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
-	var integrations []*entities.PhoneCallIntegration
+	var integrations []*entities.LinkIntegration
 	err := repository.db.WithContext(ctx).
 		Where("user_id = ?", userID).
 		Where("id IN ?", IDs).
 		Find(&integrations).
 		Error
 	if err != nil {
-		msg := fmt.Sprintf("cannot load phone call integrations for user with ID [%s] and projects [%+#v]", userID, IDs)
+		msg := fmt.Sprintf("cannot load [%s] integrations for user with ID [%s] and projects [%+#v]", repository.integrationType, userID, IDs)
 		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
 	return integrations, nil
 }
 
-func (repository *gormPhoneCallIntegrationRepository) Store(ctx context.Context, integration *entities.PhoneCallIntegration) error {
+func (repository *gormLinkIntegrationRepository) Store(ctx context.Context, integration *entities.LinkIntegration) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
 	err := crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
 		err := tx.Create(integration).Error
 		if err != nil {
-			return stacktrace.Propagate(err, fmt.Sprintf("cannot store [phone call] integration with ID [%s]", integration.ID))
+			return stacktrace.Propagate(err, fmt.Sprintf("cannot store [%s] integration with ID [%s]", repository.integrationType, integration.ID))
 		}
 
 		position, err := repository.getPosition(tx, integration.Integration())
@@ -76,14 +76,14 @@ func (repository *gormPhoneCallIntegrationRepository) Store(ctx context.Context,
 		return nil
 	})
 	if err != nil {
-		msg := fmt.Sprintf("cannot save content integration with ID [%s] and project [%s]", integration.ID, integration.ProjectID)
+		msg := fmt.Sprintf("cannot save [%s] integration with ID [%s] and project [%s]", repository.integrationType, integration.ID, integration.ProjectID)
 		return repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
 	return nil
 }
 
-func (repository *gormPhoneCallIntegrationRepository) Update(ctx context.Context, integration *entities.PhoneCallIntegration) error {
+func (repository *gormLinkIntegrationRepository) Update(ctx context.Context, integration *entities.LinkIntegration) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
@@ -97,18 +97,18 @@ func (repository *gormPhoneCallIntegrationRepository) Update(ctx context.Context
 		return nil
 	})
 	if err != nil {
-		msg := fmt.Sprintf("cannot content integration with ID [%s] and project [%s]", integration.ID, integration.ProjectID)
+		msg := fmt.Sprintf("cannot [%s] integration with ID [%s] and project [%s]", repository.integrationType, integration.ID, integration.ProjectID)
 		return repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 
 	return nil
 }
 
-func (repository *gormPhoneCallIntegrationRepository) Fetch(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.PhoneCallIntegration, error) {
+func (repository *gormLinkIntegrationRepository) Fetch(ctx context.Context, userID entities.UserID, projectID uuid.UUID) ([]*entities.LinkIntegration, error) {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
-	var integrations []*entities.PhoneCallIntegration
+	var integrations []*entities.LinkIntegration
 	err := repository.db.WithContext(ctx).
 		Where("user_id = ?", userID).
 		Where("project_id = ?", projectID).
@@ -122,7 +122,7 @@ func (repository *gormPhoneCallIntegrationRepository) Fetch(ctx context.Context,
 	return integrations, nil
 }
 
-func (repository *gormPhoneCallIntegrationRepository) Delete(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) error {
+func (repository *gormLinkIntegrationRepository) Delete(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
@@ -133,7 +133,7 @@ func (repository *gormPhoneCallIntegrationRepository) Delete(ctx context.Context
 			Delete(&entities.LinkIntegration{}).
 			Error
 		if err != nil {
-			return stacktrace.Propagate(err, fmt.Sprintf("cannot delete content integration with ID [%s]", integrationID))
+			return stacktrace.Propagate(err, fmt.Sprintf("cannot delete [%s] integration with ID [%s]", repository.integrationType, integrationID))
 		}
 
 		err = repository.deleteProjectIntegration(tx, userID, integrationID)
@@ -151,23 +151,23 @@ func (repository *gormPhoneCallIntegrationRepository) Delete(ctx context.Context
 	return nil
 }
 
-func (repository *gormPhoneCallIntegrationRepository) Load(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) (*entities.PhoneCallIntegration, error) {
+func (repository *gormLinkIntegrationRepository) Load(ctx context.Context, userID entities.UserID, integrationID uuid.UUID) (*entities.LinkIntegration, error) {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()
 
-	integration := new(entities.PhoneCallIntegration)
+	integration := new(entities.LinkIntegration)
 	err := repository.db.WithContext(ctx).
 		Where("user_id = ?", userID).
 		Where("id = ?", integrationID).
 		First(integration).
 		Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		msg := fmt.Sprintf("content integration with ID [%s] for user [%s] does not exist", integrationID, userID)
+		msg := fmt.Sprintf("[%s] integration with ID [%s] for user [%s] does not exist", repository.integrationType, integrationID, userID)
 		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.PropagateWithCode(err, ErrCodeNotFound, msg))
 	}
 
 	if err != nil {
-		msg := fmt.Sprintf("cannot load content integration with ID [%s] and user [%s]", integrationID, userID)
+		msg := fmt.Sprintf("cannot load [%s] integration with ID [%s] and user [%s]", repository.integrationType, integrationID, userID)
 		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
 

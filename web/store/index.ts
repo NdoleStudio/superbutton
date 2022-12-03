@@ -2,6 +2,7 @@ import { GetterTree, ActionTree, MutationTree, ActionContext } from 'vuex'
 import { AxiosError, AxiosResponse } from 'axios'
 import {
   AddContentIntegrationRequest,
+  AddLinkIntegrationRequest,
   AddPhoneCallIntegrationRequest,
   AddWhatsappIntegrationRequest,
   AppData,
@@ -10,12 +11,14 @@ import {
   ProjectIntegrationIdRequest,
   State,
   UpdateContentIntegrationRequest,
+  UpdateLinkIntegrationRequest,
   UpdatePhoneCallIntegrationRequest,
   UpdateProjectRequest,
   UpdateWhatsappIntegrationRequest,
 } from '~/store/types'
 import {
   EntitiesContentIntegration,
+  EntitiesLinkIntegration,
   EntitiesPhoneCallIntegration,
   EntitiesProject,
   EntitiesProjectIntegration,
@@ -25,6 +28,7 @@ import {
   ResponsesOkArrayEntitiesProject,
   ResponsesOkArrayEntitiesProjectIntegration,
   ResponsesOkEntitiesContentIntegration,
+  ResponsesOkEntitiesLinkIntegration,
   ResponsesOkEntitiesPhoneCallIntegration,
   ResponsesOkEntitiesProject,
   ResponsesOkEntitiesUser,
@@ -698,7 +702,7 @@ export const actions: ActionTree<RootState, RootState> = {
             context.dispatch('addNotification', {
               message:
                 error.response?.data?.message ??
-                'Validation errors while adding content integration',
+                'Validation errors while adding phone call integration',
               type: 'error',
             }),
           ])
@@ -727,6 +731,148 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Error while fetching phone call integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  getLinkIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<EntitiesLinkIntegration>((resolve, reject) => {
+      axios
+        .get<ResponsesOkEntitiesLinkIntegration>(
+          `/v1/projects/${payload.projectId}/link-integrations/${payload.integrationId}`
+        )
+        .then((response: AxiosResponse<ResponsesOkEntitiesLinkIntegration>) => {
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching link integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updateLinkIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateLinkIntegrationRequest
+  ) {
+    return new Promise<EntitiesLinkIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesLinkIntegration>(
+          `/v1/projects/${payload.projectId}/link-integrations/${payload.integrationId}`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesLinkIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Link integration updated successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating link integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  deleteLinkIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: ProjectIntegrationIdRequest
+  ) {
+    return new Promise<boolean>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(
+          `/v1/projects/${payload.projectId}/link-integrations/${payload.integrationId}`
+        )
+        .then(async (response: AxiosResponse<ResponsesNoContent>) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                response.data.message ??
+                'Link integration deleted successfully',
+              type: 'success',
+            }),
+          ])
+          resolve(true)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while deleting link integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  addLinkIntegration(
+    context: ActionContext<RootState, RootState>,
+    payload: AddLinkIntegrationRequest
+  ) {
+    return new Promise<EntitiesLinkIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .post<ResponsesOkEntitiesLinkIntegration>(
+          `/v1/projects/${payload.projectId}/link-integrations`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesLinkIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ??
+                  'Phone call integration added successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while adding link integration',
               type: 'error',
             }),
           ])

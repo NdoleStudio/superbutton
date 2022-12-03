@@ -32,6 +32,29 @@ export interface EntitiesContentIntegration {
   user_id: string
 }
 
+export interface EntitiesLinkIntegration {
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example true */
+  enabled: boolean
+  /** @example "url" */
+  icon: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example "FAQ" */
+  name: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  project_id: string
+  /** @example "Visit our FAQ" */
+  text: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "https://example.com" */
+  url: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
+}
+
 export interface EntitiesPhoneCallIntegration {
   /** @example "2022-06-05T14:26:02.302718+03:00" */
   created_at: string
@@ -169,6 +192,19 @@ export interface RequestsContentIntegrationUpdateRequest {
   title: string
 }
 
+export interface RequestsLinkIntegrationCreateRequest {
+  name: string
+  text: string
+  website: string
+}
+
+export interface RequestsLinkIntegrationUpdateRequest {
+  name: string
+  phone_number: string
+  text: string
+  website: string
+}
+
 export interface RequestsPhoneCallIntegrationCreateRequest {
   name: string
   phone_number: string
@@ -255,6 +291,14 @@ export interface ResponsesOkArrayEntitiesProjectIntegration {
 
 export interface ResponsesOkEntitiesContentIntegration {
   data: EntitiesContentIntegration
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkEntitiesLinkIntegration {
+  data: EntitiesLinkIntegration
   /** @example "Request handled successfully" */
   message: string
   /** @example "success" */
