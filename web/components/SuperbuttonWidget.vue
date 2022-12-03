@@ -288,7 +288,7 @@ export default class SuperbuttonWidget extends Vue {
   }
 
   openPhoneCall(phoneNumber: string) {
-    window.open(`tel:+${phoneNumber}`)?.focus()
+    window.open(`tel:${phoneNumber}`)?.focus()
   }
 
   openContentIntegration(integrationId: string) {
@@ -451,12 +451,12 @@ export default class SuperbuttonWidget extends Vue {
       &__integration--phone-call {
         display: flex;
         &:hover {
-          background-color: #3759c4;
+          background-color: #7ed766;
           color: white;
         }
 
         &__icon {
-          background-color: #3759c4;
+          background-color: #7ed766;
           border-radius: 2px;
           margin-right: 8px;
           height: 24px;

@@ -52,7 +52,7 @@ func (validator *ContentIntegrationHandlerValidator) ValidateUpdate(ctx context.
 			"summary": []string{
 				"required",
 				"min:1",
-				"max:100",
+				"max:300",
 			},
 			"integrationID": []string{
 				"required",
@@ -88,7 +88,7 @@ func (validator *ContentIntegrationHandlerValidator) ValidateCreate(ctx context.
 			"summary": []string{
 				"required",
 				"min:1",
-				"max:100",
+				"max:300",
 			},
 			"projectID": []string{
 				"required",
