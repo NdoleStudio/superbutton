@@ -48,7 +48,7 @@ func (h *ProjectIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares [
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/:projectID/integrations 	[get]
+// @Router       /projects/{projectID}/integrations 	[get]
 func (h *ProjectIntegrationHandler) index(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()

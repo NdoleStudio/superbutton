@@ -64,7 +64,7 @@ func (h *LinkIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fi
 // @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/:projectID/link-integrations/:integrationID 	[get]
+// @Router       /projects/{projectID}/link-integrations/{integrationID} 	[get]
 func (h *LinkIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()

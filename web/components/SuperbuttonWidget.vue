@@ -307,8 +307,8 @@ export default class SuperbuttonWidget extends Vue {
 
   mounted() {
     this.loadSettings(
-      '9DMHezLb9NV7Had2PY003K8KRVn2',
-      '0f097a15-3a7b-4602-9c6d-ed2b00683a47'
+      this.$store.getters.authUser.uid,
+      this.$store.getters.activeProjectId
     )
   }
 
