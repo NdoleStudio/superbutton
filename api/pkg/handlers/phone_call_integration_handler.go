@@ -16,23 +16,23 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
-// ContentIntegrationHandler handles user http requests.
-type ContentIntegrationHandler struct {
+// PhoneCallIntegrationHandler handles user http requests.
+type PhoneCallIntegrationHandler struct {
 	handler
 	logger    telemetry.Logger
 	tracer    telemetry.Tracer
-	validator *validators.ContentIntegrationHandlerValidator
-	service   *services.ContentIntegrationService
+	validator *validators.PhoneCallIntegrationHandlerValidator
+	service   *services.PhoneCallIntegrationService
 }
 
-// NewContentIntegrationHandler creates a new ContentIntegrationHandler
-func NewContentIntegrationHandler(
+// NewPhoneCallIntegrationHandler creates a new PhoneCallIntegrationHandler
+func NewPhoneCallIntegrationHandler(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
-	validator *validators.ContentIntegrationHandlerValidator,
-	service *services.ContentIntegrationService,
-) (h *ContentIntegrationHandler) {
-	return &ContentIntegrationHandler{
+	validator *validators.PhoneCallIntegrationHandlerValidator,
+	service *services.PhoneCallIntegrationService,
+) (h *PhoneCallIntegrationHandler) {
+	return &PhoneCallIntegrationHandler{
 		logger:    logger.WithService(fmt.Sprintf("%T", h)),
 		tracer:    tracer,
 		validator: validator,
@@ -41,34 +41,34 @@ func NewContentIntegrationHandler(
 }
 
 // RegisterRoutes registers the routes for the ContentIntegrationHandler
-func (h *ContentIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
-	router := app.Group("/v1/projects/:projectID/content-integrations")
+func (h *PhoneCallIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
+	router := app.Group("/v1/projects/:projectID/phone-call-integrations")
 	router.Post("/", h.computeRoute(middlewares, h.create)...)
 	router.Get("/:integrationID", h.computeRoute(middlewares, h.show)...)
 	router.Put("/:integrationID", h.computeRoute(middlewares, h.update)...)
 	router.Delete("/:integrationID", h.computeRoute(middlewares, h.delete)...)
 }
 
-// @Summary      Get content integration
-// @Description  Fetches a specific content integration
+// @Summary      Get phone call integration
+// @Description  Fetches a specific phone call integration
 // @Security	 BearerAuth
-// @Tags         ContentIntegration
+// @Tags         PhoneCallIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
+// @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/:projectID/content-integrations/:integrationID 	[get]
-func (h *ContentIntegrationHandler) show(c *fiber.Ctx) error {
+// @Router       /projects/:projectID/phone-call-integrations/:integrationID 	[get]
+func (h *PhoneCallIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
 	if errors := h.mergeErrors(h.validateUUID(c, "integrationID")); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while fetching content integration with ID [%s]", spew.Sdump(errors), c.Params("integrationID"))
+		msg := fmt.Sprintf("validation errors [%s], while fetching [phone-call] integration with ID [%s]", spew.Sdump(errors), c.Params("integrationID"))
 		ctxLogger.Warn(stacktrace.NewError(msg))
-		return h.responseUnprocessableEntity(c, errors, "validation errors while fetching content integration")
+		return h.responseUnprocessableEntity(c, errors, "validation errors while fetching phone call integration")
 	}
 
 	integrationID := uuid.MustParse(c.Params("integrationID"))
@@ -76,31 +76,31 @@ func (h *ContentIntegrationHandler) show(c *fiber.Ctx) error {
 
 	integration, err := h.service.Get(ctx, authUser.ID, integrationID)
 	if err != nil {
-		msg := fmt.Sprintf("cannot fetch text intergration [%s] for user with ID [%s]", authUser.ID, integrationID)
+		msg := fmt.Sprintf("cannot fetch [phone-call] intergration [%s] for user with ID [%s]", authUser.ID, integrationID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
 
-	return h.responseOK(c, "content integration fetched successfully", integration)
+	return h.responseOK(c, "phone call integration fetched successfully", integration)
 }
 
-// @Summary      Create a content integration
-// @Description  This endpoint creates a new content integration for a project
+// @Summary      Create a phone call integration
+// @Description  This endpoint creates a new phone call integration for a project
 // @Security	 BearerAuth
-// @Tags         ContentIntegration
+// @Tags         PhoneCallIntegration
 // @Produce      json
-// @Param        payload	body 		requests.ContentIntegrationCreateRequest	true 	"content integration create payload"
-// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
+// @Param        payload	body 		requests.ContentIntegrationCreateRequest	true 	"phone call integration create payload"
+// @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/content-integrations [post]
-func (h *ContentIntegrationHandler) create(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/phone-call-integrations [post]
+func (h *PhoneCallIntegrationHandler) create(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
-	var request requests.ContentIntegrationCreateRequest
+	var request requests.PhoneCallIntegrationCreateRequest
 	if err := c.BodyParser(&request); err != nil {
 		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
@@ -109,39 +109,39 @@ func (h *ContentIntegrationHandler) create(c *fiber.Ctx) error {
 	request.ProjectID = c.Params("projectID")
 
 	if errors := h.validator.ValidateCreate(ctx, request.Sanitize()); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while content integration with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while creating [phone-call] integration with request [%s]", spew.Sdump(errors), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
-		return h.responseUnprocessableEntity(c, errors, "validation errors while integration")
+		return h.responseUnprocessableEntity(c, errors, "validation errors while creating integration")
 	}
 
 	authUser := h.userFromContext(c)
 	integration, err := h.service.Create(ctx, request.ToCreateParams(c.OriginalURL(), authUser.ID))
 	if err != nil {
-		msg := fmt.Sprintf("cannot create content integration for user with ID [%s]", authUser.ID)
+		msg := fmt.Sprintf("cannot create [phone-call] integration for user with ID [%s]", authUser.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
 
-	return h.responseOK(c, "content integration created successfully", integration)
+	return h.responseOK(c, "phone call integration created successfully", integration)
 }
 
-// @Summary      Update a content integration
-// @Description  This endpoint updates a content integration for a project
+// @Summary      Update a phone call integration
+// @Description  This endpoint updates a phone call integration for a project
 // @Security	 BearerAuth
-// @Tags         ContentIntegration
+// @Tags         PhoneCallIntegration
 // @Produce      json
-// @Param        payload	body 		requests.ContentIntegrationUpdateRequest	true 	"content integration update payload"
-// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
+// @Param        payload	body 		requests.PhoneCallIntegrationUpdateRequest	true 	"phone call integration update payload"
+// @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/content-integrations/{integrationID} [put]
-func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/phone-call-integrations/{integrationID} [put]
+func (h *PhoneCallIntegrationHandler) update(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
-	var request requests.ContentIntegrationUpdateRequest
+	var request requests.PhoneCallIntegrationUpdateRequest
 	if err := c.BodyParser(&request); err != nil {
 		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
@@ -150,7 +150,7 @@ func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 	request.IntegrationID = c.Params("integrationID")
 
 	if errors := h.validator.ValidateUpdate(ctx, request.Sanitize()); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while updating content integration with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while updating [phone-call] integration with request [%s]", spew.Sdump(errors), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
 		return h.responseUnprocessableEntity(c, errors, "validation errors while updating integration")
 	}
@@ -158,13 +158,13 @@ func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 	authUser := h.userFromContext(c)
 	integration, err := h.service.Update(ctx, request.ToUpdateParams(c.OriginalURL(), authUser.ID))
 	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
-		msg := fmt.Sprintf("cannot find content integration with id [%s] for user [%s]", request.IntegrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot find [phone-call] integration with id [%s] for user [%s]", request.IntegrationID, authUser.ID)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
 		return h.responseNotFound(c, msg)
 	}
 
 	if err != nil {
-		msg := fmt.Sprintf("cannot update content integration [%s] for user with ID [%s]", request.IntegrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot update [phone-call] integration [%s] for user with ID [%s]", request.IntegrationID, authUser.ID)
 		ctxLogger.Error(stacktrace.Propagate(err, msg))
 		return h.responseInternalServerError(c)
 	}
@@ -172,10 +172,10 @@ func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 	return h.responseOK(c, "integration updated successfully", integration)
 }
 
-// @Summary      Delete a content integration
-// @Description  This endpoint deletes a content integration for a project
+// @Summary      Delete a phone call integration
+// @Description  This endpoint deletes a phone call integration for a project
 // @Security	 BearerAuth
-// @Tags         ContentIntegration
+// @Tags         PhoneCallIntegration
 // @Produce      json
 // @Success      200 		{object}	responses.NoContent
 // @Failure      400		{object}	responses.BadRequest
@@ -183,13 +183,13 @@ func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 // @Failure 	 404    	{object}	responses.NotFound
 // @Failure      422		{object}	responses.UnprocessableEntity
 // @Failure      500		{object}	responses.InternalServerError
-// @Router       /projects/{projectID}/content-integrations/{integrationID} [delete]
-func (h *ContentIntegrationHandler) delete(c *fiber.Ctx) error {
+// @Router       /projects/{projectID}/phone-call-integrations/{integrationID} [delete]
+func (h *PhoneCallIntegrationHandler) delete(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
 	defer span.End()
 
 	if errors := h.mergeErrors(h.validateUUID(c, "projectID"), h.validateUUID(c, "integrationID")); len(errors) != 0 {
-		msg := fmt.Sprintf("validation errors [%s], while deleting integration with request [%s]", spew.Sdump(errors), c.Body())
+		msg := fmt.Sprintf("validation errors [%s], while deleting [phone-call] integration with request [%s]", spew.Sdump(errors), c.Body())
 		ctxLogger.Warn(stacktrace.NewError(msg))
 		return h.responseUnprocessableEntity(c, errors, "validation errors while deleting integration")
 	}
@@ -205,7 +205,7 @@ func (h *ContentIntegrationHandler) delete(c *fiber.Ctx) error {
 		UserID:        authUser.ID,
 	})
 	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
-		msg := fmt.Sprintf("cannot find content integration with id [%s] for user [%s]", integrationID, authUser.ID)
+		msg := fmt.Sprintf("cannot find [phone-call] integration with id [%s] for user [%s]", integrationID, authUser.ID)
 		ctxLogger.Warn(stacktrace.Propagate(err, msg))
 		return h.responseNotFound(c, msg)
 	}

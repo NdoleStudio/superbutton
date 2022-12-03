@@ -18,7 +18,7 @@ type gormIntegrationRepository struct {
 	db     *gorm.DB
 }
 
-func (repository *gormContentIntegrationRepository) getPosition(tx *gorm.DB, integration *entities.Integration) (uint, error) {
+func (repository *gormIntegrationRepository) getPosition(tx *gorm.DB, integration *entities.Integration) (uint, error) {
 	projectIntegration := new(entities.ProjectIntegration)
 	err := tx.Where("user_id = ?", integration.UserID).
 		Where("project_id = ?", integration.ProjectID).
@@ -31,7 +31,7 @@ func (repository *gormContentIntegrationRepository) getPosition(tx *gorm.DB, int
 	return projectIntegration.Position + 1, nil
 }
 
-func (repository *gormContentIntegrationRepository) updateProjectIntegration(tx *gorm.DB, integration *entities.Integration) error {
+func (repository *gormIntegrationRepository) updateProjectIntegration(tx *gorm.DB, integration *entities.Integration) error {
 	err := tx.
 		Model(&entities.ProjectIntegration{}).
 		Where("integration_id = ?", integration.IntegrationID).
@@ -43,7 +43,7 @@ func (repository *gormContentIntegrationRepository) updateProjectIntegration(tx 
 	return nil
 }
 
-func (repository *gormContentIntegrationRepository) deleteProjectIntegration(tx *gorm.DB, userID entities.UserID, integrationID uuid.UUID) error {
+func (repository *gormIntegrationRepository) deleteProjectIntegration(tx *gorm.DB, userID entities.UserID, integrationID uuid.UUID) error {
 	err := tx.
 		Where("integration_id = ?", integrationID).
 		Where("user_id = ?", userID).

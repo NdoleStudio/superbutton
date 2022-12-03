@@ -68,6 +68,7 @@ func NewContainer(version string, projectID string) (container *Container) {
 	container.RegisterWhatsappIntegrationRoutes()
 	container.ProjectIntegrationRoutes()
 	container.RegisterContentIntegrationRoutes()
+	container.RegisterPhoneCallIntegrationRoutes()
 
 	// UnAuthenticated routes
 	container.RegisterProjectSettingsRoutes()
@@ -132,10 +133,16 @@ func (container *Container) RegisterWhatsappIntegrationRoutes() {
 	container.WhatsappIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
-// RegisterContentIntegrationRoutes registers routes for the /projects/:projectID/whatsapp-integrations prefix
+// RegisterContentIntegrationRoutes registers routes for the /projects/:projectID/content-integrations prefix
 func (container *Container) RegisterContentIntegrationRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ContentIntegrationHandler{}))
 	container.ContentIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
+}
+
+// RegisterPhoneCallIntegrationRoutes registers routes for the /projects/:projectID/phone-call-integrations prefix
+func (container *Container) RegisterPhoneCallIntegrationRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ContentIntegrationHandler{}))
+	container.PhoneCallIntegrationHandler().RegisterRoutes(container.App(), container.FirebaseAuthMiddlewares())
 }
 
 // ProjectIntegrationRoutes registers routes for the /projects/:projectID/integrations prefix
@@ -157,6 +164,15 @@ func (container *Container) UserHandlerValidator() (validator *validators.UserHa
 func (container *Container) ContentIntegrationHandlerValidator() (validator *validators.ContentIntegrationHandlerValidator) {
 	container.logger.Debug(fmt.Sprintf("creating %T", validator))
 	return validators.NewContentIntegrationHandlerValidator(
+		container.Logger(),
+		container.Tracer(),
+	)
+}
+
+// PhoneCallIntegrationHandlerValidator creates a new instance of validators.PhoneCallIntegrationHandlerValidator
+func (container *Container) PhoneCallIntegrationHandlerValidator() (validator *validators.PhoneCallIntegrationHandlerValidator) {
+	container.logger.Debug(fmt.Sprintf("creating %T", validator))
+	return validators.NewPhoneCallIntegrationHandlerValidator(
 		container.Logger(),
 		container.Tracer(),
 	)
@@ -220,6 +236,17 @@ func (container *Container) ProjectIntegrationHandler() (handler *handlers.Proje
 		container.Logger(),
 		container.Tracer(),
 		container.ProjectIntegrationService(),
+	)
+}
+
+// PhoneCallIntegrationHandler creates a new instance of handlers.PhoneCallIntegrationHandler
+func (container *Container) PhoneCallIntegrationHandler() (handler *handlers.PhoneCallIntegrationHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+	return handlers.NewPhoneCallIntegrationHandler(
+		container.Logger(),
+		container.Tracer(),
+		container.PhoneCallIntegrationHandlerValidator(),
+		container.PhoneCallIntegrationService(),
 	)
 }
 
@@ -300,6 +327,18 @@ func (container *Container) ContentIntegrationService() (service *services.Conte
 		container.EventDispatcher(),
 		container.ProjectRepository(),
 		container.ContentIntegrationRepository(),
+	)
+}
+
+// PhoneCallIntegrationService creates a new instance of services.PhoneCallIntegrationService
+func (container *Container) PhoneCallIntegrationService() (service *services.PhoneCallIntegrationService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewPhoneCallIntegrationService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+		container.ProjectRepository(),
+		container.PhoneCallIntegrationRepository(),
 	)
 }
 
@@ -476,6 +515,16 @@ func (container *Container) ContentIntegrationRepository() repositories.ContentI
 	)
 }
 
+// PhoneCallIntegrationRepository registers a new instance of repositories.PhoneCallIntegrationRepository
+func (container *Container) PhoneCallIntegrationRepository() repositories.PhoneCallIntegrationRepository {
+	container.logger.Debug("creating GORM repositories.PhoneCallIntegrationRepository")
+	return repositories.NewGormPhoneCallIntegrationRepository(
+		container.Logger(),
+		container.Tracer(),
+		container.DB(),
+	)
+}
+
 // ProjectIntegrationRepository registers a new instance of repositories.ProjectIntegrationRepository
 func (container *Container) ProjectIntegrationRepository() repositories.ProjectIntegrationRepository {
 	container.logger.Debug("creating GORM repositories.UserRepository")
@@ -542,6 +591,9 @@ func (container *Container) DB() (db *gorm.DB) {
 	}
 	if err = db.AutoMigrate(&entities.ContentIntegration{}); err != nil {
 		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.ContentIntegration{})))
+	}
+	if err = db.AutoMigrate(&entities.PhoneCallIntegration{}); err != nil {
+		container.logger.Fatal(stacktrace.Propagate(err, fmt.Sprintf("cannot migrate %T", &entities.PhoneCallIntegration{})))
 	}
 
 	return container.db

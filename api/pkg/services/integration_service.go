@@ -16,6 +16,7 @@ import (
 
 type integrationService struct {
 	service
+	integrationType entities.IntegrationType
 	tracer          telemetry.Tracer
 	logger          telemetry.Logger
 	eventDispatcher *EventDispatcher

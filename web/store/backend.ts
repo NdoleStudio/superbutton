@@ -32,6 +32,29 @@ export interface EntitiesContentIntegration {
   user_id: string
 }
 
+export interface EntitiesPhoneCallIntegration {
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  created_at: string
+  /** @example true */
+  enabled: boolean
+  /** @example "phone-call" */
+  icon: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  id: string
+  /** @example "Customer Service" */
+  name: string
+  /** @example "+18005550199" */
+  phone_number: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  project_id: string
+  /** @example "Call us on +18005550199" */
+  text: string
+  /** @example "2022-06-05T14:26:10.303278+03:00" */
+  updated_at: string
+  /** @example "WB7DRDWrJZRGbYrv2CKGkqbzvqdC" */
+  user_id: string
+}
+
 export interface EntitiesProject {
   /** @example "#283593" */
   color: string
@@ -75,6 +98,17 @@ export interface EntitiesProjectIntegration {
   user_id: string
 }
 
+export interface EntitiesProjectSettings {
+  integrations: EntitiesProjectSettingsIntegration[]
+  project: EntitiesProject
+}
+
+export interface EntitiesProjectSettingsIntegration {
+  id: string
+  settings: any
+  type: string
+}
+
 export interface EntitiesUser {
   /** @example "2022-06-05T14:26:02.302718+03:00" */
   created_at: string
@@ -93,7 +127,7 @@ export interface EntitiesWhatsappIntegration {
   created_at: string
   /** @example true */
   enabled: boolean
-  /** @example "https://cdn.superbutton.app/whatsapp-icon.svg" */
+  /** @example "whatsapp" */
   icon: string
   /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
   id: string
@@ -133,6 +167,12 @@ export interface RequestsContentIntegrationUpdateRequest {
   summary: string
   text: string
   title: string
+}
+
+export interface RequestsPhoneCallIntegrationUpdateRequest {
+  name: string
+  phone_number: string
+  text: string
 }
 
 export interface RequestsProjectCreateRequest {
@@ -215,8 +255,24 @@ export interface ResponsesOkEntitiesContentIntegration {
   status: string
 }
 
+export interface ResponsesOkEntitiesPhoneCallIntegration {
+  data: EntitiesPhoneCallIntegration
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
+  status: string
+}
+
 export interface ResponsesOkEntitiesProject {
   data: EntitiesProject
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkEntitiesProjectSettings {
+  data: EntitiesProjectSettings
   /** @example "Request handled successfully" */
   message: string
   /** @example "success" */
