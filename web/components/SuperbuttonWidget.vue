@@ -371,7 +371,9 @@ export default class SuperbuttonWidget extends Vue {
   }
 
   loadSettings(userId: string, projectId: string) {
-    fetch(`http://localhost:8000/v1/settings/${userId}/projects/${projectId}`)
+    fetch(
+      `${process.env.BASE_URL_BACKEND}/v1/settings/${userId}/projects/${projectId}`
+    )
       .then((response) => response.json())
       .then((response) => {
         this.settings = response.data
