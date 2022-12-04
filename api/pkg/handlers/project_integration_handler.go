@@ -43,6 +43,7 @@ func (h *ProjectIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares [
 // @Security	 BearerAuth
 // @Tags         ProjectIntegrations
 // @Produce      json
+// @Param 		 projectID	path 		string true "Project ID"
 // @Success      200 		{object}	responses.Ok[[]entities.ProjectIntegration]
 // @Failure      400		{object}	responses.BadRequest
 // @Failure 	 401    	{object}	responses.Unauthorized

@@ -47,12 +47,14 @@ func (h *ProjectSettingsHandler) RegisterRoutes(app *fiber.App, middlewares ...f
 // @Security	 BearerAuth
 // @Tags         ProjectSettings
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.ProjectSettings]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 userID			path 		string true "User ID"
+// @Param 		 projectID		path 		string true "Project ID"
+// @Success      200 			{object}	responses.Ok[entities.ProjectSettings]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /settings/{userID}/projects/{projectID} 	[get]
 func (h *ProjectSettingsHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)

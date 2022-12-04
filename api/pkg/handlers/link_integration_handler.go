@@ -58,12 +58,14 @@ func (h *LinkIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fi
 // @Security	 BearerAuth
 // @Tags         LinkIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.LinkIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.Ok[entities.LinkIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/link-integrations/{integrationID} 	[get]
 func (h *LinkIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -93,6 +95,7 @@ func (h *LinkIntegrationHandler) show(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         LinkIntegration
 // @Produce      json
+// @Param 		 projectID	path 		string true "Project ID"
 // @Param        payload	body 		requests.LinkIntegrationCreateRequest	true 	"link integration create payload"
 // @Success      200 		{object}	responses.Ok[entities.LinkIntegration]
 // @Failure      400		{object}	responses.BadRequest
@@ -134,12 +137,14 @@ func (h *LinkIntegrationHandler) create(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         LinkIntegration
 // @Produce      json
-// @Param        payload	body 		requests.LinkIntegrationUpdateRequest	true 	"link integration update payload"
-// @Success      200 		{object}	responses.Ok[entities.LinkIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Param        payload		body 		requests.LinkIntegrationUpdateRequest	true 	"link integration update payload"
+// @Success      200 			{object}	responses.Ok[entities.LinkIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/link-integrations/{integrationID} [put]
 func (h *LinkIntegrationHandler) update(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -181,12 +186,14 @@ func (h *LinkIntegrationHandler) update(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         LinkIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.NoContent
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.NoContent
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/link-integrations/{integrationID} [delete]
 func (h *LinkIntegrationHandler) delete(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)

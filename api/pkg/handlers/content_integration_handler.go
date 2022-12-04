@@ -54,12 +54,14 @@ func (h *ContentIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares [
 // @Security	 BearerAuth
 // @Tags         ContentIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.Ok[entities.ContentIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/content-integrations/{integrationID} 	[get]
 func (h *ContentIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -89,6 +91,7 @@ func (h *ContentIntegrationHandler) show(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         ContentIntegration
 // @Produce      json
+// @Param 		 projectID	path 		string true "Project ID"
 // @Param        payload	body 		requests.ContentIntegrationCreateRequest	true 	"content integration create payload"
 // @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
 // @Failure      400		{object}	responses.BadRequest
@@ -130,12 +133,14 @@ func (h *ContentIntegrationHandler) create(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         ContentIntegration
 // @Produce      json
-// @Param        payload	body 		requests.ContentIntegrationUpdateRequest	true 	"content integration update payload"
-// @Success      200 		{object}	responses.Ok[entities.ContentIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Param        payload		body 		requests.ContentIntegrationUpdateRequest	true 	"content integration update payload"
+// @Success      200 			{object}	responses.Ok[entities.ContentIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/content-integrations/{integrationID} [put]
 func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -177,12 +182,14 @@ func (h *ContentIntegrationHandler) update(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         ContentIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.NoContent
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.NoContent
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/content-integrations/{integrationID} [delete]
 func (h *ContentIntegrationHandler) delete(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)

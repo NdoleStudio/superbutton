@@ -54,12 +54,14 @@ func (h *PhoneCallIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares
 // @Security	 BearerAuth
 // @Tags         PhoneCallIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.Ok[entities.PhoneCallIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/phone-call-integrations/{integrationID} 	[get]
 func (h *PhoneCallIntegrationHandler) show(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -89,6 +91,7 @@ func (h *PhoneCallIntegrationHandler) show(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         PhoneCallIntegration
 // @Produce      json
+// @Param 		 projectID	path 		string true "Project ID"
 // @Param        payload	body 		requests.PhoneCallIntegrationCreateRequest	true 	"phone call integration create payload"
 // @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
 // @Failure      400		{object}	responses.BadRequest
@@ -130,12 +133,14 @@ func (h *PhoneCallIntegrationHandler) create(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         PhoneCallIntegration
 // @Produce      json
-// @Param        payload	body 		requests.PhoneCallIntegrationUpdateRequest	true 	"phone call integration update payload"
-// @Success      200 		{object}	responses.Ok[entities.PhoneCallIntegration]
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Param        payload		body 		requests.PhoneCallIntegrationUpdateRequest	true 	"phone call integration update payload"
+// @Success      200 			{object}	responses.Ok[entities.PhoneCallIntegration]
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/phone-call-integrations/{integrationID} [put]
 func (h *PhoneCallIntegrationHandler) update(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
@@ -177,12 +182,14 @@ func (h *PhoneCallIntegrationHandler) update(c *fiber.Ctx) error {
 // @Security	 BearerAuth
 // @Tags         PhoneCallIntegration
 // @Produce      json
-// @Success      200 		{object}	responses.NoContent
-// @Failure      400		{object}	responses.BadRequest
-// @Failure 	 401    	{object}	responses.Unauthorized
-// @Failure 	 404    	{object}	responses.NotFound
-// @Failure      422		{object}	responses.UnprocessableEntity
-// @Failure      500		{object}	responses.InternalServerError
+// @Param 		 projectID		path 		string true "Project ID"
+// @Param 		 integrationID	path 		string true "Integration ID"
+// @Success      200 			{object}	responses.NoContent
+// @Failure      400			{object}	responses.BadRequest
+// @Failure 	 401    		{object}	responses.Unauthorized
+// @Failure 	 404    		{object}	responses.NotFound
+// @Failure      422			{object}	responses.UnprocessableEntity
+// @Failure      500			{object}	responses.InternalServerError
 // @Router       /projects/{projectID}/phone-call-integrations/{integrationID} [delete]
 func (h *PhoneCallIntegrationHandler) delete(c *fiber.Ctx) error {
 	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
