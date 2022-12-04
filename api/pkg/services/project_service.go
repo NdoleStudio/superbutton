@@ -116,6 +116,7 @@ func (service *ProjectService) Update(ctx context.Context, params *ProjectUpdate
 
 	project.Name = params.Name
 	project.URL = params.URL
+	project.Color = params.Color
 	project.UpdatedAt = time.Now().UTC()
 	project.Icon = params.Icon
 	project.GreetingTimeoutSeconds = params.GreetingTimeoutSeconds
