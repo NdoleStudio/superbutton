@@ -160,196 +160,201 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
-import { mdiArrowLeft, mdiChevronRight, mdiClose } from '@mdi/js'
+import { Vue, Component } from "vue-property-decorator";
+import { mdiArrowLeft, mdiChevronRight, mdiClose } from "@mdi/js";
 
 interface WhatsappIntegration {
-  id: string
-  type: 'whatsapp'
+  id: string;
+  type: "whatsapp";
   settings: {
-    enabled: boolean
-    text: string
-    phone_number: string
-    icon: string
-  }
+    enabled: boolean;
+    text: string;
+    phone_number: string;
+    icon: string;
+  };
 }
 
 interface PhoneCallConfiguration {
-  id: string
-  type: 'phone-call'
+  id: string;
+  type: "phone-call";
   settings: {
-    enabled: boolean
-    text: string
-    phone_number: string
-    icon: string
-  }
+    enabled: boolean;
+    text: string;
+    phone_number: string;
+    icon: string;
+  };
 }
 
 export interface LinkIntegration {
-  type: 'link'
-  id: string
+  type: "link";
+  id: string;
   settings: {
-    enabled: boolean
-    title: string
-    url: string
-    text: string
-    icon: string
-  }
+    enabled: boolean;
+    title: string;
+    url: string;
+    text: string;
+    icon: string;
+  };
 }
 
 export interface ContentIntegration {
-  type: 'content'
-  id: string
+  type: "content";
+  id: string;
   settings: {
-    enabled: boolean
-    title: string
-    summary: string
-    text: string
-    icon: string
-  }
+    enabled: boolean;
+    title: string;
+    summary: string;
+    text: string;
+    icon: string;
+  };
 }
 
 interface Project {
-  name: string
-  icon: string
-  greeting: string
-  greeting_timeout_seconds: number
-  color: string
+  name: string;
+  icon: string;
+  greeting: string;
+  greeting_timeout_seconds: number;
+  color: string;
 }
 
 interface Settings {
-  project: Project | null
+  project: Project | null;
   integrations: Array<
     | WhatsappIntegration
     | ContentIntegration
     | PhoneCallConfiguration
     | LinkIntegration
-  >
+  >;
 }
 
 @Component
-export default class SuperbuttonWidget extends Vue {
-  settingsLoaded = false
-  tooltipActive = false
-  windowOpen = false
-  showGreeting = false
-  rightIcon: string = mdiChevronRight
-  closeIcon: string = mdiClose
-  backIcon: string = mdiArrowLeft
-  settings: Settings | null = null
-  activeIntegrationId: string | null = null
+export default class Widget extends Vue {
+  settingsLoaded = false;
+  tooltipActive = false;
+  windowOpen = false;
+  showGreeting = false;
+  rightIcon: string = mdiChevronRight;
+  closeIcon: string = mdiClose;
+  backIcon: string = mdiArrowLeft;
+  settings: Settings | null = null;
+  activeIntegrationId: string | null = null;
 
   get activeIntegration(): ContentIntegration | null {
     const integration = this.settings?.integrations.find(
       (x) => x.id === this.activeIntegrationId
-    )
+    );
     if (!integration) {
-      return null
+      return null;
     }
-    return integration as ContentIntegration
+    return integration as ContentIntegration;
   }
 
   get backgroundImage() {
     if (this.windowOpen) {
-      return this.iconUrl('close')
+      return this.iconUrl("close");
     }
-    return this.iconUrl(this.settings?.project?.icon as string)
+    return this.iconUrl(this.settings?.project?.icon as string);
   }
 
   get whatsappIconStyle() {
     return {
-      backgroundImage: `url(${this.iconUrl('whatsapp')}`,
-      backgroundRepeat: 'no-repeat',
-      height: '24px',
-      width: '24px',
-      backgroundSize: 'cover',
-    }
+      backgroundImage: `url(${this.iconUrl("whatsapp")}`,
+      backgroundRepeat: "no-repeat",
+      height: "24px",
+      width: "24px",
+      //border: "1px solid blue",
+      backgroundSize: "cover",
+    };
   }
 
   get phoneCallIconStyle() {
     return {
-      backgroundImage: `url(${this.iconUrl('phone-call')}`,
-      backgroundRepeat: 'no-repeat',
-      height: '24px',
-      width: '24px',
-      backgroundSize: 'cover',
-    }
+      backgroundImage: `url(${this.iconUrl("phone-call")}`,
+      backgroundRepeat: "no-repeat",
+      height: "24px",
+      width: "24px",
+      backgroundSize: "cover",
+    };
   }
 
   get linkIconStyle() {
     return {
-      backgroundImage: `url(${this.iconUrl('link')}`,
-      backgroundRepeat: 'no-repeat',
-      height: '24px',
-      width: '24px',
-      backgroundSize: 'cover',
-    }
+      backgroundImage: `url(${this.iconUrl("link")}`,
+      backgroundRepeat: "no-repeat",
+      height: "24px",
+      width: "24px",
+      backgroundSize: "cover",
+    };
   }
 
   get widgetStyle() {
     return {
       backgroundColor: this.settings?.project?.color,
-      float: 'right',
-    }
+      float: "right",
+    };
   }
 
   get widgetImageStyle() {
     return {
       background: `url(${this.backgroundImage})`,
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-    }
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "cover",
+    };
   }
 
   get isMobile(): boolean {
-    return /iPhone|iPod|Android/i.test(navigator.userAgent)
+    return /iPhone|iPod|Android/i.test(navigator.userAgent);
+  }
+
+  get cdnBaseUrl(): string {
+    return process.env.VUE_APP_BASE_URL_CDN;
   }
 
   mounted() {
     setTimeout(() => {
       this.loadSettings(
-        this.$store.getters.authUser.uid,
-        this.$store.getters.activeProjectId
-      )
-    }, 500)
+        "9DMHezLb9NV7Had2PY003K8KRVn2",
+        "0f097a15-3a7b-4602-9c6d-ed2b00683a47"
+      );
+    }, 500);
   }
 
   toggleWidgetWindow() {
     if (this.windowOpen) {
-      this.closeWidgetWindow()
-      return
+      this.closeWidgetWindow();
+      return;
     }
-    this.openWidgetWindow()
+    this.openWidgetWindow();
   }
 
   openWidgetWindow() {
-    this.windowOpen = true
-    this.tooltipActive = false
+    this.windowOpen = true;
+    this.tooltipActive = false;
   }
 
   openWhatsappChat(phoneNumber: string) {
     window
-      .open(`https://wa.me/${phoneNumber.replace('+', '')}`, '_blank')
-      ?.focus()
+      .open(`https://wa.me/${phoneNumber.replace("+", "")}`, "_blank")
+      ?.focus();
   }
 
   openPhoneCall(phoneNumber: string) {
-    window.open(`tel:${phoneNumber}`)?.focus()
+    window.open(`tel:${phoneNumber}`)?.focus();
   }
 
   openLink(url: string) {
-    window.open(url, '_blank')?.focus()
+    window.open(url, "_blank")?.focus();
   }
 
   openContentIntegration(integrationId: string) {
-    this.activeIntegrationId = integrationId
+    this.activeIntegrationId = integrationId;
   }
 
   closeWidgetWindow() {
-    this.activeIntegrationId = null
-    this.windowOpen = false
+    this.activeIntegrationId = null;
+    this.windowOpen = false;
     if (this.showGreeting) {
-      this.tooltipActive = true
+      this.tooltipActive = true;
     }
   }
 
@@ -357,41 +362,124 @@ export default class SuperbuttonWidget extends Vue {
     if (this.settings?.project?.greeting && !this.isMobile) {
       setTimeout(() => {
         if (!this.windowOpen) {
-          this.tooltipActive = true
+          this.tooltipActive = true;
         }
-        this.showGreeting = true
-      }, this.settings.project.greeting_timeout_seconds * 1000)
+        this.showGreeting = true;
+      }, this.settings.project.greeting_timeout_seconds * 1000);
     }
   }
 
   iconUrl(icon: string) {
-    return window.location.origin + '/icons/' + icon + '.svg'
+    return this.cdnBaseUrl + "/icons/" + icon + ".svg";
   }
 
   closeActiveIntegration() {
-    this.activeIntegrationId = null
+    this.activeIntegrationId = null;
   }
 
   loadSettings(userId: string, projectId: string) {
     fetch(
-      `${process.env.BASE_URL_BACKEND}/v1/settings/${userId}/projects/${projectId}`
+      `${process.env.VUE_APP_BASE_URL_BACKEND}/v1/settings/${userId}/projects/${projectId}`
     )
       .then((response) => response.json())
       .then((response) => {
-        this.settings = response.data
-        this.settingsLoaded = true
-        this.displayGreeting()
-      })
+        this.settings = response.data;
+        this.settingsLoaded = true;
+        this.displayGreeting();
+      });
   }
 }
 </script>
 
 <style scoped lang="scss">
+////////////////////////////////////////////////////////////////////////////////
+////////// MicroTip Tooltip
+////////////////////////////////////////////////////////////////////////////////
+[aria-label][role~="sb-tooltip"]::before,
+[aria-label][role~="sb-tooltip"]::after {
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.18s ease-in-out 0s;
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 10000;
+  transform-origin: top;
+}
+
+[aria-label][role~="sb-tooltip"]::before {
+  background-size: 100% auto !important;
+  content: "";
+}
+
+[aria-label][role~="sb-tooltip"]::after {
+  background: #000000;
+  border-radius: 4px;
+  color: #ffffff;
+  content: attr(aria-label);
+  font-size: var(--microtip-font-size, 16px);
+  font-weight: var(--microtip-font-weight, normal);
+  text-transform: var(--microtip-text-transform, none);
+  padding: 0.5em 1em;
+  white-space: nowrap;
+  box-sizing: content-box;
+}
+
+[aria-label][role~="sb-tooltip"]:hover::before,
+[aria-label][role~="sb-tooltip"]:hover::after,
+[aria-label][role~="sb-tooltip"]:focus::before,
+[aria-label][role~="sb-tooltip"]:focus::after,
+.sb-widget--tooltip-active[aria-label][role~="sb-tooltip"]::before,
+.sb-widget--tooltip-active[aria-label][role~="sb-tooltip"]::after {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sb-widget--tooltip-disabled[aria-label][role~="sb-tooltip"]::before,
+.sb-widget--tooltip-disabled[aria-label][role~="sb-tooltip"]::after {
+  opacity: 0 !important;
+}
+
+/* ------------------------------------------------
+    [2.6] Left
+  -------------------------------------------------*/
+[role~="sb-tooltip"][data-microtip-position="left"]::before,
+[role~="sb-tooltip"][data-microtip-position="left"]::after {
+  right: 72px;
+  bottom: 36px;
+  transform: translate3d(10px, 50%, 0);
+}
+
+[role~="sb-tooltip"][data-microtip-position="left"]::before {
+  background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjM2cHgiPjxwYXRoIGZpbGw9IiMwMDAwMDAiIHRyYW5zZm9ybT0icm90YXRlKC05MCAxOCAxOCkiIGQ9Ik0yLjY1OCwwLjAwMCBDLTEzLjYxNSwwLjAwMCA1MC45MzgsMC4wMDAgMzQuNjYyLDAuMDAwIEMyOC42NjIsMC4wMDAgMjMuMDM1LDEyLjAwMiAxOC42NjAsMTIuMDAyIEMxNC4yODUsMTIuMDAyIDguNTk0LDAuMDAwIDIuNjU4LDAuMDAwIFoiLz48L3N2Zz4=")
+    no-repeat;
+  height: 18px;
+  width: 6px;
+  margin-right: 5px;
+  margin-bottom: 0;
+}
+
+[role~="sb-tooltip"][data-microtip-position="left"]::after {
+  margin-right: 11px;
+}
+
+.sb-widget--tooltip-active[aria-label][role~="sb-tooltip"]::before,
+.sb-widget--tooltip-active[aria-label][role~="sb-tooltip"]::after,
+[role~="sb-tooltip"][data-microtip-position="left"]:hover::before,
+[role~="sb-tooltip"][data-microtip-position="left"]:hover::after {
+  transform: translate3d(0, 50%, 0);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 .sb-widget {
   position: fixed;
   right: 48px;
   z-index: 10000;
   bottom: 48px;
+  font-family: Arial, Helvetica, sans-serif;
 
   &__chat-head {
     height: 72px;
@@ -411,7 +499,7 @@ export default class SuperbuttonWidget extends Vue {
     margin-bottom: 16px;
 
     &__header {
-      height: 90px;
+      height: 60px;
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       padding: 16px;
@@ -419,6 +507,7 @@ export default class SuperbuttonWidget extends Vue {
       &__project-name {
         font-size: 2.25rem;
         font-weight: 400;
+        color: white;
       }
       &__close-button {
         margin-left: auto;
@@ -468,7 +557,7 @@ export default class SuperbuttonWidget extends Vue {
         text-align: center;
         font-size: 13px;
         position: absolute;
-        bottom: 16px;
+        bottom: 20px;
         a {
           text-decoration: none !important;
           color: #4b587c;
@@ -499,15 +588,17 @@ export default class SuperbuttonWidget extends Vue {
 
         &__title {
           font-size: 16px;
+          margin-bottom: 3px;
           font-weight: bold;
         }
         &__text {
-          font-size: 13px;
+          font-size: 14px;
         }
       }
 
       &__integration--phone-call {
         display: flex;
+        align-items: center;
         &:hover {
           background-color: #7ed766;
           color: white;
@@ -519,7 +610,8 @@ export default class SuperbuttonWidget extends Vue {
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding: 4px;
+          padding-top: 6px;
+          padding-left: 6px;
         }
       }
 
@@ -537,12 +629,14 @@ export default class SuperbuttonWidget extends Vue {
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding: 4px;
+          padding-top: 6px;
+          padding-left: 6px;
         }
       }
 
       &__integration--whatsapp {
         display: flex;
+        align-items: center;
         &:hover {
           background-color: #25d366;
           color: white;
@@ -554,7 +648,8 @@ export default class SuperbuttonWidget extends Vue {
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding: 4px;
+          padding-top: 6px;
+          padding-left: 6px;
         }
       }
     }
