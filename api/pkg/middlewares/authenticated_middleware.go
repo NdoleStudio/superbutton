@@ -26,7 +26,7 @@ func Authenticated(tracer telemetry.Tracer) fiber.Handler {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"status":  "error",
 				"message": "You are not authorized to carry out this request.",
-				"data":    "Make sure your API key is set in the [Authorization] header in the request",
+				"data":    "Make sure your [Bearer] token is set in the [Authorization] header in the request",
 			})
 		}
 

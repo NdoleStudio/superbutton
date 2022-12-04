@@ -92,7 +92,7 @@
       ></dashboard-loading>
       <v-container v-else class="pt-8">
         <v-row>
-          <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="3">
+          <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="3" xl="2">
             <v-list color="transparent" rounded>
               <v-list-item
                 v-for="item in items"
@@ -112,7 +112,7 @@
               </v-list-item>
             </v-list>
           </v-col>
-          <v-col cols="12" lg="9">
+          <v-col cols="12" lg="9" xl="10">
             <Nuxt v-if="$store.getters.authStateChanged" />
           </v-col>
         </v-row>

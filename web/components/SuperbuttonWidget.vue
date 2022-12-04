@@ -260,8 +260,8 @@ export default class SuperbuttonWidget extends Vue {
     return {
       backgroundImage: `url(${this.iconUrl('whatsapp')}`,
       backgroundRepeat: 'no-repeat',
-      height: '16px',
-      width: '16px',
+      height: '24px',
+      width: '24px',
       backgroundSize: 'cover',
     }
   }
@@ -270,8 +270,8 @@ export default class SuperbuttonWidget extends Vue {
     return {
       backgroundImage: `url(${this.iconUrl('phone-call')}`,
       backgroundRepeat: 'no-repeat',
-      height: '16px',
-      width: '16px',
+      height: '24px',
+      width: '24px',
       backgroundSize: 'cover',
     }
   }
@@ -280,8 +280,8 @@ export default class SuperbuttonWidget extends Vue {
     return {
       backgroundImage: `url(${this.iconUrl('link')}`,
       backgroundRepeat: 'no-repeat',
-      height: '16px',
-      width: '16px',
+      height: '24px',
+      width: '24px',
       backgroundSize: 'cover',
     }
   }
@@ -306,10 +306,12 @@ export default class SuperbuttonWidget extends Vue {
   }
 
   mounted() {
-    this.loadSettings(
-      this.$store.getters.authUser.uid,
-      this.$store.getters.activeProjectId
-    )
+    setTimeout(() => {
+      this.loadSettings(
+        this.$store.getters.authUser.uid,
+        this.$store.getters.activeProjectId
+      )
+    }, 500)
   }
 
   toggleWidgetWindow() {
@@ -434,8 +436,9 @@ export default class SuperbuttonWidget extends Vue {
       position: relative;
 
       &__integration--active {
-        padding-top: 8px;
+        padding-top: 12px;
         padding-left: 12px;
+        background-color: white;
         border-bottom: 1px solid #4b587c;
         &__title {
           font-weight: bold;
@@ -476,16 +479,14 @@ export default class SuperbuttonWidget extends Vue {
 
       &__integration {
         width: 90%;
-        padding: 12px;
+        padding: 8px;
         border-radius: 4px;
         margin: 12px auto;
         font-size: 18px;
         background-color: white;
         cursor: pointer;
         display: flex;
-        box-shadow: 0 5px 7px -3.5px rgba(0, 0, 0, 0.2),
-          0 6.5px 6px 1.5px rgba(0, 0, 0, 0.14),
-          0 4.5px 11px 4px rgba(0, 0, 0, 0.12) !important;
+        border: 3px solid #fafafa;
       }
 
       &__integration--content {
@@ -517,8 +518,8 @@ export default class SuperbuttonWidget extends Vue {
           background-color: #7ed766;
           border-radius: 2px;
           margin-right: 8px;
-          height: 24px;
-          width: 24px;
+          height: 32px;
+          width: 32px;
           padding: 4px;
         }
       }
@@ -529,13 +530,14 @@ export default class SuperbuttonWidget extends Vue {
           background-color: #1e88e5;
           color: white;
         }
+        align-items: center;
 
         &__icon {
           background-color: #1e88e5;
           border-radius: 2px;
           margin-right: 8px;
-          height: 24px;
-          width: 24px;
+          height: 32px;
+          width: 32px;
           padding: 4px;
         }
       }
@@ -551,8 +553,8 @@ export default class SuperbuttonWidget extends Vue {
           background-color: #25d366;
           border-radius: 2px;
           margin-right: 8px;
-          height: 24px;
-          width: 24px;
+          height: 32px;
+          width: 32px;
           padding: 4px;
         }
       }
