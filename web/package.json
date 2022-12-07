@@ -20,7 +20,7 @@
     "@nuxtjs/firebase": "^8.2.2",
     "@nuxtjs/sentry": "^6.0.1",
     "@sentry/tracing": "6",
-    "@tiptap/starter-kit": "^2.0.0-beta.205",
+    "@tiptap/starter-kit": "^2.0.0-beta.204",
     "@tiptap/vue-2": "^2.0.0-beta.204",
     "core-js": "^3.26.1",
     "firebase": "^9.14.0",
