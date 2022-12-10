@@ -6,7 +6,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
+      <v-col cols="12" lg="6">
         <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
