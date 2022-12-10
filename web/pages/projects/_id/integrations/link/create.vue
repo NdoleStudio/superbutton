@@ -48,6 +48,50 @@
             outlined
             required
           ></v-text-field>
+          <v-select
+            v-model="formIcon"
+            class="mb-4"
+            :disabled="savingIntegration"
+            :items="linkIcons"
+            :error="$store.getters.errorMessages.has('icon')"
+            :error-messages="$store.getters.errorMessages.get('icon')"
+            outlined
+            aria-required="true"
+            label="Icon"
+          >
+            <template #item="{ item, attrs, on }">
+              <v-list-item v-bind="attrs" v-on="on">
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+                <v-list-item-action>
+                  <v-avatar size="40" tile color="#1E88E5">
+                    <v-img
+                      :src="getIconURL(item.value)"
+                      width="25"
+                      height="25"
+                      contain
+                    ></v-img>
+                  </v-avatar>
+                </v-list-item-action>
+              </v-list-item>
+            </template>
+            <template #append>
+              <v-avatar
+                v-if="formIcon"
+                tile
+                color="#1E88E5"
+                size="40"
+                class="mt-n2"
+              >
+                <v-img
+                  :src="getIconURL(formIcon)"
+                  width="25"
+                  height="25"
+                  contain
+                ></v-img>
+              </v-avatar>
+              <v-icon v-else>{{ mdiMenuDown }}</v-icon>
+            </template>
+          </v-select>
           <loading-button
             :loading="savingIntegration"
             :icon="mdiPlus"
@@ -75,7 +119,22 @@ export default {
       savingIntegration: false,
       formName: '',
       formText: '',
+      formIcon: 'link',
       formWebsite: '',
+      linkIcons: [
+        {
+          text: 'Link Icon',
+          value: 'link',
+        },
+        {
+          text: 'Documentation Icon',
+          value: 'documentation',
+        },
+        {
+          text: 'Mail Icon',
+          value: 'mail',
+        },
+      ],
     }
   },
   async mounted() {
@@ -90,6 +149,9 @@ export default {
     }
   },
   methods: {
+    getIconURL(value) {
+      return window.location.origin + '/icons/' + value + '.svg'
+    },
     saveIntegration() {
       this.savingIntegration = true
       this.$store
@@ -97,6 +159,7 @@ export default {
           projectId: this.$store.getters.activeProjectId,
           name: this.formName,
           text: this.formText,
+          icon: this.formIcon,
           website: this.formWebsite,
         })
         .then(() => {

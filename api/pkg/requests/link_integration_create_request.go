@@ -12,6 +12,7 @@ type LinkIntegrationCreateRequest struct {
 	ProjectID string `json:"projectID" swaggerignore:"true"`
 	Name      string `json:"name"`
 	Text      string `json:"text"`
+	Icon      string `json:"icon"`
 	Website   string `json:"website"`
 }
 
@@ -19,6 +20,7 @@ type LinkIntegrationCreateRequest struct {
 func (request *LinkIntegrationCreateRequest) Sanitize() *LinkIntegrationCreateRequest {
 	request.Name = request.sanitizeString(request.Name)
 	request.Text = request.sanitizeString(request.Text)
+	request.Icon = request.sanitizeString(request.Icon)
 	request.Website = request.sanitizeString(request.Website)
 	return request
 }
@@ -29,6 +31,7 @@ func (request *LinkIntegrationCreateRequest) ToCreateParams(source string, userI
 		Name:      request.Name,
 		Text:      request.Text,
 		URL:       request.Website,
+		Icon:      request.Icon,
 		ProjectID: uuid.MustParse(request.ProjectID),
 		Source:    source,
 		UserID:    userID,

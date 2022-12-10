@@ -13,6 +13,7 @@ type LinkIntegrationUpdateRequest struct {
 	Name          string `json:"name"`
 	Text          string `json:"text"`
 	Website       string `json:"website"`
+	Icon          string `json:"icon"`
 	PhoneNumber   string `json:"phone_number"`
 }
 
@@ -20,6 +21,7 @@ type LinkIntegrationUpdateRequest struct {
 func (request *LinkIntegrationUpdateRequest) Sanitize() *LinkIntegrationUpdateRequest {
 	request.Name = request.sanitizeString(request.Name)
 	request.Text = request.sanitizeString(request.Text)
+	request.Icon = request.sanitizeString(request.Icon)
 	request.PhoneNumber = request.sanitizePhoneNumber(request.PhoneNumber)
 	return request
 }
@@ -29,6 +31,7 @@ func (request *LinkIntegrationUpdateRequest) ToUpdateParams(source string, userI
 	return &services.LinkIntegrationUpdateParams{
 		Name:          request.Name,
 		Text:          request.Text,
+		Icon:          request.Icon,
 		URL:           request.Website,
 		IntegrationID: uuid.MustParse(request.IntegrationID),
 		Source:        source,

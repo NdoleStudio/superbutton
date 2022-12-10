@@ -78,7 +78,7 @@
             <div class="sb-widget__window__body__integration--link__icon">
               <div
                 class="sb-widget__window__body__integration--link__image"
-                :style="linkIconStyle"
+                :style="linkIconStyle(integration.settings.icon)"
               ></div>
             </div>
             <div class="sb-widget__window__body__integration--link__text">
@@ -277,16 +277,6 @@ export default class Widget extends Vue {
     };
   }
 
-  get linkIconStyle() {
-    return {
-      backgroundImage: `url(${this.iconUrl("link")}`,
-      backgroundRepeat: "no-repeat",
-      height: "24px",
-      width: "24px",
-      backgroundSize: "cover",
-    };
-  }
-
   get widgetStyle() {
     return {
       backgroundColor: this.settings?.project?.color,
@@ -333,6 +323,16 @@ export default class Widget extends Vue {
     window
       .open(`https://wa.me/${phoneNumber.replace("+", "")}`, "_blank")
       ?.focus();
+  }
+
+  linkIconStyle(icon: string) {
+    return {
+      backgroundImage: `url(${this.iconUrl(icon)}`,
+      backgroundRepeat: "no-repeat",
+      height: "24px",
+      width: "24px",
+      backgroundSize: "cover",
+    };
   }
 
   openPhoneCall(phoneNumber: string) {
@@ -472,6 +472,7 @@ export default class Widget extends Vue {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 .sb-widget {
+  box-sizing: border-box;
   position: fixed;
   right: 48px;
   z-index: 10000;
@@ -489,20 +490,22 @@ export default class Widget extends Vue {
   }
 
   &__window {
+    box-sizing: border-box;
     width: 400px;
-    height: 650px;
+    height: 620px;
     background-color: #f3f4f6;
     border-radius: 16px;
     margin-bottom: 16px;
 
     &__header {
+      box-sizing: border-box;
       height: 80px;
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       padding: 16px;
 
       &__project-name {
-        font-size: 2.25rem;
+        font-size: 40px;
         font-weight: 400;
         color: white;
       }
@@ -515,7 +518,7 @@ export default class Widget extends Vue {
     }
 
     &__body {
-      height: 560px;
+      height: 540px;
       width: 100%;
       color: #21293c;
       position: relative;
@@ -524,6 +527,8 @@ export default class Widget extends Vue {
         padding-top: 12px;
         padding-left: 12px;
         background-color: white;
+        border-left: 1px solid #f3f4f6;
+        border-right: 1px solid #f3f4f6;
         border-bottom: 1px solid #4b587c;
         &__title {
           font-weight: bold;
@@ -538,6 +543,7 @@ export default class Widget extends Vue {
         &__back-button {
           cursor: pointer;
           display: flex;
+          margin-top: -3px;
           justify-content: center;
           align-items: center;
           &:hover {
@@ -560,6 +566,9 @@ export default class Widget extends Vue {
           color: #4b587c;
           font-weight: bold;
         }
+        a:hover {
+          text-decoration: underline !important;
+        }
       }
 
       &__integration {
@@ -571,7 +580,7 @@ export default class Widget extends Vue {
         background-color: white;
         cursor: pointer;
         display: flex;
-        border: 3px solid #fafafa;
+        border: 0.5px solid #e0e0e0;
       }
 
       &__integration--content {
@@ -602,13 +611,14 @@ export default class Widget extends Vue {
         }
 
         &__icon {
+          box-sizing: border-box;
           background-color: #7ed766;
           border-radius: 2px;
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding-top: 6px;
-          padding-left: 6px;
+          padding-top: 4px;
+          padding-left: 4px;
         }
       }
 
@@ -621,13 +631,14 @@ export default class Widget extends Vue {
         align-items: center;
 
         &__icon {
+          box-sizing: border-box;
           background-color: #1e88e5;
           border-radius: 2px;
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding-top: 6px;
-          padding-left: 6px;
+          padding-top: 4px;
+          padding-left: 4px;
         }
       }
 
@@ -640,13 +651,14 @@ export default class Widget extends Vue {
         }
 
         &__icon {
+          box-sizing: border-box;
           background-color: #25d366;
           border-radius: 2px;
           margin-right: 8px;
           height: 32px;
           width: 32px;
-          padding-top: 6px;
-          padding-left: 6px;
+          padding-top: 4px;
+          padding-left: 4px;
         }
       }
     }

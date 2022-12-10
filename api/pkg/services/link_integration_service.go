@@ -74,6 +74,7 @@ type LinkIntegrationCreateParams struct {
 	Text        string
 	Source      string
 	URL         string
+	Icon        string
 	ProjectID   uuid.UUID
 	UserID      entities.UserID
 }
@@ -93,8 +94,8 @@ func (service *LinkIntegrationService) Create(ctx context.Context, params *LinkI
 		UserID:    params.UserID,
 		ProjectID: params.ProjectID,
 		Enabled:   true,
-		Icon:      string(service.integrationType),
 		Name:      params.Name,
+		Icon:      params.Icon,
 		URL:       params.URL,
 		Text:      params.Text,
 		CreatedAt: time.Now().UTC(),
@@ -116,6 +117,7 @@ type LinkIntegrationUpdateParams struct {
 	Text          string
 	URL           string
 	Source        string
+	Icon          string
 	IntegrationID uuid.UUID
 	UserID        entities.UserID
 }
@@ -133,6 +135,7 @@ func (service *LinkIntegrationService) Update(ctx context.Context, params *LinkI
 
 	integration.Name = params.Name
 	integration.Text = params.Text
+	integration.Icon = params.Icon
 	integration.URL = params.URL
 
 	if err = service.repository.Update(ctx, integration); err != nil {

@@ -39,6 +39,10 @@ func (validator *LinkIntegrationHandlerValidator) ValidateUpdate(ctx context.Con
 				"min:1",
 				"max:30",
 			},
+			"icon": []string{
+				"required",
+				"in:link,documentation,mail",
+			},
 			"text": []string{
 				"required",
 				"min:1",
@@ -69,6 +73,10 @@ func (validator *LinkIntegrationHandlerValidator) ValidateCreate(ctx context.Con
 				"required",
 				"min:1",
 				"max:30",
+			},
+			"icon": []string{
+				"required",
+				"in:link,documentation,mail",
 			},
 			"text": []string{
 				"required",
