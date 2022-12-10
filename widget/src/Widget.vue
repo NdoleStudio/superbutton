@@ -1,5 +1,5 @@
 <template>
-  <div class="sb-widget">
+  <div class="sb-widget" v-if="settingsLoaded">
     <div v-if="windowOpen" class="sb-widget__window">
       <div
         class="sb-widget__window__header"
@@ -311,12 +311,9 @@ export default class Widget extends Vue {
   }
 
   mounted() {
-    setTimeout(() => {
-      this.loadSettings(
-        "9DMHezLb9NV7Had2PY003K8KRVn2",
-        "0f097a15-3a7b-4602-9c6d-ed2b00683a47"
-      );
-    }, 500);
+    if (window.SB_USER_ID && window.SB_PROJECT_ID) {
+      this.loadSettings(window.SB_USER_ID, window.SB_PROJECT_ID);
+    }
   }
 
   toggleWidgetWindow() {

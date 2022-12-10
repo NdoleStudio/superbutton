@@ -1,18 +1,17 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-    <title><%= htmlWebpackPlugin.options.title %></title>
+    <title>Superbutton Widget</title>
     <script type="text/javascript">
-      window.SB_USER_ID = "";
-      window.SB_PROJECT_ID = "";
+      window.SB_USER_ID = "<%= VUE_APP_USER_ID %>";
+      window.SB_PROJECT_ID = "<%= VUE_APP_PROJECT_ID %>";
       (function () {
         const d = document;
         const s = d.createElement("script");
-        s.src = "http://localhost:8080/widget.js";
+        s.src = "<%= BASE_URL %>widget.js";
         s.async = true;
         d.getElementsByTagName("head")[0].appendChild(s);
       })();
@@ -21,9 +20,8 @@
   <body>
     <noscript>
       <strong
-        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
-        properly without JavaScript enabled. Please enable it to
-        continue.</strong
+        >We're sorry but superbutton doesn't work properly without JavaScript
+        enabled. Please enable it to continue.</strong
       >
     </noscript>
     <div id="app"></div>

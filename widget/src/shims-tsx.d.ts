@@ -8,4 +8,9 @@ declare global {
       [elem: string]: any;
     }
   }
+
+  interface Window {
+    SB_USER_ID?: string;
+    SB_PROJECT_ID?: string;
+  }
 }

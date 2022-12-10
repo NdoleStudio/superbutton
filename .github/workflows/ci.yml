@@ -5,13 +5,12 @@ on:
     branches:
       - main
 
-defaults:
-  run:
-    working-directory: ./web
-
 jobs:
-  ci:
+  app:
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./web
 
     strategy:
       matrix:
@@ -60,4 +59,58 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: superbutton
           directory: web/dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+  widget:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: widget
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [16]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@master
+
+      - name: Setup node env 🏗
+        uses: actions/setup-node@v3.5.1
+        with:
+          node-version: ${{ matrix.node }}
+          check-latest: true
+
+      - name: Get yarn cache directory path 🛠
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache node_modules 📦
+        uses: actions/cache@v3.0.11
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies 👨🏻‍💻
+        run: yarn
+
+      - name: Run linter 👀
+        run: yarn lint
+
+      - name: Run tests 🧪
+        run: yarn test
+
+      - name: Build 🏗️
+        run: mv .env.production .env && yarn build
+
+      - name: Deploy 🚀
+        uses: cloudflare/pages-action@1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: superbutton-cdn
+          directory: widget/dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
