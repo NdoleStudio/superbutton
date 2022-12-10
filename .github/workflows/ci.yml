@@ -101,7 +101,7 @@ jobs:
         run: yarn lint
 
       - name: Run tests 🧪
-        run: yarn test
+        run: yarn test:unit
 
       - name: Build 🏗️
         run: mv .env.production .env && yarn build
