@@ -35,17 +35,19 @@
             outlined
             required
           ></v-text-field>
-          <v-phone-input
-            v-model="formPhoneNumber"
-            :disabled="savingIntegration"
-            outlined
-            label="Phone Number"
-            persistent-placeholder
-            :error="$store.getters.errorMessages.has('phone_number')"
-            :error-messages="$store.getters.errorMessages.get('phone_number')"
-            placeholder="Whatsapp phone number"
-          >
-          </v-phone-input>
+          <no-ssr>
+            <v-phone-input
+              v-model="formPhoneNumber"
+              :disabled="savingIntegration"
+              outlined
+              label="Phone Number"
+              persistent-placeholder
+              :error="$store.getters.errorMessages.has('phone_number')"
+              :error-messages="$store.getters.errorMessages.get('phone_number')"
+              placeholder="Whatsapp phone number"
+            >
+            </v-phone-input>
+          </no-ssr>
           <div class="d-flex">
             <loading-button
               :loading="savingIntegration"
