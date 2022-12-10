@@ -496,7 +496,7 @@ export default class Widget extends Vue {
     margin-bottom: 16px;
 
     &__header {
-      height: 60px;
+      height: 80px;
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       padding: 16px;
