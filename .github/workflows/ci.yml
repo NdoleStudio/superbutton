@@ -104,7 +104,7 @@ jobs:
         run: yarn test:unit
 
       - name: Copy Icons 🔗
-        run: cp -r ../web/static/icons ./public
+        run: rm -rf ./public/icons && cp -r ../web/static/icons ./public
 
       - name: Build 🏗️
         run: mv .env.production .env && yarn build

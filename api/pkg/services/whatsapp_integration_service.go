@@ -94,7 +94,7 @@ func (service *WhatsappIntegrationService) Create(ctx context.Context, params *W
 		PhoneNumber: params.PhoneNumber,
 		Name:        params.Name,
 		Enabled:     true,
-		Icon:        "whatsapp",
+		Icon:        string(entities.IntegrationTypeWhatsapp),
 		CreatedAt:   time.Now().UTC(),
 		UpdatedAt:   time.Now().UTC(),
 	}

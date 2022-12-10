@@ -193,12 +193,14 @@ export interface RequestsContentIntegrationUpdateRequest {
 }
 
 export interface RequestsLinkIntegrationCreateRequest {
+  icon: string
   name: string
   text: string
   website: string
 }
 
 export interface RequestsLinkIntegrationUpdateRequest {
+  icon: string
   name: string
   phone_number: string
   text: string
@@ -220,6 +222,10 @@ export interface RequestsPhoneCallIntegrationUpdateRequest {
 export interface RequestsProjectCreateRequest {
   name: string
   website: string
+}
+
+export interface RequestsProjectIntegrationsUpdateRequest {
+  order: string[]
 }
 
 export interface RequestsProjectUpdateRequest {

@@ -262,7 +262,6 @@ export default class Widget extends Vue {
       backgroundRepeat: "no-repeat",
       height: "24px",
       width: "24px",
-      //border: "1px solid blue",
       backgroundSize: "cover",
     };
   }

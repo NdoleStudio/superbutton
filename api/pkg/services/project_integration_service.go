@@ -46,3 +46,16 @@ func (service *ProjectIntegrationService) Index(ctx context.Context, userID enti
 
 	return integrations, nil
 }
+
+// Update updates the positions for entities.ProjectIntegration for an authenticated user
+func (service *ProjectIntegrationService) Update(ctx context.Context, userID entities.UserID, integrationIDs []uuid.UUID) error {
+	ctx, span := service.tracer.Start(ctx)
+	defer span.End()
+
+	if err := service.repository.UpdatePositions(ctx, userID, integrationIDs); err != nil {
+		msg := fmt.Sprintf("could update project integrations for user with ID [%s] and project [%s]", userID, integrationIDs)
+		return service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	return nil
+}

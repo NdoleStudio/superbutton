@@ -3,6 +3,9 @@ package handlers
 import (
 	"fmt"
 
+	"github.com/NdoleStudio/superbutton/pkg/repositories"
+	"github.com/NdoleStudio/superbutton/pkg/requests"
+
 	"github.com/NdoleStudio/superbutton/pkg/services"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
 	"github.com/davecgh/go-spew/spew"
@@ -36,6 +39,7 @@ func NewIntegrationHandler(
 func (h *ProjectIntegrationHandler) RegisterRoutes(app *fiber.App, middlewares []fiber.Handler) {
 	router := app.Group("/v1/projects/:projectID/integrations")
 	router.Get("/", h.computeRoute(middlewares, h.index)...)
+	router.Put("/", h.computeRoute(middlewares, h.update)...)
 }
 
 // @Summary      List of project integrations
@@ -69,4 +73,44 @@ func (h *ProjectIntegrationHandler) index(c *fiber.Ctx) error {
 	}
 
 	return h.responseOK(c, "integrations fetched successfully", projects)
+}
+
+// @Summary      Update project integrations
+// @Description  This endpoint updates project integrations for a user
+// @Security	 BearerAuth
+// @Tags         ProjectIntegrations
+// @Produce      json
+// @Param 		 projectID	path 		string true "Project ID"
+// @Param        payload	body 		requests.ProjectIntegrationsUpdateRequest	true 	"project integrations update payload"
+// @Success      200 		{object}	responses.NoContent
+// @Failure      400		{object}	responses.BadRequest
+// @Failure 	 401    	{object}	responses.Unauthorized
+// @Failure      422		{object}	responses.UnprocessableEntity
+// @Failure      500		{object}	responses.InternalServerError
+// @Router       /projects/{projectID}/integrations 	[put]
+func (h *ProjectIntegrationHandler) update(c *fiber.Ctx) error {
+	ctx, span, ctxLogger := h.tracer.StartFromFiberCtxWithLogger(c, h.logger)
+	defer span.End()
+
+	var request requests.ProjectIntegrationsUpdateRequest
+	if err := c.BodyParser(&request); err != nil {
+		msg := fmt.Sprintf("cannot marshall params [%s] into %T", c.OriginalURL(), request)
+		ctxLogger.Warn(stacktrace.Propagate(err, msg))
+		return h.responseBadRequest(c, err)
+	}
+
+	err := h.service.Update(ctx, h.userIDFomContext(c), request.Order)
+	if stacktrace.GetCode(err) == repositories.ErrCodeNotFound {
+		msg := fmt.Sprintf("cannot find project with id [%s] for user [%s]", c.Params("projectID"), h.userIDFomContext(c))
+		ctxLogger.Warn(stacktrace.Propagate(err, msg))
+		return h.responseNotFound(c, msg)
+	}
+
+	if err != nil {
+		msg := fmt.Sprintf("cannot update project [%s] integrations for  user with ID [%s]", c.Params("projectID"), h.userIDFomContext(c))
+		ctxLogger.Error(stacktrace.Propagate(err, msg))
+		return h.responseInternalServerError(c)
+	}
+
+	return h.responseNoContent(c, "project integrations updated successfully")
 }

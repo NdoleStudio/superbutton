@@ -3,6 +3,9 @@ package repositories
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/cockroachdb/cockroach-go/v2/crdb/crdbgorm"
 
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
@@ -48,4 +51,31 @@ func (repository *gormProjectIntegrationRepository) Fetch(ctx context.Context, u
 	}
 
 	return integrations, nil
+}
+
+func (repository *gormProjectIntegrationRepository) UpdatePositions(ctx context.Context, userID entities.UserID, integrationIDs []uuid.UUID) error {
+	ctx, span := repository.tracer.Start(ctx)
+	defer span.End()
+
+	updatedAt := time.Now().UTC()
+	err := crdbgorm.ExecuteTx(ctx, repository.db, nil, func(tx *gorm.DB) error {
+		for index, integrationID := range integrationIDs {
+			err := tx.
+				Model(&entities.ProjectIntegration{}).
+				Where("integration_id = ?", integrationID).
+				Where("user_id = ?", userID).
+				Updates(map[string]interface{}{"updated_at": updatedAt, "position": index}).
+				Error
+			if err != nil {
+				msg := fmt.Sprintf("cannot update integration [%s] with position [%d] for user [%s]", integrationID, index, userID)
+				return stacktrace.Propagate(err, msg)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		msg := fmt.Sprintf("cannot update integration positions for user [%s] with ID's [%+#v]", userID, integrationIDs)
+		return repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+	return nil
 }

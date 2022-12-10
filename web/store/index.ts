@@ -13,6 +13,7 @@ import {
   UpdateContentIntegrationRequest,
   UpdateLinkIntegrationRequest,
   UpdatePhoneCallIntegrationRequest,
+  UpdateProjectIntegrationsRequest,
   UpdateProjectRequest,
   UpdateWhatsappIntegrationRequest,
 } from '~/store/types'
@@ -22,6 +23,7 @@ import {
   EntitiesPhoneCallIntegration,
   EntitiesProject,
   EntitiesProjectIntegration,
+  EntitiesProjectSettings,
   EntitiesUser,
   EntitiesWhatsappIntegration,
   ResponsesNoContent,
@@ -31,6 +33,7 @@ import {
   ResponsesOkEntitiesLinkIntegration,
   ResponsesOkEntitiesPhoneCallIntegration,
   ResponsesOkEntitiesProject,
+  ResponsesOkEntitiesProjectSettings,
   ResponsesOkEntitiesUser,
   ResponsesOkEntitiesWhatsappIntegration,
 } from '~/store/backend'
@@ -340,6 +343,32 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Validation errors while adding whatsapp integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  getProjectSettings(
+    context: ActionContext<RootState, RootState>,
+    projectId: string
+  ) {
+    return new Promise<EntitiesProjectSettings>((resolve, reject) => {
+      axios
+        .get<ResponsesOkEntitiesProjectSettings>(
+          `/v1/settings/${context.state.authUser?.uid}/projects/${projectId}`
+        )
+        .then((response: AxiosResponse<ResponsesOkEntitiesProjectSettings>) => {
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching project settings',
               type: 'error',
             }),
           ])
@@ -903,6 +932,46 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Error while fetching project integration',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+
+  updateProjectIntegrations(
+    context: ActionContext<RootState, RootState>,
+    payload: UpdateProjectIntegrationsRequest
+  ) {
+    return new Promise<EntitiesLinkIntegration>((resolve, reject) => {
+      context.commit('clearErrorMessages')
+      axios
+        .put<ResponsesOkEntitiesLinkIntegration>(
+          `/v1/projects/${payload.projectId}/integrations/`,
+          payload
+        )
+        .then(
+          async (
+            response: AxiosResponse<ResponsesOkEntitiesLinkIntegration>
+          ) => {
+            await Promise.all([
+              context.dispatch('addNotification', {
+                message:
+                  response.data.message ?? 'Integrations updated successfully',
+                type: 'success',
+              }),
+            ])
+            resolve(response.data.data)
+          }
+        )
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.commit('setErrorMessages', getErrorMessages(error)),
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Validation errors while updating integrations',
               type: 'error',
             }),
           ])

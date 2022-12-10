@@ -8,6 +8,7 @@ import {
   RequestsLinkIntegrationUpdateRequest,
   RequestsPhoneCallIntegrationCreateRequest,
   RequestsPhoneCallIntegrationUpdateRequest,
+  RequestsProjectIntegrationsUpdateRequest,
   RequestsProjectUpdateRequest,
   RequestsWhatsappIntegrationCreateRequest,
   RequestsWhatsappIntegrationUpdateRequest,
@@ -78,6 +79,11 @@ export interface AddLinkIntegrationRequest
 export interface UpdateLinkIntegrationRequest
   extends RequestsLinkIntegrationUpdateRequest,
     ProjectIntegrationIdRequest {}
+
+export interface UpdateProjectIntegrationsRequest
+  extends RequestsProjectIntegrationsUpdateRequest {
+  projectId: string
+}
 
 export type AppData = {
   url: string
