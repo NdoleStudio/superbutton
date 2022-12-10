@@ -76,7 +76,7 @@
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">
-                <v-icon color="#3759c4" class="mr-4">{{ mdiPhone }}</v-icon>
+                <v-icon color="#7ed766" class="mr-4">{{ mdiPhone }}</v-icon>
                 <h3 class="text-h6 font-weight-bold">Phone Call</h3>
                 <v-progress-circular
                   v-if="loadingIntegrations"

@@ -85,7 +85,6 @@
       </v-container>
     </v-app-bar>
     <v-main>
-      <superbutton-widget></superbutton-widget>
       <snackbar-notification></snackbar-notification>
       <dashboard-loading
         v-if="!$store.getters.authStateChanged"
@@ -122,7 +121,7 @@
 </template>
 
 <script>
-import { mdiLogout, mdiPlus, mdiCogOutline, mdiLan } from '@mdi/js'
+import { mdiLogout, mdiPlus, mdiCogOutline, mdiLan, mdiXml } from '@mdi/js'
 
 export default {
   name: 'ProjectLayout',
@@ -158,6 +157,16 @@ export default {
           icon: mdiLan,
           route: {
             name: 'projects-id-integrations',
+            params: {
+              id: this.$store.getters.activeProjectId,
+            },
+          },
+        },
+        {
+          name: 'Install Widget',
+          icon: mdiXml,
+          route: {
+            name: 'projects-id-install',
             params: {
               id: this.$store.getters.activeProjectId,
             },
