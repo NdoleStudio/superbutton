@@ -343,7 +343,7 @@ export default class Widget extends Vue {
   }
 
   openLink(url: string) {
-    window.open(url, "_blank")?.focus();
+    window.open(url);
   }
 
   openContentIntegration(integrationId: string) {
