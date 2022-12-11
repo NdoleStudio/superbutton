@@ -570,7 +570,7 @@ $mobileWidth: 1264px;
       position: relative;
 
       @media screen and (max-width: $mobileWidth) {
-        height: calc(100vh - 80px);
+        height: calc(100dvh - 80px);
       }
 
       &__integration--active {
