@@ -532,7 +532,8 @@ $mobileWidth: 1264px;
 
     @media screen and (max-width: $mobileWidth) {
       width: 100vw;
-      height: 100vh;
+      max-height: 100%;
+      height: 100dvh;
       margin-bottom: 0;
       border-radius: 0;
     }
