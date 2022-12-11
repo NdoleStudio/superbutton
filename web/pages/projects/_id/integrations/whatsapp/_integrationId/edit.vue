@@ -1,11 +1,6 @@
 <template>
   <v-container v-if="$store.getters.authUser">
-    <v-row>
-      <v-col class="d-flex">
-        <back-button :icon="true" :large="true"></back-button>
-        <h1 class="text-h4 ml-2 mb-4">Edit Whatsapp Integration</h1>
-      </v-col>
-    </v-row>
+    <project-page-title>Edit Whatsapp Integration</project-page-title>
     <v-row>
       <v-col cols="12" lg="8">
         <v-form>
@@ -50,20 +45,26 @@
             <loading-button
               :loading="savingIntegration"
               :icon="mdiPlus"
-              :large="true"
+              :large="$vuetify.breakpoint.lgAndUp"
               @click="saveIntegration"
             >
-              Update Whatsapp
+              Update
+              <span v-if="$vuetify.breakpoint.lgAndUp" class="px-1"
+                >Whatsapp</span
+              >
+              Integration
             </loading-button>
             <v-spacer></v-spacer>
             <v-btn
-              large
+              :large="$vuetify.breakpoint.lgAndUp"
               :disabled="savingIntegration"
               color="error"
               text
               @click="deleteIntegration"
             >
-              <v-icon left>{{ mdiDelete }}</v-icon>
+              <v-icon v-if="$vuetify.breakpoint.lgAndUp" left>{{
+                mdiDelete
+              }}</v-icon>
               Delete
             </v-btn>
           </div>

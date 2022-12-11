@@ -2,12 +2,7 @@
   <v-main>
     <v-container fluid class="pa-0" fill-height>
       <v-row align="center" justify="center">
-        <v-col
-          cols="12"
-          md="4"
-          xl="3"
-          :class="{ 'mt-n16': $vuetify.breakpoint.lgAndUp }"
-        >
+        <v-col cols="12" md="4" xl="3" class="mt-n16">
           <div class="text-center mb-5">
             <v-avatar tile size="45" class="mt-n8 mr-4">
               <v-img contain :src="require('@/static/logo.svg')"></v-img>

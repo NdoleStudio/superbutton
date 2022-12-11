@@ -1,11 +1,6 @@
 <template>
   <v-container v-if="$store.getters.authUser">
-    <v-row>
-      <v-col class="d-flex">
-        <back-button :icon="true" :large="true"></back-button>
-        <h1 class="text-h4 ml-2 mb-4">Edit Link Integration</h1>
-      </v-col>
-    </v-row>
+    <project-page-title>Edit Link Integration</project-page-title>
     <v-row>
       <v-col cols="12" lg="8">
         <v-form>
@@ -95,21 +90,25 @@
           <div class="d-flex">
             <loading-button
               :loading="savingIntegration"
-              :icon="mdiPlus"
-              :large="true"
+              :icon="mdiContentSave"
+              :large="$vuetify.breakpoint.lgAndUp"
               @click="saveIntegration"
             >
-              Update Link Integration
+              Update
+              <span v-if="$vuetify.breakpoint.lgAndUp" class="px-1">Link</span>
+              Integration
             </loading-button>
             <v-spacer></v-spacer>
             <v-btn
-              large
+              :large="$vuetify.breakpoint.lgAndUp"
               :disabled="savingIntegration"
               color="error"
               text
               @click="deleteIntegration"
             >
-              <v-icon left>{{ mdiDelete }}</v-icon>
+              <v-icon v-if="$vuetify.breakpoint.lgAndUp" left>{{
+                mdiDelete
+              }}</v-icon>
               Delete
             </v-btn>
           </div>
@@ -120,14 +119,14 @@
 </template>
 
 <script>
-import { mdiPlus, mdiMenuDown, mdiDelete } from '@mdi/js'
+import { mdiMenuDown, mdiDelete, mdiContentSave } from '@mdi/js'
 
 export default {
   name: 'ProjectsIntegrationsLinkEdit',
   layout: 'project',
   data() {
     return {
-      mdiPlus,
+      mdiContentSave,
       mdiMenuDown,
       mdiDelete,
       savingIntegration: false,

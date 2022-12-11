@@ -2,7 +2,13 @@
   <v-main>
     <v-container fluid class="pa-0" fill-height>
       <v-row align="center" justify="center">
-        <v-col cols="12" md="4" xl="3" class="text-center px-4">
+        <v-col
+          cols="12"
+          md="5"
+          xl="3"
+          class="text-center mt-n16"
+          :class="{ 'px-6': $vuetify.breakpoint.mdAndDown }"
+        >
           <h2 class="text-h4 text--secondary mt-4 mb-4">
             <img
               class="mx-auto d-inline-block mt-n16"
@@ -10,7 +16,7 @@
               style="max-width: 32px"
               alt="Superbutton Logo"
             />
-            Loading the superbutton dashboard.
+            Loading the superbutton dashboard
           </h2>
           <v-progress-linear
             indeterminate

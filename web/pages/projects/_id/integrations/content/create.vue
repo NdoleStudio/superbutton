@@ -1,10 +1,7 @@
 <template>
   <v-container v-if="$store.getters.authUser">
     <v-row>
-      <v-col class="d-flex">
-        <back-button :icon="true" :large="true"></back-button>
-        <h1 class="text-h4 ml-2 mb-4">Add Content</h1>
-      </v-col>
+      <project-page-title>Add Content Integration</project-page-title>
     </v-row>
     <v-row>
       <v-col cols="12" lg="8" xl="6">
@@ -67,6 +64,7 @@
             :loading="savingIntegration"
             :icon="mdiPlus"
             :large="true"
+            :block="$vuetify.breakpoint.mdAndDown"
             @click="saveIntegration"
           >
             Add Content

@@ -2,7 +2,9 @@
   <v-container v-if="$store.getters.authUser">
     <v-row>
       <v-col>
-        <h1 class="text-h4">Settings</h1>
+        <h1 class="text-h4" :class="{ 'mt-n4': $vuetify.breakpoint.mdAndDown }">
+          Settings
+        </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -179,11 +181,18 @@
           </v-tab-item>
           <v-tab-item>
             <v-card>
-              <v-card-title
+              <v-card-title v-if="integrations.length"
                 >Drag and drop integrations to change the order.</v-card-title
               >
+              <v-card-title v-else
+                >You don't have any active integrations yet.</v-card-title
+              >
               <v-card-text>
-                <vue-draggable v-model="integrations" :disabled="savingProject">
+                <vue-draggable
+                  v-if="integrations.length"
+                  v-model="integrations"
+                  :disabled="savingProject"
+                >
                   <transition-group>
                     <v-card
                       v-for="integration in integrations"
@@ -217,6 +226,7 @@
                   </transition-group>
                 </vue-draggable>
                 <loading-button
+                  v-if="integrations.length"
                   class="mt-4"
                   :loading="savingProject"
                   :icon="mdiContentSave"
@@ -225,12 +235,25 @@
                 >
                   Update Integrations
                 </loading-button>
+                <v-btn
+                  v-else
+                  color="primary"
+                  :to="{
+                    name: 'projects-id-integrations',
+                    params: {
+                      id: $store.getters.activeProjectId,
+                    },
+                  }"
+                >
+                  <v-icon left>{{ mdiPlus }}</v-icon>
+                  Add Integration
+                </v-btn>
               </v-card-text>
             </v-card>
           </v-tab-item>
         </v-tabs-items>
       </v-col>
-      <v-col cols="12" lg="5" class="mt-12">
+      <v-col cols="12" lg="5" :class="{ 'mt-12': $vuetify.breakpoint.lgAndUp }">
         <install-widget-html color="default"></install-widget-html>
       </v-col>
     </v-row>

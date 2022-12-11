@@ -2,7 +2,9 @@
   <v-container v-if="$store.getters.authUser">
     <v-row>
       <v-col>
-        <h1 class="text-h4 mb-4">Integrations</h1>
+        <h1 class="text-h4" :class="{ 'mt-n4': $vuetify.breakpoint.mdAndDown }">
+          Integrations
+        </h1>
       </v-col>
     </v-row>
     <v-row>
@@ -25,39 +27,10 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-simple-table v-if="linkIntegrations.length">
-                <template #default>
-                  <thead class="text-uppercase">
-                    <tr>
-                      <th class="text-left" style="width: 30%">Name</th>
-                      <th class="text-left" style="width: 50%">Identifier</th>
-                      <th class="">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in linkIntegrations" :key="item.id">
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.integration_id }}</td>
-                      <td>
-                        <v-btn
-                          small
-                          class="secondary"
-                          :to="{
-                            name: 'projects-id-integrations-link-integrationId-edit',
-                            params: {
-                              id: $store.getters.activeProjectId,
-                              integrationId: item.integration_id,
-                            },
-                          }"
-                        >
-                          <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
-                          Edit
-                        </v-btn>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <project-integration-table
+                route-name="projects-id-integrations-link-integrationId-edit"
+                :integrations="linkIntegrations"
+              ></project-integration-table>
               <v-btn
                 :to="{
                   name: 'projects-id-integrations-link-create',
@@ -67,7 +40,7 @@
                 small
               >
                 <v-icon left>{{ mdiPlus }}</v-icon>
-                Add Phone
+                Add Link
               </v-btn>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -90,39 +63,10 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-simple-table v-if="phoneCallIntegrations.length">
-                <template #default>
-                  <thead class="text-uppercase">
-                    <tr>
-                      <th class="text-left" style="width: 30%">Name</th>
-                      <th class="text-left" style="width: 50%">Identifier</th>
-                      <th class="">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in phoneCallIntegrations" :key="item.id">
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.integration_id }}</td>
-                      <td>
-                        <v-btn
-                          small
-                          class="secondary"
-                          :to="{
-                            name: 'projects-id-integrations-phone-call-integrationId-edit',
-                            params: {
-                              id: $store.getters.activeProjectId,
-                              integrationId: item.integration_id,
-                            },
-                          }"
-                        >
-                          <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
-                          Edit
-                        </v-btn>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <project-integration-table
+                route-name="projects-id-integrations-phone-call-integrationId-edit"
+                :integrations="phoneCallIntegrations"
+              ></project-integration-table>
               <v-btn
                 :to="{
                   name: 'projects-id-integrations-phone-call-create',
@@ -155,39 +99,10 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-simple-table v-if="whatsappIntegrations.length">
-                <template #default>
-                  <thead class="text-uppercase">
-                    <tr>
-                      <th class="text-left" style="width: 30%">Name</th>
-                      <th class="text-left" style="width: 50%">Identifier</th>
-                      <th class="">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in whatsappIntegrations" :key="item.id">
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.integration_id }}</td>
-                      <td>
-                        <v-btn
-                          small
-                          class="secondary"
-                          :to="{
-                            name: 'projects-id-integrations-whatsapp-integrationId-edit',
-                            params: {
-                              id: $store.getters.activeProjectId,
-                              integrationId: item.integration_id,
-                            },
-                          }"
-                        >
-                          <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
-                          Edit
-                        </v-btn>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <project-integration-table
+                route-name="projects-id-integrations-whatsapp-integrationId-edit"
+                :integrations="whatsappIntegrations"
+              ></project-integration-table>
               <v-btn
                 :to="{
                   name: 'projects-id-integrations-whatsapp-create',
@@ -222,39 +137,10 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content>
               <v-divider></v-divider>
-              <v-simple-table v-if="contentIntegrations.length">
-                <template #default>
-                  <thead class="text-uppercase">
-                    <tr>
-                      <th class="text-left" style="width: 30%">Name</th>
-                      <th class="text-left" style="width: 50%">Identifier</th>
-                      <th class="">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="item in contentIntegrations" :key="item.id">
-                      <td>{{ item.name }}</td>
-                      <td>{{ item.integration_id }}</td>
-                      <td>
-                        <v-btn
-                          small
-                          class="secondary"
-                          :to="{
-                            name: 'projects-id-integrations-content-integrationId-edit',
-                            params: {
-                              id: $store.getters.activeProjectId,
-                              integrationId: item.integration_id,
-                            },
-                          }"
-                        >
-                          <v-icon left>{{ mdiSquareEditOutline }}</v-icon>
-                          Edit
-                        </v-btn>
-                      </td>
-                    </tr>
-                  </tbody>
-                </template>
-              </v-simple-table>
+              <project-integration-table
+                route-name="projects-id-integrations-content-integrationId-edit"
+                :integrations="contentIntegrations"
+              ></project-integration-table>
               <v-btn
                 :to="{
                   name: 'projects-id-integrations-content-create',

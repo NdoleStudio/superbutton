@@ -2,7 +2,12 @@
   <v-app>
     <v-app-bar app flat>
       <v-container class="py-0 fill-height">
-        <v-badge class="logo-badge" color="#8338ec" content="Beta">
+        <v-badge
+          v-if="$vuetify.breakpoint.lgAndUp"
+          class="logo-badge"
+          color="#8338ec"
+          content="Beta"
+        >
           <nuxt-link to="/" class="text-decoration-none d-flex">
             <v-avatar tile size="33" class="mt-1">
               <v-img contain :src="require('@/static/logo.svg')"></v-img>
@@ -12,15 +17,26 @@
             </h3>
           </nuxt-link>
         </v-badge>
-        <div style="max-width: 250px">
+        <v-app-bar-nav-icon
+          v-else-if="$store.getters.hasProjects"
+          class="ml-n6"
+          @click.stop="drawer = !drawer"
+        ></v-app-bar-nav-icon>
+        <div
+          :class="{
+            'select-width-lg': $vuetify.breakpoint.lgAndUp,
+            'select-width-md': !$vuetify.breakpoint.lgAndUp,
+          }"
+        >
           <v-select
             v-if="$store.getters.hasProjects"
             :value="$store.getters.activeProjectId"
             outlined
             dense
             label="Project"
-            class="ml-16 mb-n4 mt-2"
+            class="mb-n4 mt-2"
             :items="projects"
+            :class="{ 'ml-16': $vuetify.breakpoint.lgAndUp }"
             @change="onProjectChange"
           >
             <template #append-item>
@@ -84,6 +100,44 @@
         </v-menu>
       </v-container>
     </v-app-bar>
+    <v-navigation-drawer
+      v-if="$vuetify.breakpoint.mdAndDown"
+      v-model="drawer"
+      absolute
+      temporary
+    >
+      <div class="mt-4 px-4">
+        <v-badge class="logo-badge" color="#8338ec" content="Beta">
+          <nuxt-link to="/" class="text-decoration-none d-flex">
+            <v-avatar tile size="33" class="mt-1">
+              <v-img contain :src="require('@/static/logo.svg')"></v-img>
+            </v-avatar>
+            <h3 class="text-h5 text--secondary font-weight-thin ml-1">
+              Superbutton
+            </h3>
+          </nuxt-link>
+        </v-badge>
+      </div>
+      <v-divider class="mt-n1"></v-divider>
+      <v-list color="transparent" nav shaped class="pl-0">
+        <v-list-item
+          v-for="item in items"
+          :key="item.name"
+          color="primary"
+          link
+          :to="item.route"
+        >
+          <v-list-item-icon>
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6">{{
+              item.name
+            }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
     <v-main>
       <snackbar-notification></snackbar-notification>
       <dashboard-loading
@@ -129,6 +183,7 @@ export default {
     return {
       logoutIcon: mdiLogout,
       mdiPlus,
+      drawer: false,
     }
   },
   computed: {
@@ -206,5 +261,12 @@ export default {
       margin-bottom: -12px;
     }
   }
+}
+
+.select-width-lg {
+  max-width: 250px;
+}
+.select-width-md {
+  max-width: 200px;
 }
 </style>

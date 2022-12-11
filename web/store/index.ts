@@ -167,7 +167,7 @@ export const actions: ActionTree<RootState, RootState> = {
     }
     setAuthToken(await authUser.getIdToken())
     const { uid, email, photoURL, displayName } = authUser
-    context.commit('setAuthUser', { uid, email, photoURL, displayName })
+    await context.commit('setAuthUser', { uid, email, photoURL, displayName })
   },
 
   setAuthUser: (

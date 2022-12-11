@@ -10,7 +10,7 @@
         xl="4"
         offset-xl="4"
       >
-        <v-card class="mt-16 pa-8">
+        <v-card class="mt-16" :class="{ 'pa-8': $vuetify.breakpoint.lgAndUp }">
           <v-card-text class="pt-3 text-center">
             <h4 class="text-h4 text--primary">Welcome</h4>
             <h5 class="pt-1 pb-6 text--secondary subtitle-1">

@@ -12,7 +12,9 @@
             unavoidable. We have already been automatically notified about this
             error and we are working hard to fix it.
           </p>
-          <v-btn class="primary mx-auto" rounded to="/">Take Me Home</v-btn>
+          <v-btn class="primary mx-auto" rounded @click="goHome"
+            >Take Me Home</v-btn
+          >
         </v-col>
       </v-row>
     </v-container>
@@ -41,6 +43,11 @@ export default {
     return {
       title,
     }
+  },
+  methods: {
+    goHome() {
+      window.location.href = window.location.origin
+    },
   },
 }
 </script>

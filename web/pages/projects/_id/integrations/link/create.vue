@@ -1,11 +1,6 @@
 <template>
   <v-container v-if="$store.getters.authUser">
-    <v-row>
-      <v-col class="d-flex">
-        <back-button :icon="true" :large="true"></back-button>
-        <h1 class="ml-2 text-h4 mb-4">Create Link Integration</h1>
-      </v-col>
-    </v-row>
+    <project-page-title>Create Link Integration</project-page-title>
     <v-row>
       <v-col cols="12" lg="8">
         <v-form>
@@ -96,6 +91,7 @@
             :loading="savingIntegration"
             :icon="mdiPlus"
             :large="true"
+            :block="$vuetify.breakpoint.mdAndDown"
             @click="saveIntegration"
           >
             Add Link Integration

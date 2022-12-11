@@ -2,11 +2,13 @@
   <v-container v-if="$store.getters.authUser">
     <v-row>
       <v-col>
-        <h1 class="text-h4 mb-4">Install Widget</h1>
+        <h1 class="text-h4" :class="{ 'mt-n4': $vuetify.breakpoint.mdAndDown }">
+          Install Widget
+        </h1>
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="12" lg="6">
+      <v-col cols="12">
         <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
