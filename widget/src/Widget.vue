@@ -589,6 +589,10 @@ $mobileWidth: 1264px;
           padding-right: 16px;
           margin-top: 16px;
           white-space: pre-line;
+
+          & + .sb-widget__window__body__mention {
+            bottom: 8px;
+          }
         }
         &__back-button {
           cursor: pointer;
