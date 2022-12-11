@@ -1,5 +1,9 @@
 <template>
-  <div class="sb-widget" v-if="settingsLoaded">
+  <div
+    class="sb-widget"
+    :class="{ 'sb-widget--open': windowOpen }"
+    v-if="settingsLoaded"
+  >
     <div v-if="windowOpen" class="sb-widget__window">
       <div
         class="sb-widget__window__header"
@@ -349,13 +353,10 @@ export default class Widget extends Vue {
   closeWidgetWindow() {
     this.activeIntegrationId = null;
     this.windowOpen = false;
-    if (this.showGreeting) {
-      this.tooltipActive = true;
-    }
   }
 
   displayGreeting() {
-    if (this.settings?.project?.greeting && !this.isMobile) {
+    if (this.settings?.project?.greeting) {
       setTimeout(() => {
         if (!this.windowOpen) {
           this.tooltipActive = true;
@@ -388,6 +389,8 @@ export default class Widget extends Vue {
 </script>
 
 <style scoped lang="scss">
+$mobileWidth: 1264px;
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////// MicroTip Tooltip
 ////////////////////////////////////////////////////////////////////////////////
@@ -478,6 +481,18 @@ export default class Widget extends Vue {
   bottom: 48px;
   font-family: Arial, Helvetica, sans-serif;
 
+  @media screen and (max-width: $mobileWidth) {
+    bottom: 28px;
+    right: 32px;
+    &.sb-widget--open {
+      bottom: 0;
+      right: 0;
+      .sb-widget__chat-head {
+        display: none;
+      }
+    }
+  }
+
   &__chat-head {
     height: 72px;
     width: 72px;
@@ -488,6 +503,25 @@ export default class Widget extends Vue {
     align-items: center;
   }
 
+  &__image {
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: background-image 0.3s ease-in-out;
+    height: 44px;
+    width: 44px;
+  }
+
+  @media screen and (max-width: $mobileWidth) {
+    &__chat-head {
+      height: 64px;
+      width: 64px;
+    }
+    &__image {
+      height: 42px;
+      width: 42px;
+    }
+  }
+
   &__window {
     box-sizing: border-box;
     width: 400px;
@@ -496,12 +530,24 @@ export default class Widget extends Vue {
     border-radius: 16px;
     margin-bottom: 16px;
 
+    @media screen and (max-width: $mobileWidth) {
+      width: 100vw;
+      height: 100vh;
+      margin-bottom: 0;
+      border-radius: 0;
+    }
+
     &__header {
       box-sizing: border-box;
       height: 80px;
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       padding: 16px;
+
+      @media screen and (max-width: $mobileWidth) {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
 
       &__project-name {
         font-size: 40px;
@@ -521,6 +567,10 @@ export default class Widget extends Vue {
       width: 100%;
       color: #21293c;
       position: relative;
+
+      @media screen and (max-width: $mobileWidth) {
+        height: calc(100vh - 80px);
+      }
 
       &__integration--active {
         padding-top: 12px;
@@ -666,14 +716,6 @@ export default class Widget extends Vue {
   .sb-row {
     width: 100%;
     display: flex;
-  }
-
-  &__image {
-    background-repeat: no-repeat;
-    background-size: cover;
-    transition: background-image 0.3s ease-in-out;
-    height: 44px;
-    width: 44px;
   }
 }
 </style>
