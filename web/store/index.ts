@@ -192,7 +192,7 @@ export const actions: ActionTree<RootState, RootState> = {
     const activeProject = context.state.projects.find((project) => {
       return project.id === context.state.activeProjectId
     })
-    if (activeProject === undefined) {
+    if (activeProject === undefined && projects.length) {
       context.commit('setActiveProjectId', projects[0].id)
     }
 

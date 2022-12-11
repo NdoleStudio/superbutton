@@ -50,16 +50,9 @@ export default class FirebaseAuth extends Vue {
         signInSuccessWithAuthResult: (
           authResult: firebase.auth.UserCredential
         ) => {
-          if (authResult.user !== null) {
-            const { uid, email, photoURL, displayName } = authResult.user
-            this.$store.dispatch('setAuthUser', {
-              uid,
-              email,
-              photoURL,
-              displayName,
-            })
-          }
-
+          this.$store.dispatch('onAuthStateChanged', {
+            authUser: authResult.user,
+          })
           this.$store.dispatch('addNotification', {
             message: 'Login successfull!',
             type: 'success',

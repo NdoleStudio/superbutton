@@ -52,7 +52,7 @@ func (validator *ProjectHandlerValidator) ValidateUpdate(ctx context.Context, re
 				"max:30",
 			},
 			"greeting_timeout": []string{
-				"max:30",
+				"max:300",
 			},
 			"website": []string{
 				"required",

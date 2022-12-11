@@ -33,7 +33,7 @@
           <v-text-field
             v-model="formWebsite"
             :disabled="savingIntegration"
-            :counter="30"
+            :counter="255"
             class="mb-4"
             label="Website"
             persistent-placeholder

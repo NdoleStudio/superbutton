@@ -9,7 +9,7 @@
     </v-row>
     <v-row>
       <v-col>
-        <v-expansion-panels :value="0" class="mb-4" readonly>
+        <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">
@@ -45,7 +45,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-expansion-panels :value="0" class="mb-4" readonly>
+        <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">
@@ -81,7 +81,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-expansion-panels :value="0" class="mb-4" readonly>
+        <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">
@@ -117,7 +117,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-        <v-expansion-panels :value="0" class="mb-4" readonly>
+        <v-expansion-panels :value="0" class="mb-4">
           <v-expansion-panel>
             <v-expansion-panel-header>
               <div class="d-flex">

@@ -7,7 +7,7 @@
     :large="large"
     @click="goBack"
   >
-    <v-icon>{{ mdiArrowLeft }}</v-icon>
+    <v-icon left>{{ mdiArrowLeft }}</v-icon>
     <span v-if="!icon">Go Back</span>
   </v-btn>
 </template>
