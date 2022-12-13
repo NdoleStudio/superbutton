@@ -150,7 +150,7 @@
       class="sb-widget__chat-head"
       :class="{
         'sb-widget--tooltip-active': tooltipActive,
-        'sb-widget--tooltip-disabled': windowOpen,
+        'sb-widget--tooltip-disabled': windowOpen || !showGreeting,
       }"
       :style="widgetStyle"
       :aria-label="settings.project.greeting"
@@ -357,11 +357,11 @@ export default class Widget extends Vue {
 
   displayGreeting() {
     if (this.settings?.project?.greeting) {
+      this.showGreeting = true;
       setTimeout(() => {
         if (!this.windowOpen) {
           this.tooltipActive = true;
         }
-        this.showGreeting = true;
       }, this.settings.project.greeting_timeout_seconds * 1000);
     }
   }
