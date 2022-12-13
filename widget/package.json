@@ -13,9 +13,9 @@
     "rollup:dev": "rollup -c --environment BUILD:development --bundleConfigAsCjs"
   },
   "dependencies": {
-    "@mdi/js": "^7.0.96",
+    "@mdi/js": "^7.1.96",
     "core-js": "^3.8.3",
-    "vue": "^3.2.45",
+    "vue": "^2.6.14",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^9.1.2"
   },
