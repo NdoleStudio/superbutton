@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "build:dev": "vue-cli-service build --mode development",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint",
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "@mdi/js": "^7.1.96",
