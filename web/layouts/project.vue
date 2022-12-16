@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <v-app-bar app flat>
-      <v-container class="py-0 fill-height">
+    <v-app-bar app fixed flat>
+      <v-container class="py-0">
         <v-badge
           v-if="$vuetify.breakpoint.lgAndUp"
           class="logo-badge"
@@ -13,7 +13,7 @@
               <v-img contain :src="require('@/static/logo.svg')"></v-img>
             </v-avatar>
             <h3 class="text-h4 text--secondary font-weight-thin ml-1">
-              Superbutton
+              SuperButton
             </h3>
           </nuxt-link>
         </v-badge>

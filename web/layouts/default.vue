@@ -14,7 +14,7 @@
                 'text-h5': !$vuetify.breakpoint.lgAndUp,
               }"
             >
-              Superbutton
+              SuperButton
             </h3>
           </nuxt-link>
         </v-badge>
