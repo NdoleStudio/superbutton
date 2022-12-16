@@ -9,8 +9,6 @@
     "build:dev": "vue-cli-service build --mode development",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "rollup:prod": "rollup -c --environment BUILD:production",
-    "rollup:dev": "rollup -c --environment BUILD:development --bundleConfigAsCjs"
   },
   "dependencies": {
     "@mdi/js": "^7.1.96",
