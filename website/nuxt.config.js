@@ -11,6 +11,14 @@ export default {
     htmlAttrs: {
       lang: 'en',
     },
+    script: [
+      {
+        hid: 'sb-widget',
+        src: '/superbutton.js',
+        async: true,
+        defer: true,
+      },
+    ],
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -24,7 +32,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [],
+  plugins: [{ src: '~/plugins/vue-glow', ssr: false }],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -70,4 +78,13 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
+
+  publicRuntimeConfig: {
+    cdnURL: process.env.CDN_URL,
+    dashboardURL: process.env.DASHBOARD_URL,
+  },
+
+  server: {
+    port: 3333,
+  },
 }

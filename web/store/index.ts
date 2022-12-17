@@ -43,6 +43,7 @@ import {
   ErrorMessagesSerialized,
   getErrorMessages,
 } from '~/plugins/errors'
+import { removeAuthCookie, setAuthCookie } from '~/plugins/utils'
 
 export const state = (): State => ({
   authUser: null,
@@ -108,6 +109,12 @@ export const mutations: MutationTree<RootState> = {
   setAuthUser(state: RootState, payload: AuthUser | null) {
     state.authUser = payload
     state.authStateChanged = true
+
+    if (payload) {
+      setAuthCookie()
+    } else {
+      removeAuthCookie()
+    }
   },
 
   setUser(state: RootState, payload: EntitiesUser | null) {

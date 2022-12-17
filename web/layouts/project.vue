@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-app-bar app fixed flat>
-      <v-container class="py-0">
+      <v-container class="py-0 d-flex">
         <v-badge
           v-if="$vuetify.breakpoint.lgAndUp"
           class="logo-badge"
@@ -138,12 +138,12 @@
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
-    <v-main>
+    <dashboard-loading
+      v-if="!$store.getters.authStateChanged"
+    ></dashboard-loading>
+    <v-main v-else>
       <snackbar-notification></snackbar-notification>
-      <dashboard-loading
-        v-if="!$store.getters.authStateChanged"
-      ></dashboard-loading>
-      <v-container v-else class="pt-8">
+      <v-container class="pt-8">
         <v-row>
           <v-col v-if="$vuetify.breakpoint.lgAndUp" cols="3" xl="2">
             <v-list color="transparent" rounded>

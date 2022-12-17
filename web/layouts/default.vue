@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar app flat>
+    <v-app-bar app>
       <v-container class="py-0 fill-height">
         <v-badge class="logo-badge" color="#8338ec" content="Beta">
           <nuxt-link to="/" class="text-decoration-none d-flex">
