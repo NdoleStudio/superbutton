@@ -127,7 +127,7 @@
         lg="6"
         offset-lg="3"
       >
-        <v-btn :href="$config.dashoardURL" color="primary" x-large>
+        <v-btn :href="$config.dashboardURL" color="primary" x-large>
           Get Started for Free
         </v-btn>
       </v-col>

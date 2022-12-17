@@ -28,7 +28,7 @@
         <client-only>
           <v-btn
             v-if="!isLoggedIn"
-            :href="$config.dashoardURL"
+            :href="$config.dashboardURL"
             color="primary"
             large
           >
