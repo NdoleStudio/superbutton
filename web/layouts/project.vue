@@ -4,7 +4,7 @@
       <v-container class="py-0 d-flex">
         <v-badge
           v-if="$vuetify.breakpoint.lgAndUp"
-          class="logo-badge"
+          class="logo-badge mt-2"
           color="#8338ec"
           content="Beta"
         >

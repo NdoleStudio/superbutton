@@ -504,8 +504,8 @@ $mobileWidth: 1264px;
   }
 
   &__image {
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
     transition: background-image 0.3s ease-in-out;
     height: 44px;
     width: 44px;
