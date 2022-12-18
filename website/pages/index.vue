@@ -1,7 +1,16 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="12" class="text-center mt-16" lg="8" offset-lg="2">
+      <v-col
+        cols="12"
+        class="text-center"
+        lg="8"
+        offset-lg="2"
+        :class="{
+          'mt-16': $vuetify.breakpoint.lgAndUp,
+          'mt-4': !$vuetify.breakpoint.lgAndUp,
+        }"
+      >
         <h1
           :class="{
             'text-h2': $vuetify.breakpoint.lgAndUp,
@@ -149,7 +158,7 @@
           color="#8338ec"
           mode="hex"
           elevation="24"
-          intensity="2.07"
+          :intensity="2.07"
           intense
         >
           <v-img contain :src="require('@/static/dashboard.png')"></v-img>
