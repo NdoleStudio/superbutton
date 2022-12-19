@@ -100,7 +100,7 @@
                 icon
                 color="#1DA1F2"
               >
-                <v-icon>{{ mdiTwitter }}</v-icon>
+                <v-icon large>{{ mdiTwitter }}</v-icon>
               </v-btn>
               <v-btn
                 large
@@ -108,7 +108,7 @@
                 icon
                 color="000000"
               >
-                <v-icon>{{ mdiGithub }}</v-icon>
+                <v-icon large>{{ mdiGithub }}</v-icon>
               </v-btn>
             </p>
           </v-col>
