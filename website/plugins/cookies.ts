@@ -1,5 +1,5 @@
 export const hasAuthCookie = (): boolean => {
-  if (typeof document !== undefined) {
+  if (typeof window !== 'undefined') {
     return (
       (document.cookie
         .match('(^|;)\\s*' + 'auth' + '\\s*=\\s*([^;]+)')

@@ -2,3 +2,103 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+////////////////////////////////////////////////////////////////////////////////
+////////// MicroTip Tooltip
+////////////////////////////////////////////////////////////////////////////////
+
+/* -------------------------------------------------------------------
+  Microtip
+  Modern, lightweight css-only tooltips
+  Just 1kb minified and gzipped
+  @author Ghosh
+  @package Microtip
+----------------------------------------------------------------------
+  1. Base Styles
+  2. Direction Modifiers
+  3. Position Modifiers
+--------------------------------------------------------------------*/
+
+/* ------------------------------------------------
+  [1] Base Styles
+-------------------------------------------------*/
+
+[aria-label][role~='tooltip'] {
+  position: relative;
+}
+
+[aria-label][role~='tooltip']::before,
+[aria-label][role~='tooltip']::after {
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--microtip-transition-duration, 0.18s)
+    var(--microtip-transition-easing, ease-in-out)
+    var(--microtip-transition-delay, 0s);
+  position: absolute;
+  box-sizing: border-box;
+  transform-origin: top;
+}
+
+[aria-label][role~='tooltip']::before {
+  background-size: 100% auto !important;
+  content: '';
+}
+
+[aria-label][role~='tooltip']::after {
+  background: #000000;
+  border-radius: 4px;
+  color: #ffffff;
+  content: attr(aria-label);
+  font-weight: var(--microtip-font-weight, normal);
+  text-transform: var(--microtip-text-transform, none);
+  padding: 0.5em 1em;
+  white-space: nowrap;
+  box-sizing: content-box;
+}
+
+[aria-label][role~='tooltip']:hover::before,
+[aria-label][role~='tooltip']:hover::after,
+[aria-label][role~='tooltip']:focus::before,
+.tooltip-active[aria-label][role~='tooltip']::before,
+.tooltip-active[aria-label][role~='tooltip']::after,
+[aria-label][role~='tooltip']:focus::after {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------
+  [2.6] Left
+-------------------------------------------------*/
+[role~='tooltip'][data-microtip-position='left']::before,
+[role~='tooltip'][data-microtip-position='left']::after {
+  bottom: auto;
+  left: auto;
+  right: 100%;
+  top: 50%;
+  transform: translate3d(10px, -50%, 0);
+}
+
+[role~='tooltip'][data-microtip-position='left']::before {
+  background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMnB4IiBoZWlnaHQ9IjM2cHgiPjxwYXRoIGZpbGw9IiMwMDAwMDAiIHRyYW5zZm9ybT0icm90YXRlKC05MCAxOCAxOCkiIGQ9Ik0yLjY1OCwwLjAwMCBDLTEzLjYxNSwwLjAwMCA1MC45MzgsMC4wMDAgMzQuNjYyLDAuMDAwIEMyOC42NjIsMC4wMDAgMjMuMDM1LDEyLjAwMiAxOC42NjAsMTIuMDAyIEMxNC4yODUsMTIuMDAyIDguNTk0LDAuMDAwIDIuNjU4LDAuMDAwIFoiLz48L3N2Zz4=')
+    no-repeat;
+  height: 18px;
+  width: 6px;
+  margin-right: 5px;
+  margin-bottom: 0;
+}
+
+[role~='tooltip'][data-microtip-position='left']::after {
+  margin-right: 11px;
+}
+
+[role~='tooltip'][data-microtip-position='left']:hover::before,
+.tooltip-active[aria-label][role~='tooltip']::before,
+.tooltip-active[aria-label][role~='tooltip']::after,
+[role~='tooltip'][data-microtip-position='left']:hover::after {
+  transform: translate3d(0, -50%, 0);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
