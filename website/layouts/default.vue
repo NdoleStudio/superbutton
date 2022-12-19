@@ -29,6 +29,7 @@
           v-if="$vuetify.breakpoint.mdAndUp"
           text
           class="mr-4"
+          :large="$vuetify.breakpoint.mdAndUp"
           @click.stop="goToPricing"
         >
           Pricing
