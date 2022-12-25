@@ -443,7 +443,12 @@
                   <span class="text-h3">$0</span>
                 </p>
                 <p class="text-center mt-n3">No credit card required</p>
-                <v-btn block color="black" class="white--text" large
+                <v-btn
+                  block
+                  color="black"
+                  :href="$config.dashboardURL"
+                  class="white--text"
+                  large
                   >Get Started</v-btn
                 >
                 <p class="mt-8 subtitle-1">
@@ -492,7 +497,9 @@
                 <p v-else class="text-center mt-n3">
                   or <b>$4.16</b> per month
                 </p>
-                <v-btn block color="primary" large>Try For Free</v-btn>
+                <v-btn block color="primary" :href="$config.dashboardURL" large
+                  >Try For Free</v-btn
+                >
                 <p class="mt-8 subtitle-1">
                   <v-icon color="primary" class="mt-n1" left>{{
                     mdiCheckCircle
