@@ -82,9 +82,9 @@ export default class FirebaseAuth extends Vue {
         ProviderId.PASSWORD,
       ],
       // Terms of service url.
-      tosUrl: this.$store.getters.app.url + '/terms-and-conditions',
+      tosUrl: this.$store.getters.app.websiteURL + '/terms-and-conditions',
       // Privacy policy url.
-      privacyPolicyUrl: this.$store.getters.app.url + '/privacy-policy',
+      privacyPolicyUrl: this.$store.getters.app.websiteURL + '/privacy-policy',
     }
   }
 }

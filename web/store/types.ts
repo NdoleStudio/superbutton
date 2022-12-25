@@ -89,6 +89,7 @@ export type AppData = {
   url: string
   name: string
   environment: string
+  websiteURL: string
   documentationURL: string
   githubURL: string
 }

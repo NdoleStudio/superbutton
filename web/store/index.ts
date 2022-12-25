@@ -98,6 +98,7 @@ export const getters: GetterTree<RootState, RootState> = {
     return {
       url,
       environment: process.env.APP_ENV as string,
+      websiteURL: process.env.APP_WEBSITE_URL as string,
       documentationURL: process.env.APP_DOCUMENTATION_URL as string,
       githubURL: process.env.APP_GITHUB_URL as string,
       name: process.env.APP_NAME as string,

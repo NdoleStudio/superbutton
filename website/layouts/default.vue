@@ -26,8 +26,19 @@
         </v-badge>
         <v-spacer></v-spacer>
         <v-btn
+          v-if="$vuetify.breakpoint.mdAndUp && $route.name !== 'index'"
+          text
+          color="primary"
+          class="mr-4"
+          :large="$vuetify.breakpoint.mdAndUp"
+          to="/"
+        >
+          Home
+        </v-btn>
+        <v-btn
           v-if="$vuetify.breakpoint.mdAndUp"
           text
+          color="primary"
           class="mr-4"
           :large="$vuetify.breakpoint.mdAndUp"
           @click.stop="goToPricing"
@@ -59,7 +70,7 @@
     <v-main>
       <Nuxt />
     </v-main>
-    <v-footer class="mt-8">
+    <v-footer class="mt-8" color="#FAFAFA">
       <v-container>
         <v-row>
           <v-col cols="12" md="4">
@@ -93,22 +104,21 @@
                 src="https://upload.wikimedia.org/wikipedia/commons/8/8f/Flag_of_Estonia.svg"
               ></v-img>
             </p>
-            <p>
+            <p class="mt-n3">
               <v-btn
-                large
                 href="https://twitter.com/superbuttonHQ"
                 icon
                 color="#1DA1F2"
               >
-                <v-icon large>{{ mdiTwitter }}</v-icon>
+                <v-icon>{{ mdiTwitter }}</v-icon>
               </v-btn>
               <v-btn
-                large
                 href="https://github.com/NdoleStudio/superbutton"
                 icon
-                color="000000"
+                large
+                color="#000000"
               >
-                <v-icon large>{{ mdiGithub }}</v-icon>
+                <v-icon>{{ mdiGithub }}</v-icon>
               </v-btn>
             </p>
           </v-col>
@@ -140,8 +150,26 @@
           <v-col cols="12" md="4">
             <h2 class="text-h6 mb-2">Legal</h2>
             <ul style="list-style: none" class="pa-0">
-              <li class="mb-2">Terms & Conditions</li>
-              <li>Privacy Policy</li>
+              <li class="mb-2">
+                <v-hover v-slot="{ hover }">
+                  <nuxt-link
+                    class="text--primary text-decoration-none"
+                    :class="{ 'text-decoration-underline': hover }"
+                    to="/terms-and-conditions"
+                    >Terms & Conditions</nuxt-link
+                  >
+                </v-hover>
+              </li>
+              <li>
+                <v-hover v-slot="{ hover }">
+                  <nuxt-link
+                    class="text--primary text-decoration-none"
+                    :class="{ 'text-decoration-underline': hover }"
+                    to="/privacy-policy"
+                    >Privacy Policy</nuxt-link
+                  >
+                </v-hover>
+              </li>
             </ul>
           </v-col>
         </v-row>
@@ -177,7 +205,11 @@ export default {
   },
   methods: {
     goToPricing() {
-      this.$vuetify.goTo('#pricing')
+      if (this.$route.name === 'index') {
+        this.$vuetify.goTo('#pricing')
+      } else {
+        this.$router.push('/#pricing')
+      }
     },
   },
 }
