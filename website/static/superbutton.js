@@ -6,7 +6,8 @@ window.SB_PROJECT_ID = 'df2ab94d-4201-4478-95ca-24e9173380c0'
   s.src = 'https://cdn.superbutton.app/widget.js'
   s.async = true
   d.getElementsByTagName('head')[0].appendChild(s)
-})()(function (c, l, a, r, i, t, y) {
+})()
+;(function (c, l, a, r, i, t, y) {
   c[a] =
     c[a] ||
     function () {
