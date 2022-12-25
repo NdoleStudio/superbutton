@@ -432,7 +432,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col md="4" offset-md="2">
+          <v-col lg="4" offset-lg="2">
             <v-card elevation="4">
               <v-card-text>
                 <h1 class="text-center text-h3 text--primary">Free</h1>
@@ -473,7 +473,7 @@
               </v-card-text>
             </v-card>
           </v-col>
-          <v-col md="4">
+          <v-col lg="4">
             <v-card elevation="4">
               <v-card-text>
                 <h1 class="text-center text-h3" style="color: #8338ec">Pro</h1>
