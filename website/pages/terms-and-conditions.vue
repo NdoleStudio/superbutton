@@ -165,5 +165,10 @@
 <script>
 export default {
   name: 'TermsAndConditions',
+  head() {
+    return {
+      title: 'Terms And Conditions - SuperButton',
+    }
+  },
 }
 </script>

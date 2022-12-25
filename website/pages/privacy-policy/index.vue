@@ -173,5 +173,10 @@
 <script>
 export default {
   name: 'PrivacyPolicy',
+  head() {
+    return {
+      title: 'Privacy Policy - SuperButton',
+    }
+  },
 }
 </script>
