@@ -90,7 +90,7 @@
               <v-avatar
                 v-if="formIcon"
                 tile
-                color="#1E88E5"
+                :color="widgetColor"
                 size="40"
                 class="mt-n2"
               >
@@ -183,6 +183,7 @@ export default {
           projectId: this.$store.getters.activeProjectId,
           name: this.formName,
           text: this.formText,
+          color: this.formColor,
           icon: this.formIcon,
           website: this.formWebsite,
         })

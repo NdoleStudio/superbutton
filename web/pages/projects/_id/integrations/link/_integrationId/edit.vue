@@ -73,7 +73,7 @@
               <v-avatar
                 v-if="formIcon"
                 tile
-                color="#1E88E5"
+                :color="widgetColor"
                 size="40"
                 class="mt-n2"
               >
@@ -210,6 +210,7 @@ export default {
     setDefaults(integration) {
       this.formName = integration.name
       this.formText = integration.text
+      this.formIcon = integration.icon
       this.formColor = integration.color ? integration.color : this.formColor
       this.formWebsite = integration.url
     },
@@ -242,6 +243,7 @@ export default {
           integrationId: this.$route.params.integrationId,
           name: this.formName,
           text: this.formText,
+          color: this.formColor,
           icon: this.formIcon,
           website: this.formWebsite,
         })

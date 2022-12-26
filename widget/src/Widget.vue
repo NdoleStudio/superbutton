@@ -76,6 +76,11 @@
           <div
             v-if="integration.type === 'link'"
             :key="integration.id"
+            :style="{
+              '--link-color': integration.settings.color
+                ? integration.settings.color
+                : defaultLinkColor,
+            }"
             class="sb-widget__window__body__integration sb-widget__window__body__integration--link"
             @click="openLink(integration.settings.url)"
           >
@@ -526,7 +531,7 @@ $mobileWidth: 1264px;
 
   &__window {
     box-sizing: border-box;
-    width: 400px;
+    width: 360px;
     height: 620px;
     background-color: #f3f4f6;
     border-radius: 16px;
@@ -632,7 +637,7 @@ $mobileWidth: 1264px;
         padding: 8px;
         border-radius: 4px;
         margin: 12px auto;
-        font-size: 18px;
+        font-size: 16px;
         background-color: white;
         cursor: pointer;
         display: flex;
@@ -681,14 +686,14 @@ $mobileWidth: 1264px;
       &__integration--link {
         display: flex;
         &:hover {
-          background-color: #1e88e5;
+          background-color: var(--link-color);
           color: white;
         }
         align-items: center;
 
         &__icon {
           box-sizing: border-box;
-          background-color: #1e88e5;
+          background-color: var(--link-color);
           border-radius: 2px;
           margin-right: 8px;
           height: 32px;
