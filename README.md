@@ -10,3 +10,4 @@ Configurable floating button for your website.
 - chat icon https://www.svgrepo.com/svg/12495/chat
 - documentation https://www.svgrepo.com/svg/333309/readme
 - phone icon https://www.svgrepo.com/svg/91335/phone-call
+- Github Icon https://www.svgrepo.com/svg/378420/github-fill
