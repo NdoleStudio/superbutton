@@ -43,6 +43,23 @@
             outlined
             required
           ></v-text-field>
+          <v-text-field
+            v-model="formColor"
+            :disabled="savingIntegration"
+            :counter="7"
+            class="mb-4"
+            label="Color"
+            persistent-placeholder
+            :error="$store.getters.errorMessages.has('color')"
+            :error-messages="$store.getters.errorMessages.get('color')"
+            placeholder="#1E88E5"
+            outlined
+            required
+          >
+            <template #append>
+              <v-icon :color="widgetColor">{{ mdiSquare }}</v-icon>
+            </template>
+          </v-text-field>
           <v-select
             v-model="formIcon"
             class="mb-4"
@@ -58,7 +75,7 @@
               <v-list-item v-bind="attrs" v-on="on">
                 <v-list-item-title>{{ item.text }}</v-list-item-title>
                 <v-list-item-action>
-                  <v-avatar size="40" tile color="#1E88E5">
+                  <v-avatar size="40" tile :color="widgetColor">
                     <v-img
                       :src="getIconURL(item.value)"
                       width="25"
@@ -103,7 +120,7 @@
 </template>
 
 <script>
-import { mdiPlus, mdiMenuDown } from '@mdi/js'
+import { mdiPlus, mdiMenuDown, mdiSquare } from '@mdi/js'
 
 export default {
   name: 'ProjectsIntegrationsLinkCreate',
@@ -112,11 +129,13 @@ export default {
     return {
       mdiPlus,
       mdiMenuDown,
+      mdiSquare,
       savingIntegration: false,
       formName: '',
       formText: '',
       formIcon: 'link',
       formWebsite: '',
+      formColor: '#1E88E5',
       linkIcons: [
         {
           text: 'Link Icon',
@@ -130,8 +149,17 @@ export default {
           text: 'Mail Icon',
           value: 'mail',
         },
+        {
+          text: 'Github Icon',
+          value: 'github',
+        },
       ],
     }
+  },
+  computed: {
+    widgetColor() {
+      return /^#[0-9A-F]{6}$/i.test(this.formColor) ? this.formColor : '#1E88E5'
+    },
   },
   async mounted() {
     if (!this.$store.getters.authUser) {

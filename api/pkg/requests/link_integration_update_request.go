@@ -14,6 +14,7 @@ type LinkIntegrationUpdateRequest struct {
 	Text          string `json:"text"`
 	Website       string `json:"website"`
 	Icon          string `json:"icon"`
+	Color         string `json:"color"`
 	PhoneNumber   string `json:"phone_number"`
 }
 
@@ -22,6 +23,12 @@ func (request *LinkIntegrationUpdateRequest) Sanitize() *LinkIntegrationUpdateRe
 	request.Name = request.sanitizeString(request.Name)
 	request.Text = request.sanitizeString(request.Text)
 	request.Icon = request.sanitizeString(request.Icon)
+
+	request.Color = request.sanitizeString(request.Color)
+	if request.Color == "" {
+		request.Color = "#1E88E5"
+	}
+
 	request.PhoneNumber = request.sanitizePhoneNumber(request.PhoneNumber)
 	return request
 }
@@ -32,6 +39,7 @@ func (request *LinkIntegrationUpdateRequest) ToUpdateParams(source string, userI
 		Name:          request.Name,
 		Text:          request.Text,
 		Icon:          request.Icon,
+		Color:         request.Color,
 		URL:           request.Website,
 		IntegrationID: uuid.MustParse(request.IntegrationID),
 		Source:        source,

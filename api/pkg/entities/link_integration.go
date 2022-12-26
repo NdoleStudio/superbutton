@@ -16,6 +16,7 @@ type LinkIntegration struct {
 	Text      string    `json:"text" example:"Visit our FAQ"`
 	URL       string    `json:"url" example:"https://example.com"`
 	Icon      string    `json:"icon" example:"url"`
+	Color     string    `json:"color" example:"#1E88E5"`
 	CreatedAt time.Time `json:"created_at" example:"2022-06-05T14:26:02.302718+03:00"`
 	UpdatedAt time.Time `json:"updated_at" example:"2022-06-05T14:26:10.303278+03:00"`
 }

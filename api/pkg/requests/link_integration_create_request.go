@@ -13,6 +13,7 @@ type LinkIntegrationCreateRequest struct {
 	Name      string `json:"name"`
 	Text      string `json:"text"`
 	Icon      string `json:"icon"`
+	Color     string `json:"color"`
 	Website   string `json:"website"`
 }
 
@@ -22,6 +23,12 @@ func (request *LinkIntegrationCreateRequest) Sanitize() *LinkIntegrationCreateRe
 	request.Text = request.sanitizeString(request.Text)
 	request.Icon = request.sanitizeString(request.Icon)
 	request.Website = request.sanitizeString(request.Website)
+
+	request.Color = request.sanitizeString(request.Color)
+	if request.Color == "" {
+		request.Color = "#1E88E5"
+	}
+
 	return request
 }
 
@@ -31,6 +38,7 @@ func (request *LinkIntegrationCreateRequest) ToCreateParams(source string, userI
 		Name:      request.Name,
 		Text:      request.Text,
 		URL:       request.Website,
+		Color:     request.Color,
 		Icon:      request.Icon,
 		ProjectID: uuid.MustParse(request.ProjectID),
 		Source:    source,

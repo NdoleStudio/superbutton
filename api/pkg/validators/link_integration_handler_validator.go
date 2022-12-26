@@ -41,7 +41,11 @@ func (validator *LinkIntegrationHandlerValidator) ValidateUpdate(ctx context.Con
 			},
 			"icon": []string{
 				"required",
-				"in:link,documentation,mail",
+				"in:link,documentation,mail,github",
+			},
+			"color": []string{
+				"required",
+				"regex:^#[0-9A-F]{6}$",
 			},
 			"text": []string{
 				"required",
@@ -56,6 +60,11 @@ func (validator *LinkIntegrationHandlerValidator) ValidateUpdate(ctx context.Con
 			"integrationID": []string{
 				"required",
 				"uuid",
+			},
+		},
+		Messages: map[string][]string{
+			"color": {
+				"regex:The color must be valid HEX color e.g #283593",
 			},
 		},
 	})
@@ -74,9 +83,13 @@ func (validator *LinkIntegrationHandlerValidator) ValidateCreate(ctx context.Con
 				"min:1",
 				"max:30",
 			},
+			"color": []string{
+				"required",
+				"regex:^#[0-9A-F]{6}$",
+			},
 			"icon": []string{
 				"required",
-				"in:link,documentation,mail",
+				"in:link,documentation,mail,github",
 			},
 			"text": []string{
 				"required",
@@ -91,6 +104,11 @@ func (validator *LinkIntegrationHandlerValidator) ValidateCreate(ctx context.Con
 			"projectID": []string{
 				"required",
 				"uuid",
+			},
+		},
+		Messages: map[string][]string{
+			"color": {
+				"regex:The color must be valid HEX color e.g #283593",
 			},
 		},
 	})

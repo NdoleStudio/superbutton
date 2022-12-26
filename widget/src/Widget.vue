@@ -194,6 +194,7 @@ export interface LinkIntegration {
   id: string;
   settings: {
     enabled: boolean;
+    color: string;
     title: string;
     url: string;
     text: string;
@@ -240,6 +241,7 @@ export default class Widget extends Vue {
   rightIcon: string = mdiChevronRight;
   closeIcon: string = mdiClose;
   backIcon: string = mdiArrowLeft;
+  defaultLinkColor = "#1e88e5";
   settings: Settings | null = null;
   activeIntegrationId: string | null = null;
 

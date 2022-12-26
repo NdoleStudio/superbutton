@@ -75,6 +75,7 @@ type LinkIntegrationCreateParams struct {
 	Source      string
 	URL         string
 	Icon        string
+	Color       string
 	ProjectID   uuid.UUID
 	UserID      entities.UserID
 }
@@ -97,6 +98,7 @@ func (service *LinkIntegrationService) Create(ctx context.Context, params *LinkI
 		Name:      params.Name,
 		Icon:      params.Icon,
 		URL:       params.URL,
+		Color:     params.Color,
 		Text:      params.Text,
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
@@ -118,11 +120,12 @@ type LinkIntegrationUpdateParams struct {
 	URL           string
 	Source        string
 	Icon          string
+	Color         string
 	IntegrationID uuid.UUID
 	UserID        entities.UserID
 }
 
-// Update a new entities.WhatsappIntegration
+// Update a new entities.LinkIntegration
 func (service *LinkIntegrationService) Update(ctx context.Context, params *LinkIntegrationUpdateParams) (*entities.LinkIntegration, error) {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
@@ -137,6 +140,7 @@ func (service *LinkIntegrationService) Update(ctx context.Context, params *LinkI
 	integration.Text = params.Text
 	integration.Icon = params.Icon
 	integration.URL = params.URL
+	integration.Color = params.Color
 
 	if err = service.repository.Update(ctx, integration); err != nil {
 		msg := fmt.Sprintf("could update [%s] integration for user with ID [%s] and id [%s]", service.integrationType, params.UserID, params.IntegrationID)
@@ -148,7 +152,7 @@ func (service *LinkIntegrationService) Update(ctx context.Context, params *LinkI
 	return integration, nil
 }
 
-// Delete a entities.ContentIntegration
+// Delete a entities.LinkIntegration
 func (service *LinkIntegrationService) Delete(ctx context.Context, params *IntegrationDeleteParams) error {
 	ctx, span := service.tracer.Start(ctx)
 	defer span.End()
