@@ -133,6 +133,24 @@
           licenses granted to you in these terms will end; (b) you must stop
           using the app, and (if needed) delete it from your device.
         </p>
+        <h2 class="text-h6 text--secondary">Return and Refund Policy</h2>
+        <p>
+          We appreciate the fact that you like to buy the stuff we build. We
+          also want to make sure you have a rewarding experience while you’re
+          exploring, evaluating, and purchasing our products. As with any
+          shopping experience, there are terms and conditions that apply to
+          transactions at SuperButton. By placing an order or making a purchase
+          at SuperButton, you agree to the terms along with SuperButton's
+          Privacy Policy. If, for any reason, You are not completely satisfied
+          with any good or service that we provide, don't hesitate to
+          <a
+            class="text-decoration-none font-weight-bold"
+            href="mailto:arnold@supperbutton.app"
+            >contact us</a
+          >
+          and we will discuss any of the issues you are going through with our
+          product or refund you promptly.
+        </p>
         <h2 class="text-h6 text--secondary">
           Changes to This Terms and Conditions
         </h2>
