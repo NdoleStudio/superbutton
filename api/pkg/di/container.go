@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/NdoleStudio/superbutton/pkg/listeners"
+
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/auth"
@@ -62,6 +64,8 @@ func NewContainer(version string, projectID string) (container *Container) {
 
 	container.InitializeTraceProvider(version, os.Getenv("GCP_PROJECT_ID"))
 
+	container.RegisterMarketingListeners()
+
 	container.RegisterUserRoutes()
 	container.RegisterEventRoutes()
 	container.RegisterProjectRoutes()
@@ -107,6 +111,19 @@ func (container *Container) FirebaseAuthMiddlewares() []fiber.Handler {
 	return []fiber.Handler{
 		middlewares.FirebaseAuth(container.Logger(), container.Tracer(), container.FirebaseAuthClient()),
 		container.AuthenticatedMiddleware(),
+	}
+}
+
+// RegisterMarketingListeners registers the marketing handlers to events
+func (container *Container) RegisterMarketingListeners() {
+	container.logger.Debug(fmt.Sprintf("registering %T listeners", &listeners.MarketingListener{}))
+	routes := listeners.MarketingListeners(
+		container.Tracer(),
+		container.Logger(),
+		container.MarketingService(),
+	)
+	for event, listener := range routes {
+		container.EventDispatcher().Subscribe(event, listener)
 	}
 }
 
@@ -295,6 +312,18 @@ func (container *Container) ProjectSettingsHandler() (handler *handlers.ProjectS
 		container.Logger(),
 		container.Tracer(),
 		container.ProjectSettingService(),
+	)
+}
+
+// MarketingService creates a new instance of services.MarketingService
+func (container *Container) MarketingService() (service *services.MarketingService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewMarketingService(
+		container.Logger(),
+		container.Tracer(),
+		container.FirebaseAuthClient(),
+		os.Getenv("SENDGRID_API_KEY"),
+		os.Getenv("SENDGRID_LIST_ID"),
 	)
 }
 

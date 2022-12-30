@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/NdoleStudio/superbutton/pkg/listeners"
 	"github.com/NdoleStudio/superbutton/pkg/queue"
 	"github.com/NdoleStudio/superbutton/pkg/repositories"
 	"github.com/NdoleStudio/superbutton/pkg/telemetry"
@@ -15,13 +14,16 @@ import (
 	"github.com/palantir/stacktrace"
 )
 
+// EventListener is the type for processing events
+type EventListener func(ctx context.Context, event cloudevents.Event) error
+
 // EventDispatcher dispatches a new event
 type EventDispatcher struct {
 	logger      telemetry.Logger
 	tracer      telemetry.Tracer
 	queue       queue.Client
 	consumerURL string
-	listeners   map[string][]listeners.EventListener
+	listeners   map[string][]EventListener
 	repository  repositories.EventRepository
 }
 
@@ -35,7 +37,7 @@ func NewEventDispatcher(
 ) (dispatcher *EventDispatcher) {
 	return &EventDispatcher{
 		logger:      logger,
-		listeners:   make(map[string][]listeners.EventListener),
+		listeners:   make(map[string][]EventListener),
 		tracer:      tracer,
 		queue:       queue,
 		consumerURL: consumerURL,
@@ -76,9 +78,9 @@ func (dispatcher *EventDispatcher) Dispatch(ctx context.Context, event *cloudeve
 }
 
 // Subscribe a listener to an event
-func (dispatcher *EventDispatcher) Subscribe(eventType string, listener listeners.EventListener) {
+func (dispatcher *EventDispatcher) Subscribe(eventType string, listener EventListener) {
 	if _, ok := dispatcher.listeners[eventType]; !ok {
-		dispatcher.listeners[eventType] = []listeners.EventListener{}
+		dispatcher.listeners[eventType] = []EventListener{}
 	}
 
 	dispatcher.listeners[eventType] = append(dispatcher.listeners[eventType], listener)
@@ -100,7 +102,7 @@ func (dispatcher *EventDispatcher) Publish(ctx context.Context, event cloudevent
 	var wg sync.WaitGroup
 	for _, sub := range subscribers {
 		wg.Add(1)
-		go func(ctx context.Context, sub listeners.EventListener) {
+		go func(ctx context.Context, sub EventListener) {
 			if err := sub(ctx, event); err != nil {
 				msg := fmt.Sprintf("subscriber [%T] cannot handle event [%s]", sub, event.Type())
 				ctxLogger.Error(stacktrace.Propagate(err, msg))

@@ -22,6 +22,7 @@ require (
 	github.com/hirosassa/zerodriver v0.1.3
 	github.com/nyaruka/phonenumbers v1.1.2
 	github.com/rs/zerolog v1.28.0
+	github.com/sendgrid/sendgrid-go v3.12.0+incompatible
 	github.com/swaggo/swag v1.8.7
 	github.com/thedevsaddam/govalidator v1.9.10
 	github.com/uptrace/uptrace-go v1.11.5
@@ -79,6 +80,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/rivo/uniseg v0.4.2 // indirect
+	github.com/sendgrid/rest v2.6.9+incompatible // indirect
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.41.0 // indirect

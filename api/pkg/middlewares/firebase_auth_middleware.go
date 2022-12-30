@@ -40,9 +40,14 @@ func FirebaseAuth(logger telemetry.Logger, tracer telemetry.Tracer, authClient *
 
 		span.AddEvent(fmt.Sprintf("[%s] token is valid", bearerScheme))
 
+		name := ""
+		if val, ok := token.Claims["name"].(string); ok {
+			name = val
+		}
+
 		authUser := entities.AuthUser{
 			Email: token.Claims["email"].(string),
-			Name:  token.Claims["name"].(string),
+			Name:  name,
 			ID:    entities.UserID(token.Claims["user_id"].(string)),
 		}
 
