@@ -486,17 +486,15 @@
                   Advanced features to delight your website visitors.
                 </p>
                 <p v-if="!yearlyPricing" class="text-center text--primary">
-                  <span class="text-h3">$5</span>/month
+                  <span class="text-h3">$6</span>/month
                 </p>
                 <p v-else class="text-center text--primary">
-                  <span class="text-h3">$50</span>/year
+                  <span class="text-h3">$60</span>/year
                 </p>
                 <p v-if="!yearlyPricing" class="text-center mt-n3">
-                  or <b>$60</b> per year
+                  or <b>$72</b> per year
                 </p>
-                <p v-else class="text-center mt-n3">
-                  or <b>$4.16</b> per month
-                </p>
+                <p v-else class="text-center mt-n3">or <b>$5</b> per month</p>
                 <v-btn block color="primary" :href="$config.dashboardURL" large
                   >Try For Free</v-btn
                 >

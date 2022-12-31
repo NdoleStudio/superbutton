@@ -93,11 +93,12 @@ func (repository *gormUserRepository) LoadOrStore(ctx context.Context, authUser 
 		}
 
 		user = &entities.User{
-			ID:        authUser.ID,
-			Email:     authUser.Email,
-			Name:      authUser.Name,
-			CreatedAt: time.Now().UTC(),
-			UpdatedAt: time.Now().UTC(),
+			ID:               authUser.ID,
+			Email:            authUser.Email,
+			SubscriptionName: entities.SubscriptionNameFree,
+			Name:             authUser.Name,
+			CreatedAt:        time.Now().UTC(),
+			UpdatedAt:        time.Now().UTC(),
 		}
 		created = true
 
