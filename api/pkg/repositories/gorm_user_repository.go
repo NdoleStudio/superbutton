@@ -33,6 +33,28 @@ func NewGormUserRepository(
 	}
 }
 
+func (repository *gormUserRepository) LoadBySubscriptionID(ctx context.Context, subscriptionID string) (*entities.User, error) {
+	ctx, span := repository.tracer.Start(ctx)
+	defer span.End()
+
+	user := new(entities.User)
+	err := repository.db.WithContext(ctx).
+		Where("subscription_id = ?", subscriptionID).
+		First(user).
+		Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		msg := fmt.Sprintf("user with subscriptionID [%s] does not exist", subscriptionID)
+		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.PropagateWithCode(err, ErrCodeNotFound, msg))
+	}
+
+	if err != nil {
+		msg := fmt.Sprintf("cannot load subscription with ID [%s]", subscriptionID)
+		return nil, repository.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
+	}
+
+	return user, nil
+}
+
 func (repository *gormUserRepository) Store(ctx context.Context, user *entities.User) error {
 	ctx, span := repository.tracer.Start(ctx)
 	defer span.End()

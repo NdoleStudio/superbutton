@@ -1,5 +1,8 @@
 <template>
-  <v-container v-if="$store.getters.authUser" class="settings-page">
+  <v-container
+    v-if="$store.getters.authUser && $store.getters.user"
+    class="settings-page"
+  >
     <v-row>
       <v-col>
         <h1 class="text-h4" :class="{ 'mt-n4': $vuetify.breakpoint.mdAndDown }">
@@ -26,28 +29,103 @@
             <h2 class="text-h5 text--secondary mb-2">Current Plan</h2>
             <v-row>
               <v-col>
-                <v-alert dense text :icon="undefined" prominent color="info">
+                <v-alert dense text prominent color="info">
                   <v-row align="center">
-                    <v-col class="grow">
+                    <v-col cols="12">
                       <h1
                         class="subtitle-1 font-weight-bold text-uppercase mt-3"
                       >
-                        Free
+                        {{ plan.name }}
                       </h1>
-                      <p class="text--secondary">1/3 projects</p>
+                      <p
+                        v-if="plan.price && !subscriptionIsCancelled"
+                        class="text--secondary"
+                      >
+                        Your next bill is for <b>${{ plan.price }}</b> on
+                        <b>{{
+                          new Date(
+                            $store.getters.user.subscription_renews_at
+                          ).toLocaleDateString()
+                        }}</b>
+                      </p>
+                      <p
+                        v-else-if="plan.price && subscriptionIsCancelled"
+                        class="text--secondary"
+                      >
+                        You will be downgraded to the <b>FREE</b> plan on
+                        <b>{{
+                          new Date(
+                            $store.getters.user.subscription_ends_at
+                          ).toLocaleDateString()
+                        }}</b>
+                      </p>
+                      <p v-else class="text--secondary">
+                        {{ $store.getters.projects.length }}/3 projects
+                      </p>
                     </v-col>
-                    <v-col class="shrink">
-                      <v-btn color="primary" :href="checkoutURL">
-                        <v-icon left>{{ mdiStarOutline }}</v-icon>
-                        Upgrade
-                      </v-btn>
+                    <v-col cols="12" class="d-flex mb-2 mt-n6">
+                      <loading-button
+                        v-if="!subscriptionIsCancelled"
+                        color="primary"
+                        :loading="loading"
+                        @click="updateDetails"
+                      >
+                        Update Details
+                      </loading-button>
+                      <v-btn v-else color="primary" :href="checkoutURL"
+                        >Upgrade Plan</v-btn
+                      >
+                      <v-spacer></v-spacer>
+                      <v-dialog
+                        v-if="!subscriptionIsCancelled"
+                        v-model="dialog"
+                        max-width="590"
+                      >
+                        <template #activator="{ on, attrs }">
+                          <v-btn v-bind="attrs" color="error" text v-on="on">
+                            Cancel Plan
+                          </v-btn>
+                        </template>
+                        <v-card>
+                          <v-card-text class="pt-4 mb-n6">
+                            <h2 class="text--primary text-h5 mb-2">
+                              Are you sure you want to cancel your subscription?
+                            </h2>
+                            <p>
+                              You will be downgraded to the free plan at the end
+                              of the current billing period on
+                              <b>{{
+                                new Date(
+                                  $store.getters.user.subscription_renews_at
+                                ).toLocaleDateString()
+                              }}</b>
+                            </p>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-btn color="primary" @click="dialog = false">
+                              Keep Subscription
+                            </v-btn>
+                            <v-spacer></v-spacer>
+                            <loading-button
+                              :text="true"
+                              :loading="loading"
+                              color="error"
+                              @click="cancelPlan"
+                            >
+                              Cancel Plan
+                            </loading-button>
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
                     </v-col>
                   </v-row>
                 </v-alert>
               </v-col>
             </v-row>
-            <h2 class="text-h5 text--secondary mb-2">Upgrade Plan</h2>
-            <v-row>
+            <h2 v-if="plan.price === 0" class="text-h5 text--secondary mb-2">
+              Upgrade Plan
+            </h2>
+            <v-row v-if="plan.price === 0">
               <v-col cols="12" md="6">
                 <v-card :href="checkoutURL" outlined>
                   <v-card-text>
@@ -126,10 +204,29 @@ export default {
       to: '/',
       formName: '',
       mdiPlus,
+      dialog: false,
+      loading: false,
       mdiStarOutline,
       mdiCallMade,
       activeTab: 0,
       formWebsite: '',
+      plans: [
+        {
+          name: 'Free',
+          id: 'free',
+          price: 0,
+        },
+        {
+          name: 'PRO - Monthly',
+          id: 'pro-monthly',
+          price: 6,
+        },
+        {
+          name: 'PRO - Yearly',
+          id: 'pro-yearly',
+          price: 60,
+        },
+      ],
     }
   },
   computed: {
@@ -140,6 +237,14 @@ export default {
       url.searchParams.append('checkout[email]', user.email)
       url.searchParams.append('checkout[name]', user.displayName)
       return url.toString()
+    },
+    plan() {
+      return this.plans.find(
+        (x) => x.id === (this.$store.getters.user?.subscription_name || 'free')
+      )
+    },
+    subscriptionIsCancelled() {
+      return this.$store.getters.user?.subscription_status === 'cancelled'
     },
   },
   async mounted() {
@@ -152,19 +257,30 @@ export default {
     ])
   },
   methods: {
-    createProject() {
+    updateDetails() {
+      this.loading = true
       this.$store
-        .dispatch('createProject', {
-          name: this.formName,
-          website: this.formWebsite,
+        .dispatch('getSubscriptionUpdateLink')
+        .then((link) => {
+          window.location.href = link
         })
-        .then((payload) => {
-          this.$router.push({
-            name: 'projects-id-settings',
-            params: {
-              id: payload.id,
-            },
+        .catch(() => {
+          this.loading = false
+        })
+    },
+    cancelPlan() {
+      this.loading = true
+      this.$store
+        .dispatch('cancelSubscription')
+        .then(() => {
+          this.$store.dispatch('addNotification', {
+            message: 'Subscription cancelled successfully',
+            type: 'success',
           })
+          this.$router.push('/')
+        })
+        .catch(() => {
+          this.loading = false
         })
     },
   },

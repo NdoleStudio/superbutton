@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/NdoleStudio/superbutton/pkg/repositories"
+
 	lemonsqueezy "github.com/NdoleStudio/lemonsqueezy-go"
 	"github.com/NdoleStudio/superbutton/pkg/entities"
 	"github.com/NdoleStudio/superbutton/pkg/events"
@@ -18,17 +20,20 @@ type LemonsqueezyService struct {
 	logger          telemetry.Logger
 	tracer          telemetry.Tracer
 	eventDispatcher *EventDispatcher
+	userRepository  repositories.UserRepository
 }
 
 // NewLemonsqueezyService creates a new LemonsqueezyService
 func NewLemonsqueezyService(
 	logger telemetry.Logger,
 	tracer telemetry.Tracer,
+	repository repositories.UserRepository,
 	eventDispatcher *EventDispatcher,
 ) (s *LemonsqueezyService) {
 	return &LemonsqueezyService{
 		logger:          logger.WithService(fmt.Sprintf("%T", s)),
 		tracer:          tracer,
+		userRepository:  repository,
 		eventDispatcher: eventDispatcher,
 	}
 }
@@ -66,8 +71,14 @@ func (service *LemonsqueezyService) HandleSubscriptionCanceledEvent(ctx context.
 	ctx, span, ctxLogger := service.tracer.StartWithLogger(ctx, service.logger)
 	defer span.End()
 
+	user, err := service.userRepository.LoadBySubscriptionID(ctx, request.Data.ID)
+	if err != nil {
+		msg := fmt.Sprintf("cannot load user with subscription ID [%s]", request.Data.ID)
+		return stacktrace.Propagate(err, msg)
+	}
+
 	payload := &events.UserSubscriptionCancelledPayload{
-		UserID:                  entities.UserID(request.Meta.CustomData["user_id"].(string)),
+		UserID:                  user.ID,
 		SubscriptionCancelledAt: request.Data.Attributes.CreatedAt,
 		SubscriptionID:          request.Data.ID,
 		SubscriptionName:        service.subscriptionName(request.Data.Attributes.VariantName),

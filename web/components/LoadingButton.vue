@@ -6,6 +6,7 @@
     :large="large"
     :x-large="xLarge"
     :color="color"
+    :text="text"
     :tile="tile"
     exact
     :disabled="isLoading"
@@ -32,6 +33,7 @@ export default class SocialButtons extends Vue {
   @Prop({ required: false, type: Boolean, default: false }) large!: boolean
   @Prop({ required: false, type: Boolean, default: false }) xLarge!: boolean
   @Prop({ required: false, type: Boolean, default: false }) tile!: boolean
+  @Prop({ required: false, type: Boolean, default: false }) text!: boolean
   @Prop({ required: false, type: Boolean, default: false }) small!: boolean
   @Prop({ required: false, type: String, default: 'primary' }) color!: string
   @Prop({ required: false, type: String, default: null }) icon!: string | null

@@ -366,6 +366,7 @@ func (container *Container) LemonsqueezyService() (service *services.Lemonsqueez
 	return services.NewLemonsqueezyService(
 		container.Logger(),
 		container.Tracer(),
+		container.UserRepository(),
 		container.EventDispatcher(),
 	)
 }

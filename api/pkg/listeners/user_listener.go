@@ -26,7 +26,8 @@ func UserListeners(tracer telemetry.Tracer, logger telemetry.Logger, service *se
 		service: service,
 	}
 	return map[string]services.EventListener{
-		events.UserSubscriptionCreated: listener.OnUserSubscriptionCreated,
+		events.UserSubscriptionCreated:   listener.OnUserSubscriptionCreated,
+		events.UserSubscriptionCancelled: listener.OnUserSubscriptionCancelled,
 	}
 }
 

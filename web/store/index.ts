@@ -36,6 +36,7 @@ import {
   ResponsesOkEntitiesProjectSettings,
   ResponsesOkEntitiesUser,
   ResponsesOkEntitiesWhatsappIntegration,
+  ResponsesOkString,
 } from '~/store/backend'
 import axios, { setAuthToken } from '~/plugins/axios'
 import {
@@ -62,6 +63,7 @@ export type RootState = ReturnType<typeof state>
 
 export const getters: GetterTree<RootState, RootState> = {
   authUser: (state) => state.authUser,
+  user: (state) => state.user,
   authStateChanged: (state) => state.authStateChanged,
   notification: (state) => state.notification,
   projects: (state) => state.projects,
@@ -980,6 +982,46 @@ export const actions: ActionTree<RootState, RootState> = {
               message:
                 error.response?.data?.message ??
                 'Validation errors while updating integrations',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+  getSubscriptionUpdateLink(context: ActionContext<RootState, RootState>) {
+    return new Promise<string>((resolve, reject) => {
+      axios
+        .get<ResponsesOkString>(`/v1/users/subscription-update-url`)
+        .then((response: AxiosResponse<ResponsesOkString>) => {
+          resolve(response.data.data)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while fetching the update URL',
+              type: 'error',
+            }),
+          ])
+          reject(error)
+        })
+    })
+  },
+  cancelSubscription(context: ActionContext<RootState, RootState>) {
+    return new Promise<string>((resolve, reject) => {
+      axios
+        .delete<ResponsesNoContent>(`/v1/users/subscription`)
+        .then((response: AxiosResponse<ResponsesNoContent>) => {
+          resolve(response.data.message)
+        })
+        .catch(async (error: AxiosError) => {
+          await Promise.all([
+            context.dispatch('addNotification', {
+              message:
+                error.response?.data?.message ??
+                'Error while cancelling your subscription',
               type: 'error',
             }),
           ])
