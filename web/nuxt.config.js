@@ -119,6 +119,10 @@ export default {
     },
   },
 
+  publicRuntimeConfig: {
+    checkoutURL: process.env.CHECKOUT_URL,
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 }

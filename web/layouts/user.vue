@@ -2,58 +2,24 @@
   <v-app>
     <v-app-bar app fixed flat>
       <v-container class="py-0 d-flex">
-        <v-badge
-          v-if="$vuetify.breakpoint.lgAndUp"
-          class="logo-badge mt-2"
-          color="#8338ec"
-          content="Beta"
-        >
+        <v-app-bar-nav-icon
+          v-if="$vuetify.breakpoint.mdAndDown"
+          class="ml-n6"
+          @click.stop="drawer = !drawer"
+        ></v-app-bar-nav-icon>
+        <v-badge v-else class="logo-badge mt-2" color="#8338ec" content="Beta">
           <nuxt-link to="/" class="text-decoration-none d-flex">
             <v-avatar tile size="33" class="mt-1">
               <v-img contain :src="require('@/static/logo.svg')"></v-img>
             </v-avatar>
-            <h3 class="text-h4 text--secondary font-weight-thin ml-1">
+            <h3
+              v-if="$vuetify.breakpoint.mdAndUp"
+              class="text-h4 text--secondary font-weight-thin ml-1"
+            >
               SuperButton
             </h3>
           </nuxt-link>
         </v-badge>
-        <v-app-bar-nav-icon
-          v-else-if="$store.getters.hasProjects"
-          class="ml-n6"
-          @click.stop="drawer = !drawer"
-        ></v-app-bar-nav-icon>
-        <div
-          :class="{
-            'select-width-lg': $vuetify.breakpoint.lgAndUp,
-            'select-width-md': !$vuetify.breakpoint.lgAndUp,
-          }"
-        >
-          <v-select
-            v-if="$store.getters.hasProjects"
-            :value="$store.getters.activeProjectId"
-            outlined
-            dense
-            label="Project"
-            class="mb-n4 mt-2"
-            :items="projects"
-            :class="{ 'ml-16': $vuetify.breakpoint.lgAndUp }"
-            @change="onProjectChange"
-          >
-            <template #append-item>
-              <div class="ml-3 mt-4">
-                <v-btn
-                  text
-                  color="primary"
-                  :to="{ name: 'projects-create' }"
-                  small
-                >
-                  <v-icon small>{{ mdiPlus }}</v-icon>
-                  Add Project
-                </v-btn>
-              </div>
-            </template>
-          </v-select>
-        </div>
         <v-spacer></v-spacer>
         <v-menu offset-y left bottom>
           <template #activator="{ on, attrs }">
@@ -133,6 +99,7 @@
           :key="item.name"
           color="primary"
           link
+          exact
           :to="item.route"
         >
           <v-list-item-icon>
@@ -160,6 +127,7 @@
                 :key="item.name"
                 color="primary"
                 link
+                exact
                 :to="item.route"
               >
                 <v-list-item-icon>
@@ -183,7 +151,7 @@
 </template>
 
 <script>
-import { mdiLogout, mdiPlus, mdiCogOutline, mdiLan, mdiXml } from '@mdi/js'
+import { mdiLogout, mdiPlus, mdiCogOutline, mdiVectorTriangle } from '@mdi/js'
 
 export default {
   name: 'ProjectLayout',
@@ -210,30 +178,14 @@ export default {
           name: 'Settings',
           icon: mdiCogOutline,
           route: {
-            name: 'projects-id-settings',
-            params: {
-              id: this.$store.getters.activeProjectId,
-            },
+            name: 'settings',
           },
         },
         {
-          name: 'Integrations',
-          icon: mdiLan,
+          name: 'Projects',
+          icon: mdiVectorTriangle,
           route: {
-            name: 'projects-id-integrations',
-            params: {
-              id: this.$store.getters.activeProjectId,
-            },
-          },
-        },
-        {
-          name: 'Install Widget',
-          icon: mdiXml,
-          route: {
-            name: 'projects-id-install',
-            params: {
-              id: this.$store.getters.activeProjectId,
-            },
+            name: 'index',
           },
         },
       ]
@@ -262,20 +214,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss">
-.logo-badge {
-  .v-badge__wrapper {
-    span {
-      margin-bottom: -12px;
-    }
-  }
-}
-
-.select-width-lg {
-  max-width: 250px;
-}
-.select-width-md {
-  max-width: 200px;
-}
-</style>

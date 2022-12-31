@@ -77,6 +77,7 @@ func NewContainer(version string, projectID string) (container *Container) {
 
 	// UnAuthenticated routes
 	container.RegisterProjectSettingsRoutes()
+	container.RegisterLemonsqueezyRoutes()
 
 	// this has to be last since it registers the /* route
 	container.RegisterSwaggerRoutes()
@@ -137,6 +138,12 @@ func (container *Container) RegisterUserRoutes() {
 func (container *Container) RegisterProjectSettingsRoutes() {
 	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.ProjectSettingsHandler{}))
 	container.ProjectSettingsHandler().RegisterRoutes(container.App())
+}
+
+// RegisterLemonsqueezyRoutes registers routes for the /project-settings prefix
+func (container *Container) RegisterLemonsqueezyRoutes() {
+	container.logger.Debug(fmt.Sprintf("registering %T routes", &handlers.LemonsqueezyHandler{}))
+	container.LemonsqueezyHandler().RegisterRoutes(container.App())
 }
 
 // RegisterProjectRoutes registers routes for the /projects prefix
@@ -492,6 +499,16 @@ func (container *Container) RegisterEventRoutes() {
 				os.Getenv("QUEUE_AUTH_SUBJECT"),
 			),
 		)
+}
+
+// LemonsqueezyHandler creates a new instance of handlers.LemonsqueezyHandler
+func (container *Container) LemonsqueezyHandler() (handler *handlers.LemonsqueezyHandler) {
+	container.logger.Debug(fmt.Sprintf("creating %T", handler))
+
+	return handlers.NewLemonsqueezyHandlerHandler(
+		container.Logger(),
+		container.Tracer(),
+	)
 }
 
 // EventsHandler creates a new instance of handlers.EventsHandler

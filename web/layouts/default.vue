@@ -52,6 +52,14 @@
                   >
                 </v-list-item-content>
               </v-list-item>
+              <v-list-item to="/settings">
+                <v-list-item-icon class="pl-2">
+                  <v-icon dense>{{ mdiCogOutline }}</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content class="ml-n3">
+                  <v-list-item-title class="pr-16">Settings</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
               <v-list-item @click="logout">
                 <v-list-item-icon class="pl-2">
                   <v-icon dense>{{ logoutIcon }}</v-icon>
@@ -74,12 +82,13 @@
 </template>
 
 <script>
-import { mdiLogout, mdiPlus } from '@mdi/js'
+import { mdiLogout, mdiPlus, mdiCogOutline } from '@mdi/js'
 
 export default {
   name: 'DefaultLayout',
   data() {
     return {
+      mdiCogOutline,
       logoutIcon: mdiLogout,
       mdiPlus,
       items: [],
