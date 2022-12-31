@@ -75,7 +75,7 @@ func (service *UserService) StartSubscription(ctx context.Context, source string
 	user.SubscriptionStatus = params.SubscriptionStatus
 	user.SubscriptionEndsAt = nil
 
-	if err = service.repository.Store(ctx, user); err != nil {
+	if err = service.repository.Update(ctx, user); err != nil {
 		msg := fmt.Sprintf("could not update [%T] with with ID [%s] after update", user, params.UserID)
 		return service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}
@@ -141,7 +141,7 @@ func (service *UserService) CancelSubscription(ctx context.Context, source strin
 	user.SubscriptionStatus = params.SubscriptionStatus
 	user.SubscriptionEndsAt = &params.SubscriptionEndsAt
 
-	if err = service.repository.Store(ctx, user); err != nil {
+	if err = service.repository.Update(ctx, user); err != nil {
 		msg := fmt.Sprintf("could not update [%T] with with ID [%s] after update", user, params.UserID)
 		return service.tracer.WrapErrorSpan(span, stacktrace.Propagate(err, msg))
 	}

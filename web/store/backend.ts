@@ -33,6 +33,8 @@ export interface EntitiesContentIntegration {
 }
 
 export interface EntitiesLinkIntegration {
+  /** @example "#1E88E5" */
+  color: string
   /** @example "2022-06-05T14:26:02.302718+03:00" */
   created_at: string
   /** @example true */
@@ -141,6 +143,16 @@ export interface EntitiesUser {
   id: string
   /** @example "John Doe" */
   name: string
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  subscription_ends_at: string
+  /** @example "8f9c71b8-b84e-4417-8408-a62274f65a08" */
+  subscription_id: string
+  /** @example "free" */
+  subscription_name: string
+  /** @example "2022-06-05T14:26:02.302718+03:00" */
+  subscription_renews_at: string
+  /** @example "on_trial" */
+  subscription_status: string
   /** @example "2022-06-05T14:26:10.303278+03:00" */
   updated_at: string
 }
@@ -193,6 +205,7 @@ export interface RequestsContentIntegrationUpdateRequest {
 }
 
 export interface RequestsLinkIntegrationCreateRequest {
+  color: string
   icon: string
   name: string
   text: string
@@ -200,6 +213,7 @@ export interface RequestsLinkIntegrationCreateRequest {
 }
 
 export interface RequestsLinkIntegrationUpdateRequest {
+  color: string
   icon: string
   name: string
   phone_number: string
@@ -345,6 +359,14 @@ export interface ResponsesOkEntitiesUser {
 
 export interface ResponsesOkEntitiesWhatsappIntegration {
   data: EntitiesWhatsappIntegration
+  /** @example "Request handled successfully" */
+  message: string
+  /** @example "success" */
+  status: string
+}
+
+export interface ResponsesOkString {
+  data: string
   /** @example "Request handled successfully" */
   message: string
   /** @example "success" */
