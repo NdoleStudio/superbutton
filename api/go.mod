@@ -2,6 +2,8 @@ module github.com/NdoleStudio/superbutton
 
 go 1.18
 
+replace github.com/NdoleStudio/lemonsqueezy-go => ../../lemonsqueezy-go
+
 require (
 	github.com/jinzhu/now v1.1.5
 	github.com/joho/godotenv v1.4.0
@@ -13,6 +15,7 @@ require (
 	cloud.google.com/go/cloudtasks v1.8.0
 	firebase.google.com/go v3.13.0+incompatible
 	github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace v1.10.1
+	github.com/NdoleStudio/lemonsqueezy-go v0.0.1
 	github.com/cloudevents/sdk-go/v2 v2.12.0
 	github.com/cockroachdb/cockroach-go/v2 v2.2.17
 	github.com/davecgh/go-spew v1.1.1

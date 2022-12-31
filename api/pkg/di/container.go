@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"time"
 
+	lemonsqueezy "github.com/NdoleStudio/lemonsqueezy-go"
+
 	"github.com/NdoleStudio/superbutton/pkg/listeners"
 
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
@@ -65,6 +67,7 @@ func NewContainer(version string, projectID string) (container *Container) {
 	container.InitializeTraceProvider(version, os.Getenv("GCP_PROJECT_ID"))
 
 	container.RegisterMarketingListeners()
+	container.RegisterUserListeners()
 
 	container.RegisterUserRoutes()
 	container.RegisterEventRoutes()
@@ -122,6 +125,19 @@ func (container *Container) RegisterMarketingListeners() {
 		container.Tracer(),
 		container.Logger(),
 		container.MarketingService(),
+	)
+	for event, listener := range routes {
+		container.EventDispatcher().Subscribe(event, listener)
+	}
+}
+
+// RegisterUserListeners registers the user handlers to events
+func (container *Container) RegisterUserListeners() {
+	container.logger.Debug(fmt.Sprintf("registering %T listeners", &listeners.UserListener{}))
+	routes := listeners.UserListeners(
+		container.Tracer(),
+		container.Logger(),
+		container.UserService(),
 	)
 	for event, listener := range routes {
 		container.EventDispatcher().Subscribe(event, listener)
@@ -188,6 +204,16 @@ func (container *Container) UserHandlerValidator() (validator *validators.UserHa
 	return validators.NewUserHandlerValidator(
 		container.Logger(),
 		container.Tracer(),
+	)
+}
+
+// LemonsqueezyHandlerValidator creates a new instance of validators.LemonsqueezyHandlerValidator
+func (container *Container) LemonsqueezyHandlerValidator() (validator *validators.LemonsqueezyHandlerValidator) {
+	container.logger.Debug(fmt.Sprintf("creating %T", validator))
+	return validators.NewLemonsqueezyHandlerValidator(
+		container.Logger(),
+		container.Tracer(),
+		container.LemonsqueezyClient(),
 	)
 }
 
@@ -334,14 +360,25 @@ func (container *Container) MarketingService() (service *services.MarketingServi
 	)
 }
 
+// LemonsqueezyService creates a new instance of services.LemonsqueezyService
+func (container *Container) LemonsqueezyService() (service *services.LemonsqueezyService) {
+	container.logger.Debug(fmt.Sprintf("creating %T", service))
+	return services.NewLemonsqueezyService(
+		container.Logger(),
+		container.Tracer(),
+		container.EventDispatcher(),
+	)
+}
+
 // UserService creates a new instance of services.UserService
-func (container *Container) UserService() (service *services.User) {
+func (container *Container) UserService() (service *services.UserService) {
 	container.logger.Debug(fmt.Sprintf("creating %T", service))
 	return services.NewUserService(
 		container.Logger(),
 		container.Tracer(),
 		container.EventDispatcher(),
 		container.UserRepository(),
+		container.LemonsqueezyClient(),
 	)
 }
 
@@ -508,6 +545,8 @@ func (container *Container) LemonsqueezyHandler() (handler *handlers.Lemonsqueez
 	return handlers.NewLemonsqueezyHandlerHandler(
 		container.Logger(),
 		container.Tracer(),
+		container.LemonsqueezyService(),
+		container.LemonsqueezyHandlerValidator(),
 	)
 }
 
@@ -723,6 +762,15 @@ func (container *Container) FirebaseApp() (app *firebase.App) {
 		container.logger.Fatal(stacktrace.Propagate(err, msg))
 	}
 	return app
+}
+
+// LemonsqueezyClient creates a new instance of lemonsqueezy.Client
+func (container *Container) LemonsqueezyClient() (client *lemonsqueezy.Client) {
+	container.logger.Debug(fmt.Sprintf("creating %T", client))
+	return lemonsqueezy.New(
+		lemonsqueezy.WithAPIKey(os.Getenv("LEMONSQUEEZY_API_KEY")),
+		lemonsqueezy.WithSigningSecret(os.Getenv("LEMONSQUEEZY_SIGNING_SECRET")),
+	)
 }
 
 // FirebaseAuthClient creates a new instance of auth.Client
