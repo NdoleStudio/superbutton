@@ -244,7 +244,10 @@ export default {
       )
     },
     subscriptionIsCancelled() {
-      return this.$store.getters.user?.subscription_status === 'cancelled'
+      return (
+        this.$store.getters.user?.subscription_status === 'cancelled' ||
+        plan.price === 0
+      )
     },
   },
   async mounted() {
