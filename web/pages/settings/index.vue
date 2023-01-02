@@ -246,7 +246,7 @@ export default {
     subscriptionIsCancelled() {
       return (
         this.$store.getters.user?.subscription_status === 'cancelled' ||
-        plan.price === 0
+        this.plan.price === 0
       )
     },
   },
