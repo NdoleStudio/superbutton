@@ -105,10 +105,15 @@ export default {
     },
   },
 
+  sitemap: {
+    hostname: process.env.APP_URL,
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
 
   publicRuntimeConfig: {
+    appURL: process.env.APP_URL,
     cdnURL: process.env.CDN_URL,
     dashboardURL: process.env.DASHBOARD_URL,
   },
