@@ -28,7 +28,7 @@
           <v-tab-item>
             <h2 class="text-h5 text--secondary mb-2">Current Plan</h2>
             <v-row>
-              <v-col lg="4">
+              <v-col xl="4">
                 <v-alert dense text prominent color="info">
                   <v-row align="center">
                     <v-col cols="12">
@@ -126,7 +126,7 @@
               Upgrade Plan
             </h2>
             <v-row v-if="plan.price === 0">
-              <v-col cols="12" md="6" lg="4">
+              <v-col cols="12" md="6" xl="4">
                 <v-card :href="checkoutURL" outlined>
                   <v-card-text>
                     <v-row align="center">
@@ -145,7 +145,7 @@
                   </v-card-text>
                 </v-card>
               </v-col>
-              <v-col cols="12" md="6" lg="4">
+              <v-col cols="12" md="6" xl="4">
                 <v-card :href="checkoutURL" outlined>
                   <v-card-text>
                     <v-row align="center">

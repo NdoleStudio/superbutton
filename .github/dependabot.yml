@@ -4,7 +4,7 @@ updates:
   - package-ecosystem: npm
     directory: "/web"
     schedule:
-      interval: daily
+      interval: weekly
       time: "00:00"
     open-pull-requests-limit: 10
     reviewers:
@@ -19,7 +19,7 @@ updates:
   - package-ecosystem: npm
     directory: "/widget"
     schedule:
-      interval: daily
+      interval: weekly
       time: "00:00"
     open-pull-requests-limit: 10
     reviewers:
@@ -34,7 +34,7 @@ updates:
   - package-ecosystem: gomod
     directory: "/api"
     schedule:
-      interval: daily
+      interval: weekly
       time: "00:00"
     open-pull-requests-limit: 10
     reviewers:
@@ -49,7 +49,7 @@ updates:
   - package-ecosystem: npm
     directory: "/website"
     schedule:
-      interval: daily
+      interval: weekly
       time: "00:00"
     open-pull-requests-limit: 10
     reviewers:
@@ -64,7 +64,7 @@ updates:
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
-      interval: daily
+      interval: weekly
       time: "00:00"
     open-pull-requests-limit: 10
     reviewers:
