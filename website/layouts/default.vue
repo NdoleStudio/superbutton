@@ -45,6 +45,16 @@
         >
           Pricing
         </v-btn>
+        <v-btn
+          v-if="$vuetify.breakpoint.mdAndUp"
+          text
+          color="primary"
+          class="mr-4"
+          to="/blog"
+          :large="$vuetify.breakpoint.mdAndUp"
+        >
+          Blog
+        </v-btn>
         <client-only>
           <v-btn
             v-if="!isLoggedIn"
@@ -135,13 +145,23 @@
                   >
                 </v-hover>
               </li>
-              <li>
+              <li class="mb-2">
                 <v-hover v-slot="{ hover }">
                   <a
                     href="https://status.superbutton.app"
                     class="text--primary text-decoration-none"
                     :class="{ 'text-decoration-underline': hover }"
                     >Site status</a
+                  >
+                </v-hover>
+              </li>
+              <li class="mb-2">
+                <v-hover v-slot="{ hover }">
+                  <nuxt-link
+                    class="text--primary text-decoration-none"
+                    :class="{ 'text-decoration-underline': hover }"
+                    to="/blog"
+                    >Blog</nuxt-link
                   >
                 </v-hover>
               </li>
@@ -215,16 +235,21 @@ export default {
 }
 </script>
 <style lang="scss">
-.logo-badge {
-  .v-badge__wrapper {
-    span {
-      margin-bottom: -12px;
+.v-application {
+  .logo-badge {
+    .v-badge__wrapper {
+      span {
+        margin-bottom: -12px;
+      }
+    }
+    &--mobile {
+      .v-badge__wrapper {
+        margin-left: 8px;
+      }
     }
   }
-  &--mobile {
-    .v-badge__wrapper {
-      margin-left: 8px;
-    }
+  .primary--text-color {
+    color: #8338ec !important;
   }
 }
 </style>

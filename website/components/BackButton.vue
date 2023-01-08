@@ -1,6 +1,7 @@
 <template>
   <v-btn
-    color="secondary"
+    color="#212121"
+    class="white--text"
     :small="$vuetify.breakpoint.smAndDown"
     @click="goBack"
   >
@@ -12,7 +13,7 @@
 <script>
 import { mdiArrowLeft } from '@mdi/js'
 export default {
-  name: 'TermsAndConditions',
+  name: 'BackButton',
   data() {
     return {
       mdiArrowLeft,

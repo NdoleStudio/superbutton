@@ -130,6 +130,21 @@
             </template>
             <span>Documentation</span>
           </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-avatar
+                class="mx-2"
+                size="32"
+                rounded
+                color="#000000"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-img max-width="24" contain :src="iconLink('github')"></v-img>
+              </v-avatar>
+            </template>
+            <span>Github</span>
+          </v-tooltip>
         </v-col>
       </v-row>
       <v-row>
@@ -387,6 +402,21 @@
               </v-avatar>
             </template>
             <span>Documentation</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <v-avatar
+                class="mx-2 mb-4"
+                size="72"
+                rounded
+                color="#000000"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-img max-width="44" contain :src="iconLink('github')"></v-img>
+              </v-avatar>
+            </template>
+            <span>GitHub</span>
           </v-tooltip>
           <v-tooltip top>
             <template #activator="{ on, attrs }">

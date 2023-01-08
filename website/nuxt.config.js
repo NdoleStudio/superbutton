@@ -6,8 +6,9 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: 'SuperButton',
-    title: 'Super Button',
+    titleTemplate: '%s',
+    title:
+      'Communicate with your customers using their preferred channels - SuperButton',
     htmlAttrs: {
       lang: 'en',
     },
@@ -22,7 +23,34 @@ export default {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'description',
+        content:
+          "Capture more leads on your website using a configurable open source floating widget. You don't need to know how to code and it is free.",
+      },
+      {
+        hid: 'og-title',
+        property: 'og:title',
+        content:
+          'Communicate with your customers using their preferred channels',
+      },
+      {
+        hid: 'og-desc',
+        property: 'og:description',
+        content:
+          "Capture more leads on your website using a configurable open source floating widget. You don't need to know how to code and it is free.",
+      },
+      {
+        hid: 'og-image',
+        property: 'og:image',
+        content: 'https://superbutton.app/header.png',
+      },
+      {
+        hid: 'twitter-card',
+        name: 'twitter:card',
+        content: 'summary_large_image',
+      },
       { name: 'format-detection', content: 'telephone=no' },
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
@@ -47,6 +75,7 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/sitemap',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
   ],
