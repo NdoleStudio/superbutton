@@ -52,7 +52,7 @@
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-nuxt": "^3.1.0",
-    "eslint-plugin-vue": "^9.8.0",
+    "eslint-plugin-vue": "^9.9.0",
     "jest": "^27.4.4",
     "prettier": "^2.8.2",
     "ts-jest": "^27.1.1",
