@@ -17,7 +17,7 @@
     "@mdi/js": "^7.1.96",
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/sitemap": "^2.4.0",
-    "core-js": "^3.27.1",
+    "core-js": "^3.27.2",
     "nuxt": "^2.15.8",
     "vue": "^2.7.10",
     "vue-glow": "^1.4.2",
