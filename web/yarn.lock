@@ -13183,10 +13183,10 @@ uuid@^8.0.0, uuid@^8.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
-v-phone-input@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/v-phone-input/-/v-phone-input-2.0.0.tgz#7cc65b01f0770882651b70b322a949ac20d62525"
-  integrity sha512-HXy23lB3Z7htun5Y5QeqSRPv5hdAtvoxY8vmv+pr6S5Ow577/X/oe+GRTE0vqjYxyvqmvxgBl5Gpi0b91/AOfQ==
+v-phone-input@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/v-phone-input/-/v-phone-input-2.0.1.tgz#7ec37cc842ec6b9be1ec46fc13a9d16bfb6f2a1a"
+  integrity sha512-TOeG5NtZ+ZAsQXr9xboK5bi9JWPQVaxs+esozZ9pziXf4cDiY4ZrxRz9VbJhWoK1g62wUoCiZKq8kc3+O7C12g==
   dependencies:
     awesome-phonenumber "^2.69.0"
     country-telephone-data "^0.6.3"
