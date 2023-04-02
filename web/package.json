@@ -36,7 +36,7 @@
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.6.14",
     "vuex-module-decorators": "^2.0.0",
-    "webpack": "^5.76.1"
+    "webpack": "^5.77.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.21.3",
