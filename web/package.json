@@ -25,7 +25,7 @@
     "core-js": "^3.30.2",
     "firebase": "^9.22.1",
     "firebaseui": "^6.0.2",
-    "flag-icons": "^6.6.6",
+    "flag-icons": "^6.7.0",
     "nuxt": "^2.16.3",
     "v-phone-input": "^2.0.1",
     "vue": "^2.6.14",
