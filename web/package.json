@@ -39,7 +39,7 @@
     "webpack": "^5.88.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.22.6",
+    "@babel/eslint-parser": "^7.22.11",
     "@nuxt/types": "^2.17.1",
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/dotenv": "^1.4.1",
