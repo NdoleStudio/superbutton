@@ -7623,10 +7623,10 @@ firebaseui@^6.0.2:
     dialog-polyfill "^0.4.7"
     material-design-lite "^1.2.0"
 
-flag-icons@^6.1.1, flag-icons@^6.7.0:
-  version "6.7.0"
-  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-6.7.0.tgz#ce80897e21fda3f541e1f0471b295da7dfb940bb"
-  integrity sha512-+KXrrrXN2jiETFxisFl+3f83Bq7tj5nuIWnbv9fX59k05lvldEXRCOffybb5hAIjMWt4nmG0E8OfKt7Flm99Eg==
+flag-icons@^6.1.1, flag-icons@^6.11.2:
+  version "6.11.2"
+  resolved "https://registry.yarnpkg.com/flag-icons/-/flag-icons-6.11.2.tgz#a0e6fa03e6d7a8466c58c5af792bdecb454e2497"
+  integrity sha512-xEVPdyDkL28GG0H+x7OP89uFXDgCduNX5DEJ9ZJuxpg3dnDCioBoHfhl4kjC4ixnOnVh7ajL/PNFg7my8qBxtQ==
 
 flat-cache@^3.0.4:
   version "3.0.4"
