@@ -24,7 +24,7 @@
     "@tiptap/vue-2": "^2.0.0-beta.204",
     "core-js": "^3.31.0",
     "firebase": "^9.23.0",
-    "firebaseui": "^6.0.2",
+    "firebaseui": "^6.1.0",
     "flag-icons": "^6.7.0",
     "nuxt": "^2.17.1",
     "v-phone-input": "^2.0.1",
