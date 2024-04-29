@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/tekwizely/pre-commit-golang
-    rev: master
+    rev: v1.0.0-rc.1
     hooks:
       - id: go-fumpt
       - id: go-mod-tidy
@@ -8,19 +8,19 @@ repos:
       - id: go-staticcheck-mod
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.3.0
+    rev: v4.6.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: main
+    rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
 
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: main
+    rev: v9.1.1
     hooks:
       - id: eslint
         files: (\.[jt]s)|(\.vue)$
