@@ -3,3 +3,4 @@ api/.env
 api/docs
 web/static/icons/Downloads*
 api/main.exe
+node_modules

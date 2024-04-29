@@ -18,10 +18,3 @@ repos:
     rev: v4.0.0-alpha.8
     hooks:
       - id: prettier
-
-  - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.1.1
-    hooks:
-      - id: eslint
-        files: (\.[jt]s)|(\.vue)$
-        types: [file]
