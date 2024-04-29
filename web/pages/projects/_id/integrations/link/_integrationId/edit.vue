@@ -136,11 +136,11 @@
 </template>
 
 <script>
-import { mdiMenuDown, mdiDelete, mdiContentSave, mdiSquare } from "@mdi/js";
+import { mdiMenuDown, mdiDelete, mdiContentSave, mdiSquare } from '@mdi/js'
 
 export default {
-  name: "ProjectsIntegrationsLinkEdit",
-  layout: "project",
+  name: 'ProjectsIntegrationsLinkEdit',
+  layout: 'project',
   data() {
     return {
       mdiContentSave,
@@ -148,103 +148,101 @@ export default {
       mdiDelete,
       mdiSquare,
       savingIntegration: false,
-      formName: "",
-      formIcon: "link",
-      formText: "",
-      formWebsite: "",
-      formColor: "#1E88E5",
+      formName: '',
+      formIcon: 'link',
+      formText: '',
+      formWebsite: '',
+      formColor: '#1E88E5',
       linkIcons: [
         {
-          text: "Link Icon",
-          value: "link",
+          text: 'Link Icon',
+          value: 'link',
         },
         {
-          text: "Documentation Icon",
-          value: "documentation",
+          text: 'Documentation Icon',
+          value: 'documentation',
         },
         {
-          text: "Mail Icon",
-          value: "mail",
+          text: 'Mail Icon',
+          value: 'mail',
         },
         {
-          text: "Github Icon",
-          value: "github",
+          text: 'Github Icon',
+          value: 'github',
         },
         {
-          text: "Map Icon",
-          value: "map",
+          text: 'Map Icon',
+          value: 'map',
         },
       ],
-    };
+    }
   },
   computed: {
     widgetColor() {
-      return /^#[0-9A-F]{6}$/i.test(this.formColor)
-        ? this.formColor
-        : "#1E88E5";
+      return /^#[0-9A-F]{6}$/i.test(this.formColor) ? this.formColor : '#1E88E5'
     },
   },
   async mounted() {
     if (!this.$store.getters.authUser) {
-      return this.$router.push("/login");
+      return this.$router.push('/login')
     }
-    await Promise.all([this.$store.dispatch("loadProjects")]);
-    this.loadIntegration();
+    await Promise.all([this.$store.dispatch('loadProjects')])
+    this.loadIntegration()
   },
   methods: {
     getIconURL(value) {
-      return window.location.origin + "/icons/" + value + ".svg";
+      return window.location.origin + '/icons/' + value + '.svg'
     },
     loadIntegration() {
-      this.savingIntegration = true;
+      this.savingIntegration = true
       this.$store
-        .dispatch("getLinkIntegration", {
+        .dispatch('getLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
         })
         .then((payload) => {
-          this.setDefaults(payload);
+          this.setDefaults(payload)
         })
         .finally(() => {
-          this.savingIntegration = false;
-        });
+          this.savingIntegration = false
+        })
     },
     /**
      *
      * @param {EntitiesLinkIntegration} integration
      */
     setDefaults(integration) {
-      this.formName = integration.name;
-      this.formText = integration.text;
-      this.formIcon = integration.icon;
-      this.formColor = integration.color ? integration.color : this.formColor;
-      this.formWebsite = integration.url;
+      this.formName = integration.name
+      this.formText = integration.text
+      this.formIcon = integration.icon
+      this.formColor = integration.color ? integration.color : this.formColor
+      this.formWebsite = integration.url
     },
 
     deleteIntegration() {
-      this.savingIntegration = true;
+      this.savingIntegration = true
       this.$store
-        .dispatch("deleteLinkIntegration", {
+        .dispatch('deleteLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
         })
         .then(() => {
           this.$router.push({
-            name: "projects-id-integrations",
+            name: 'projects-id-integrations',
             params: {
               id: this.$store.getters.activeProjectId,
             },
-          });
+          })
         })
         .finally(() => {
-          this.savingIntegration = false;
-        });
+          this.savingIntegration = false
+        })
     },
 
     saveIntegration() {
-      this.savingIntegration = true;
+      this.savingIntegration = true
       this.$store
-        .dispatch("updateLinkIntegration", {
+        .dispatch('updateLinkIntegration', {
           projectId: this.$store.getters.activeProjectId,
           integrationId: this.$route.params.integrationId,
           name: this.formName,
@@ -255,16 +253,16 @@ export default {
         })
         .then(() => {
           this.$router.push({
-            name: "projects-id-integrations",
+            name: 'projects-id-integrations',
             params: {
               id: this.$store.getters.activeProjectId,
             },
-          });
+          })
         })
         .finally(() => {
-          this.savingIntegration = false;
-        });
+          this.savingIntegration = false
+        })
     },
   },
-};
+}
 </script>
