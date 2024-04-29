@@ -153,6 +153,10 @@ export default {
           text: 'Github Icon',
           value: 'github',
         },
+        {
+          text: 'Map Icon',
+          value: 'map',
+        },
       ],
     }
   },

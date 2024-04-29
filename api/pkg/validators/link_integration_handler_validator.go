@@ -41,7 +41,7 @@ func (validator *LinkIntegrationHandlerValidator) ValidateUpdate(ctx context.Con
 			},
 			"icon": []string{
 				"required",
-				"in:link,documentation,mail,github",
+				"in:link,documentation,mail,github,map",
 			},
 			"color": []string{
 				"required",
