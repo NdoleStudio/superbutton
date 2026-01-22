@@ -23,7 +23,7 @@
     "vue-glow": "^1.4.2",
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10",
-    "vuetify": "^2.7.0"
+    "vuetify": "^3.0.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.8",
